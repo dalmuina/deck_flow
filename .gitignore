@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Android
+local.properties
+*.iml
+
+# IntelliJ / AS
+.idea/
+*.ipr
+*.iws
+out/
+
+# KMP artifacts
+*/bin/
+*/obj/
+
+# Kotlin Multiplatform iOS
+*.xcworkspace
+*.xcuserdata
+*/Pods/
+DerivedData/
+
