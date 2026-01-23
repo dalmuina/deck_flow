@@ -1,4 +1,4 @@
-package com.dalmuina.deckflow.ui.theme
+package com.dalmuina.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
