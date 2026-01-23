@@ -21,3 +21,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "DeckFlow"
 include(":app")
+include(":core-common")
+include(":design-system")
+include(":core-model")
+include(":core-network")
+include(":feature-card")
+include(":feature-deck")
