@@ -6,12 +6,15 @@ plugins {
 }
 
 android {
-    namespace = "com.dalmuina.core.common"
-    compileSdk = 36
+    namespace = "com.dalmuina.data.network"
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = 24
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
