@@ -32,6 +32,9 @@ class NavigationState(
         } else {
             listOf(startRoute, topLevelRoute)
         }
+
+    val currentRoute: NavKey?
+        get() = backStacks[topLevelRoute]?.lastOrNull()
 }
 
 @Composable
@@ -43,7 +46,7 @@ fun rememberNavigationState(
         startRoute,
         topLevelRoutes,
         configuration = serializersConfig,
-    ){
+    ) {
         mutableStateOf(startRoute)
     }
 
@@ -54,7 +57,7 @@ fun rememberNavigationState(
         )
     }
 
-    return remember( startRoute, topLevelRoutes) {
+    return remember(startRoute, topLevelRoutes) {
         NavigationState(
             startRoute = startRoute,
             topLevelRoute = topLevelRoute,
@@ -77,7 +80,7 @@ val serializersConfig = SavedStateConfiguration {
 fun NavigationState.toEntries(
     entryProvider: (NavKey) -> NavEntry<NavKey>
 ): SnapshotStateList<NavEntry<NavKey>> {
-    val decoratedEntries = backStacks.mapValues {(_,stack)->
+    val decoratedEntries = backStacks.mapValues { (_, stack) ->
         val decorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
         )
