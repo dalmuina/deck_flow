@@ -3,8 +3,9 @@ package com.dalmuina.deckflow.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
-
+@Immutable
 class BottomNavItem(
     val icon: ImageVector,
     val title: String,

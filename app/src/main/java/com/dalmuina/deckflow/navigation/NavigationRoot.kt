@@ -41,39 +41,8 @@ fun NavigationRoot(
                 })
         },
         floatingActionButton = {
-
-            val showFab = when (navigationState.currentRoute) {
-                is Route.DeckSelector -> true
-                is Route.Card -> true
-                else -> false
-            }
-
-            AnimatedVisibility(
-                visible = showFab,
-                enter = fadeIn() + scaleIn(initialScale = 0.8f),
-                exit = fadeOut() + scaleOut(targetScale = 0.8f)
-            ) {
-                when (navigationState.currentRoute) {
-                    Route.DeckSelector -> {
-                        DeckFlowFloatingButton(
-                            icon = Icons.Default.Add,
-                            contentDescription = "Create deck"
-                        ) {
-                            navigator.navigate(Route.DeckCreator)
-                        }
-                    }
-
-                    Route.Card -> {
-                        DeckFlowFloatingButton(
-                            icon = Icons.Default.Add,
-                            contentDescription = "Add deck"
-                        ) {
-
-                        }
-                    }
-
-                    else -> Unit
-                }
+            FabArea(navigationState) {
+                navigator.navigate(it)
             }
         }
     ) { innerPadding ->
@@ -102,4 +71,44 @@ fun NavigationRoot(
         )
     }
 
+}
+
+@Composable
+fun FabArea(
+    state: NavigationState,
+    navigate: (Route)->Unit,
+) {
+    val showFab = when (state.currentRoute) {
+        is Route.DeckSelector -> true
+        is Route.Card -> true
+        else -> false
+    }
+
+    AnimatedVisibility(
+        visible = showFab,
+        enter = fadeIn() + scaleIn(initialScale = 0.8f),
+        exit = fadeOut() + scaleOut(targetScale = 0.8f)
+    ) {
+        when (state.currentRoute) {
+            Route.DeckSelector -> {
+                DeckFlowFloatingButton(
+                    icon = Icons.Default.Add,
+                    contentDescription = "Create deck"
+                ) {
+                    navigate(Route.DeckCreator)
+                }
+            }
+
+            Route.Card -> {
+                DeckFlowFloatingButton(
+                    icon = Icons.Default.Add,
+                    contentDescription = "Add deck"
+                ) {
+
+                }
+            }
+
+            else -> Unit
+        }
+    }
 }
