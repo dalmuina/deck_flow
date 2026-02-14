@@ -1,0 +1,37 @@
+style:
+  MagicNumber:
+    active: false
+
+  WildcardImport:
+    active: false
+
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+
+  NewLineAtEndOfFile:
+    active: false
+
+  UnusedPrivateMember:
+    active: true
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 80
+
+  LargeClass:
+    active: true
+    threshold: 600
+
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 30
+
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    ignoreAnnotated:
+      - Composable
+      - Test

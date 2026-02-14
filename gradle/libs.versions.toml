@@ -18,6 +18,7 @@ coroutinesTest = "1.10.2"
 mockk = "1.14.7"
 kotest = "6.0.7"
 turbine = "1.2.1"
+detekt = "1.23.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,8 +70,6 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 
 #Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -78,3 +77,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+detekt = {id = "io.gitlab.arturbosch.detekt", version.ref = "detekt"}
+
