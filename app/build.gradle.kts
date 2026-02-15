@@ -60,7 +60,7 @@ dependencies {
 
     implementation(project(":domain"))
     implementation(project(":data"))
-    implementation(project(":common"))
+    implementation(project(":core-ui"))
     implementation(project(":design-system"))
     implementation(project(":feature-card"))
     implementation(project(":feature-deck"))

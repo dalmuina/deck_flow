@@ -2,8 +2,12 @@ package com.dalmuina.feature.card.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -13,6 +17,7 @@ import org.koin.androidx.compose.koinViewModel
 fun CardRoute(
     viewModel: CardViewModel = koinViewModel(),
 ) {
+
     CardScreen(
 
     )
