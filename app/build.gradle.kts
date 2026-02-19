@@ -1,14 +1,15 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt)
 }
 
-android {
+extensions.configure<ApplicationExtension>  {
     namespace = "com.dalmuina.deckflow"
     compileSdk {
         version = release(36)
@@ -24,15 +25,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        compilerOptions.freeCompilerArgs.addAll(
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.layout.buildDirectory}/compose_metrics",
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.layout.buildDirectory}/compose_reports"
-        )
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -46,29 +38,35 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+
     buildFeatures {
         compose = true
     }
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.freeCompilerArgs.addAll(
+        "-P",
+        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.layout.buildDirectory}/compose_metrics",
+        "-P",
+        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.layout.buildDirectory}/compose_reports"
+    )
+}
+
+
 dependencies {
 
     implementation(project(":domain"))
     implementation(project(":data"))
-    implementation(project(":common"))
+    implementation(project(":core-ui"))
     implementation(project(":design-system"))
     implementation(project(":feature-card"))
     implementation(project(":feature-deck"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodelCompose)
-    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

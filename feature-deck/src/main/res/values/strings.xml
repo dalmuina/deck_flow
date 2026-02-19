@@ -5,5 +5,6 @@
     <string name="energy_low">Low</string>
     <string name="energy_medium">Medium</string>
     <string name="energy_high">High</string>
-
+    <string name="create_card">Create Card</string>
+    <string name="create_deck">Create Deck</string>
 </resources>

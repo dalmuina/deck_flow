@@ -1,10 +1,11 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.dsl.LibraryExtension
+import org.gradle.kotlin.dsl.configure
+
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
-android {
+extensions.configure<LibraryExtension>  {
     namespace = "com.dalmuina.domain"
     compileSdk {
         version = release(36)
@@ -18,11 +19,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+
 }
 
 dependencies {
