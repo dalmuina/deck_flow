@@ -1,4 +1,4 @@
-package com.dalmuina.feature.deck.ui.deckSelector.component
+package com.dalmuina.feature.deck.ui.component
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckColors
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
@@ -26,7 +27,7 @@ import com.dalmuina.feature.deck.ui.model.EnergyLevel
 import com.dalmuina.feature.deck.ui.model.toDisplayString
 
 @Composable
-fun DeckSlotComponent(
+fun DFDeckSlot(
     deck: DeckUi,
     onEdit: () -> Unit,
     onDelete: () -> Unit
@@ -82,22 +83,11 @@ fun DeckSlotComponent(
     }
 }
 
-@Preview(
-    name = "Light",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = Devices.PIXEL_7
-)
-@Preview(
-    name = "Dark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    device = Devices.PIXEL_7
-)
+@DFPreview
 @Composable
-fun DeckSlotPreview() {
+fun DFDeckSlotPreview() {
     DeckFlowTheme {
-        DeckSlotComponent(
+        DFDeckSlot(
             deck = DeckUi(
                 id = 0,
                 cardList = listOf(1),

@@ -1,4 +1,4 @@
-package com.dalmuina.deckflow.navigation
+package com.dalmuina.deckflow.navigation.component
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -7,12 +7,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
+import com.dalmuina.deckflow.navigation.TOP_LEVEL_DESTINATIONS
 
 @Composable
-fun DeckFlowNavigationBar(
+fun DFNavigationBar(
+    modifier: Modifier = Modifier,
     selectedKey: NavKey,
     onSelectedKey: (NavKey) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     NavigationBar(
         modifier = modifier,

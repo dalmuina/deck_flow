@@ -17,10 +17,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.ui.deckSelector.component.DeckSlotComponent
+import com.dalmuina.feature.deck.ui.component.DFDeckSlot
 import com.dalmuina.feature.deck.ui.model.DeckUi
 import com.dalmuina.feature.deck.ui.model.EnergyLevel
 import org.koin.androidx.compose.koinViewModel
@@ -62,7 +63,7 @@ fun DeckSelectorScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.l)
         ) {
             items(items, key = { it.id }) { deck ->
-                DeckSlotComponent(
+                DFDeckSlot(
                     deck,
                     onEdit = {
                         onAddDeck()
@@ -74,18 +75,7 @@ fun DeckSelectorScreen(
     }
 }
 
-@Preview(
-    name = "Light",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = Devices.PIXEL_7
-)
-@Preview(
-    name = "Dark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    device = Devices.PIXEL_7
-)
+@DFPreview
 @Composable
 fun DeckSelectorPreview() {
     DeckFlowTheme {
@@ -102,18 +92,7 @@ fun DeckSelectorPreview() {
     }
 }
 
-@Preview(
-    name = "Light",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = Devices.PIXEL_7
-)
-@Preview(
-    name = "Dark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    device = Devices.PIXEL_7
-)
+@DFPreview
 @Composable
 fun DeckSelectorEmptyPreview() {
     DeckFlowTheme {
