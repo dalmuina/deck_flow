@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -15,6 +16,7 @@ import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
 import com.dalmuina.feature.card.ui.CardRoute
+import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorRoute
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorRoute
 
@@ -64,6 +66,11 @@ fun NavigationRoot(
                     entry<Route.DeckCreator> {
                         DeckCreatorRoute()
                     }
+                    entry<Route.CardCreator> {
+                        CardCreatorRoute(){
+                            navigator.goBack()
+                        }
+                    }
                 }
             )
         )
@@ -79,6 +86,7 @@ fun FabArea(
     val showFab = when (state.currentRoute) {
         is Route.DeckSelector -> true
         is Route.Card -> true
+        is Route.DeckCreator -> true
         else -> false
     }
 
@@ -90,8 +98,7 @@ fun FabArea(
         when (state.currentRoute) {
             Route.DeckSelector -> {
                 DFFloatingButton(
-                    icon = Icons.Default.Add,
-                    contentDescription = "Create deck"
+                    icon = {Icon(imageVector = Icons.Default.Add, contentDescription = "Create Deck")}
                 ) {
                     navigate(Route.DeckCreator)
                 }
@@ -99,10 +106,16 @@ fun FabArea(
 
             Route.Card -> {
                 DFFloatingButton(
-                    icon = Icons.Default.Add,
-                    contentDescription = "Add deck"
+                    icon = {Icon(imageVector = Icons.Default.Add, contentDescription = "Add Deck")}
                 ) {
 
+                }
+            }
+            Route.DeckCreator -> {
+                DFFloatingButton(
+                    icon = {Icon(imageVector = Icons.Default.Add, contentDescription = "Add Card")}
+                ) {
+                    navigate(Route.CardCreator)
                 }
             }
 

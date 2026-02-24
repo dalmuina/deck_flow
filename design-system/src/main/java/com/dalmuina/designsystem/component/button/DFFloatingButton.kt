@@ -2,17 +2,14 @@ package com.dalmuina.designsystem.component.button
 
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.dalmuina.designsystem.tokens.Dimens
 
 @Composable
 fun DFFloatingButton(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
-    contentDescription: String?,
+    icon: @Composable () -> Unit,
     onClick: () -> Unit,
 ) {
     FloatingActionButton(
@@ -20,7 +17,8 @@ fun DFFloatingButton(
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = Dimens.defaultElevation
         ),
-        onClick = onClick) {
-        Icon(icon, contentDescription)
+        onClick = onClick
+    ) {
+        icon()
     }
 }

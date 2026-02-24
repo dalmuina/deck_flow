@@ -1,34 +1,24 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFElevatedButton
-import com.dalmuina.designsystem.component.button.DFFloatingButton
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
@@ -49,7 +39,7 @@ fun DeckCreatorRoute(
 
     DeckCreatorScreen(
         items = state.deckCard,
-        onCreate = { viewModel.process(DeckCreatorIntent.Create) },
+        onCreateDeck = { viewModel.process(DeckCreatorIntent.Create) },
         onCardClicked = { id -> viewModel.process(DeckCreatorIntent.CardClicked(id)) },
     )
 }
@@ -57,7 +47,7 @@ fun DeckCreatorRoute(
 @Composable
 fun DeckCreatorScreen(
     items: List<CardUi>,
-    onCreate: () -> Unit,
+    onCreateDeck: () -> Unit,
     onCardClicked: (String) -> Unit,
 ) {
     Box(
@@ -87,38 +77,26 @@ fun DeckCreatorScreen(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-        ){
-        val showingButton = items.any { it.isChecked }
+        ) {
+            val showingButton = items.any { it.isChecked }
             if (showingButton) {
 
                 AnimatedVisibility(
                     visible = true,
                     modifier = Modifier
-                        .weight(1f)
                         .padding(start = Spacing.l),
                     enter = DFAnimations.ScaleFadeIn,
                     exit = DFAnimations.ScaleFadeOut,
                 ) {
                     DFElevatedButton(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.create_deck),
-                        onClick = {}
+                        text = { Text(text = stringResource(R.string.create_deck)) },
+                        onClick = {
+                            onCreateDeck()
+                        }
                     )
                 }
-
-            } else {
-
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
             }
-        DFFloatingButton(
-            modifier = Modifier
-                .padding(Spacing.l),
-            icon = Icons.Default.Add,
-            contentDescription = stringResource(R.string.create_card),
-            onClick = onCreate
-        )
         }
     }
 }
@@ -133,16 +111,16 @@ fun DeckCreatorScreenPreview() {
                     id = "0",
                     title = "Test",
                     duration = 0L.hours + 15L.minutes + 0L.seconds,
-                    false,
+                    true,
                 ),
                 CardUi(
                     id = "1",
                     title = "Test",
                     duration = 2L.hours + 20L.minutes + 0L.seconds,
-                    true,
+                    false,
                 ),
             ),
-            onCreate = {},
+            onCreateDeck = {},
             onCardClicked = {},
         )
     }
