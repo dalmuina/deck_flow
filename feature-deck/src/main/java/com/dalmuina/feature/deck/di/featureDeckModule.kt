@@ -1,5 +1,6 @@
 package com.dalmuina.feature.deck.di
 
+import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorViewModel
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorViewModel
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorViewModel
 import org.koin.core.module.dsl.viewModel
@@ -11,5 +12,8 @@ val featureDeckModule = module{
     }
     viewModel {
         DeckCreatorViewModel()
+    }
+    viewModel {
+        CardCreatorViewModel()
     }
 }

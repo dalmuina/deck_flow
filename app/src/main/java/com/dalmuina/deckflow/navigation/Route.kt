@@ -13,4 +13,7 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object DeckCreator : Route
+
+    @Serializable
+    data object CardCreator: Route
 }
