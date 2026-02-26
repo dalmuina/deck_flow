@@ -3,6 +3,7 @@ import org.gradle.kotlin.dsl.configure
 
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
 }
 
 extensions.configure<LibraryExtension>  {
@@ -23,4 +24,12 @@ extensions.configure<LibraryExtension>  {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
+    // Koin
+    implementation(libs.koin.android)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 }

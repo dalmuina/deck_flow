@@ -11,9 +11,14 @@ val featureDeckModule = module{
         DeckSelectorViewModel()
     }
     viewModel {
-        DeckCreatorViewModel()
+        DeckCreatorViewModel(
+            getAllCardsUseCase = get()
+        )
     }
     viewModel {
-        CardCreatorViewModel()
+        CardCreatorViewModel(
+            saveCardUseCase = get(),
+            uiEventDispatcher = get(),
+        )
     }
 }

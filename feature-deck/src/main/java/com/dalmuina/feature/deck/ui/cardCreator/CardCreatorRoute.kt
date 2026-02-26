@@ -10,20 +10,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.component.button.DFButton
 import com.dalmuina.designsystem.component.textfield.DFOutlinedTextField
 import com.dalmuina.designsystem.component.textfield.DFTimeInput
 import com.dalmuina.designsystem.preview.DFPreview
+import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
+import com.dalmuina.feature.deck.R
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun CardCreatorRoute(
@@ -32,26 +34,36 @@ fun CardCreatorRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {event->
+            when (event) {
+                is CardCreatorEvent.CloseScreen -> onBack()
+            }
+        }
+    }
+
     CardCreatorScreen(
-        title = state.title,
-        value = state.minutes,
+        activity = state.title,
+        duration = state.duration,
         onTitleChanged = { value -> viewModel.process(CardCreatorIntent.TitleChanged(value)) },
         onTimeChanged = { value -> viewModel.process(CardCreatorIntent.TimeChanged(value)) },
         onMoreTime = { viewModel.process(CardCreatorIntent.MoreTime) },
         onLessTime = { viewModel.process(CardCreatorIntent.LessTime) },
-        onCancel = onBack
+        onCancel = onBack,
+        onSaved = {viewModel.process(CardCreatorIntent.SaveActivity)}
     )
 }
 
 @Composable
 fun CardCreatorScreen(
-    title: String,
-    value: String,
+    activity: String,
+    duration: Duration,
     onTitleChanged: (String) -> Unit,
     onTimeChanged: (String) -> Unit,
     onMoreTime: () -> Unit,
     onLessTime: () -> Unit,
     onCancel: () -> Unit,
+    onSaved: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -60,12 +72,12 @@ fun CardCreatorScreen(
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         DFOutlinedTextField(
-            title = title,
-            label = { Text(text = "Activity") },
+            title = activity,
+            label = { Text(text = stringResource(R.string.label_card)) },
             onTitleChanged = onTitleChanged
         )
         DFTimeInput(
-            value = value,
+            value = duration,
             onValueChanged = onTimeChanged,
             onMoreTime = onMoreTime,
             onLessTime = onLessTime,
@@ -77,7 +89,7 @@ fun CardCreatorScreen(
             horizontalArrangement = Arrangement.End
         ) {
             DFButton(
-                text = { Text(text = "Cancel") },
+                text = { Text(text = stringResource(R.string.button_cancel)) },
                 onClick = onCancel
             )
             Spacer(
@@ -85,8 +97,9 @@ fun CardCreatorScreen(
                     .width(Spacing.l)
             )
             DFButton(
-                text = { Text(text = "Ok") },
-                onClick = {}
+                text = { Text(text = stringResource(R.string.button_ok)) },
+                isEnable = activity.isNotEmpty() && duration.inWholeMinutes >0,
+                onClick = onSaved
             )
 
         }
@@ -96,14 +109,51 @@ fun CardCreatorScreen(
 
 @DFPreview
 @Composable
-fun CardCreatorScreenPreview() {
-    CardCreatorScreen(
-        title = "Fitness",
-        value = "0",
-        onTitleChanged = {},
-        onTimeChanged = {},
-        onMoreTime = {},
-        onLessTime = {},
-        onCancel = {}
-    )
+fun CardCreatorNoTimePreview() {
+    DeckFlowTheme {
+        CardCreatorScreen(
+            activity = "Fitness",
+            duration = 3L.minutes,
+            onTitleChanged = {},
+            onTimeChanged = {},
+            onMoreTime = {},
+            onLessTime = {},
+            onCancel = {},
+            onSaved= {},
+        )
+    }
+}
+
+@DFPreview
+@Composable
+fun CardCreatorButtonEnabledPreview() {
+    DeckFlowTheme {
+        CardCreatorScreen(
+            activity = "Fitness",
+            duration = 24.minutes,
+            onTitleChanged = {},
+            onTimeChanged = {},
+            onMoreTime = {},
+            onLessTime = {},
+            onCancel = {},
+            onSaved= {},
+        )
+    }
+}
+
+@DFPreview
+@Composable
+fun CardCreatorNoTitlePreview() {
+    DeckFlowTheme {
+        CardCreatorScreen(
+            activity = "",
+            duration = 10.hours,
+            onTitleChanged = {},
+            onTimeChanged = {},
+            onMoreTime = {},
+            onLessTime = {},
+            onCancel = {},
+            onSaved= {},
+        )
+    }
 }

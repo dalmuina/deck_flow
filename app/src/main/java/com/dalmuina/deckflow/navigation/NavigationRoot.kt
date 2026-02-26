@@ -7,11 +7,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.dalmuina.UiEvent
+import com.dalmuina.UiEventDispatcher
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
@@ -19,10 +24,12 @@ import com.dalmuina.feature.card.ui.CardRoute
 import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorRoute
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorRoute
+import org.koin.compose.koinInject
 
 @Composable
 fun NavigationRoot(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiEventDispatcher: UiEventDispatcher = koinInject()
 ) {
     val navigationState = rememberNavigationState(
         startRoute = Route.DeckSelector,
@@ -31,8 +38,27 @@ fun NavigationRoot(
     val navigator = remember {
         Navigator(navigationState)
     }
+
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        uiEventDispatcher.events.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackBar -> {
+                    snackBarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.actionLabel
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        },
         bottomBar = {
             DFNavigationBar(
                 selectedKey = navigationState.topLevelRoute,
@@ -67,7 +93,7 @@ fun NavigationRoot(
                         DeckCreatorRoute()
                     }
                     entry<Route.CardCreator> {
-                        CardCreatorRoute(){
+                        CardCreatorRoute {
                             navigator.goBack()
                         }
                     }
@@ -81,7 +107,7 @@ fun NavigationRoot(
 @Composable
 fun FabArea(
     state: NavigationState,
-    navigate: (Route)->Unit,
+    navigate: (Route) -> Unit,
 ) {
     val showFab = when (state.currentRoute) {
         is Route.DeckSelector -> true
@@ -98,7 +124,12 @@ fun FabArea(
         when (state.currentRoute) {
             Route.DeckSelector -> {
                 DFFloatingButton(
-                    icon = {Icon(imageVector = Icons.Default.Add, contentDescription = "Create Deck")}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Create Deck"
+                        )
+                    }
                 ) {
                     navigate(Route.DeckCreator)
                 }
@@ -106,14 +137,25 @@ fun FabArea(
 
             Route.Card -> {
                 DFFloatingButton(
-                    icon = {Icon(imageVector = Icons.Default.Add, contentDescription = "Add Deck")}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add Deck"
+                        )
+                    }
                 ) {
 
                 }
             }
+
             Route.DeckCreator -> {
                 DFFloatingButton(
-                    icon = {Icon(imageVector = Icons.Default.Add, contentDescription = "Add Card")}
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add Card"
+                        )
+                    }
                 ) {
                     navigate(Route.CardCreator)
                 }

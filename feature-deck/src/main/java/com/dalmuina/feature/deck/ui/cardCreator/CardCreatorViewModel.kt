@@ -1,35 +1,51 @@
 package com.dalmuina.feature.deck.ui.cardCreator
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import androidx.lifecycle.viewModelScope
+import com.dalmuina.UiEvent
+import com.dalmuina.UiEventDispatcher
+import com.dalmuina.domain.model.onError
+import com.dalmuina.domain.model.onSuccess
+import com.dalmuina.domain.usecase.SaveCardUseCase
+import com.dalmuina.feature.deck.ui.model.DFCardUi
+import com.dalmuina.feature.deck.ui.model.toDomain
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.minutes
 
-class CardCreatorViewModel : ViewModel(){
+class CardCreatorViewModel(
+    private val saveCardUseCase: SaveCardUseCase,
+    private val uiEventDispatcher: UiEventDispatcher,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CardCreatorUiState())
     val uiState: StateFlow<CardCreatorUiState> = _uiState.asStateFlow()
 
+    private val _events = Channel<CardCreatorEvent>()
+    val events = _events.receiveAsFlow()
 
-
-    fun process(intent: CardCreatorIntent){
-        when(intent){
+    fun process(intent: CardCreatorIntent) {
+        when (intent) {
             is CardCreatorIntent.TitleChanged -> changeTitle(intent.value)
             is CardCreatorIntent.TimeChanged ->
-                adjustMinutes { intent.value }
+                changeMinutes(intent.value)
 
             CardCreatorIntent.MoreTime ->
-                adjustMinutes {(it + 1).coerceAtLeast(0).toString()}
+                adjustMinutes { it + 1 }
 
             CardCreatorIntent.LessTime ->
-                adjustMinutes {(it -1).coerceAtLeast(0).toString()}
+                adjustMinutes { it - 1 }
+
+            is CardCreatorIntent.SaveActivity -> saveCard()
         }
     }
 
-    private fun changeTitle(value: String){
+    private fun changeTitle(value: String) {
         reduce {
             copy(
                 title = value
@@ -37,10 +53,41 @@ class CardCreatorViewModel : ViewModel(){
         }
     }
 
-    private fun adjustMinutes(transform:(Int)->String) {
+    private fun changeMinutes(raw: String) {
+        val filtered = raw.filter { it.isDigit() }
+        val parsed = filtered.toLongOrNull() ?: 0
+        reduce { copy(duration = parsed.minutes) }
+    }
+
+    private fun adjustMinutes(transform: (Long) -> Long) {
         reduce {
-            val current = minutes.toIntOrNull() ?: 0
-            copy(minutes = transform(current))
+            val currentMinutes = duration.inWholeMinutes
+            val newMinutes = transform(currentMinutes).coerceAtLeast(0)
+            copy(duration = newMinutes.minutes)
+        }
+    }
+
+    private fun saveCard() {
+        viewModelScope.launch {
+            val cardUi = DFCardUi(
+                title = _uiState.value.title,
+                duration = _uiState
+                    .value
+                    .duration
+            )
+            saveCardUseCase(cardUi.toDomain())
+                .onSuccess {
+                    uiEventDispatcher.dispatch(
+                    UiEvent.ShowSnackBar("Guardado con éxito")
+                    )
+                    _events.send(CardCreatorEvent.CloseScreen)
+
+
+                }.onError {
+                    uiEventDispatcher.dispatch(
+                        UiEvent.ShowSnackBar("Error guardando la carta")
+                    )
+                }
         }
     }
 
@@ -52,8 +99,4 @@ class CardCreatorViewModel : ViewModel(){
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        println("Viewmodel CardCreator cleaned")
-    }
 }

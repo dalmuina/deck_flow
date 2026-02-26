@@ -1,17 +1,10 @@
 package com.dalmuina.feature.deck.ui.deckSelector
 
 import androidx.lifecycle.ViewModel
-import com.dalmuina.feature.deck.ui.model.DeckUi
-import com.dalmuina.feature.deck.ui.model.EnergyLevel
-import kotlinx.coroutines.flow.Flow
+import com.dalmuina.feature.deck.ui.model.DFDeckUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 
 class DeckSelectorViewModel : ViewModel() {
@@ -29,20 +22,17 @@ class DeckSelectorViewModel : ViewModel() {
         reduce {
             copy(
                 deckList = listOf(
-                    DeckUi(
+                    DFDeckUi(
                         id = 0,
                         cardList = listOf(1),
-                        energy = EnergyLevel.LOW
                     ),
-                    DeckUi(
+                    DFDeckUi(
                         id = 1,
                         cardList = listOf(1, 2, 3),
-                        energy = EnergyLevel.MEDIUM
                     ),
-                    DeckUi(
+                    DFDeckUi(
                         id = 2,
                         cardList = listOf(2, 34, 5, 2),
-                        energy = EnergyLevel.HIGH
                     )
                 )
             )
