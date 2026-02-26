@@ -24,12 +24,6 @@ fun Duration.toTimerText(): String {
     }
 }
 
-fun DFCardUi.toDomain(): DFCard = DFCard(
-    id = 0,
-    title = title,
-    durationMillis = duration.inWholeMilliseconds
-)
-
 fun DFCard.toCardUi(): DFCardUi = DFCardUi(
     id = id,
     title = title,

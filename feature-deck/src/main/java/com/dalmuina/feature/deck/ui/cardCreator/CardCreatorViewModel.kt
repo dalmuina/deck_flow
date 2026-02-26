@@ -4,11 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.UiEvent
 import com.dalmuina.UiEventDispatcher
+import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.SaveCardUseCase
-import com.dalmuina.feature.deck.ui.model.DFCardUi
-import com.dalmuina.feature.deck.ui.model.toDomain
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,16 +68,16 @@ class CardCreatorViewModel(
 
     private fun saveCard() {
         viewModelScope.launch {
-            val cardUi = DFCardUi(
+            val card = DFCard(
                 title = _uiState.value.title,
-                duration = _uiState
+                durationMillis = _uiState
                     .value
-                    .duration
+                    .duration.inWholeMilliseconds
             )
-            saveCardUseCase(cardUi.toDomain())
+            saveCardUseCase(card)
                 .onSuccess {
                     uiEventDispatcher.dispatch(
-                    UiEvent.ShowSnackBar("Guardado con éxito")
+                        UiEvent.ShowSnackBar("Guardado con éxito")
                     )
                     _events.send(CardCreatorEvent.CloseScreen)
 
