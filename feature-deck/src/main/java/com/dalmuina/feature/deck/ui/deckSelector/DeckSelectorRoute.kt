@@ -19,8 +19,7 @@ import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.ui.component.DFDeckSlot
-import com.dalmuina.feature.deck.ui.model.DeckUi
-import com.dalmuina.feature.deck.ui.model.EnergyLevel
+import com.dalmuina.feature.deck.ui.model.DFDeckUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,7 +40,7 @@ fun DeckSelectorRoute(
 @Composable
 fun DeckSelectorScreen(
     onAddDeck: () -> Unit,
-    items: List<DeckUi>,
+    items: List<DFDeckUi>,
 ) {
     val isEmpty = items.isEmpty()
     if (isEmpty) {
@@ -79,10 +78,9 @@ fun DeckSelectorPreview() {
         DeckSelectorScreen(
             onAddDeck = {},
             items = listOf(
-                DeckUi(
+                DFDeckUi(
                     id = 0,
                     cardList = listOf(1, 2, 5),
-                    energy = EnergyLevel.HIGH
                 )
             ),
         )

@@ -23,11 +23,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun DFTimeInput(
     modifier: Modifier = Modifier,
-    value: String,
+    value: Duration,
     onValueChanged: (String) -> Unit,
     onMoreTime: () -> Unit,
     onLessTime: () -> Unit,
@@ -42,15 +46,15 @@ fun DFTimeInput(
             modifier = Modifier
                 .weight(1f)
                 .semantics(mergeDescendants = true) {
-                    stateDescription = "$value minutes"
+                    stateDescription = "${value.inWholeMinutes} minutes"
                 },
-            value = value,
+            value = value.inWholeMinutes.toString(),
             onValueChange = onValueChanged,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
-            label = { Text("Time") }
+            label = { Text("Time in minutes") }
         )
         Column(
             modifier = Modifier,
@@ -69,7 +73,7 @@ fun DFTimeInput(
             }
             IconButton(
                 onClick = onLessTime,
-                enabled = value.toIntOrNull()?.let { it > 0 } == true
+                enabled = value.inWholeMinutes > 0
             ) {
                 Icon(
                     modifier = Modifier
@@ -87,7 +91,7 @@ fun DFTimeInput(
 fun DFTimeInputPreview() {
     DeckFlowTheme {
         DFTimeInput(
-            value = "0",
+            value = 0L.hours + 3L.minutes + 25L.seconds,
             onValueChanged = {},
             onMoreTime = {},
             onLessTime = {},

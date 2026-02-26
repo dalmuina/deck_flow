@@ -23,5 +23,7 @@ extensions.configure<LibraryExtension>  {
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
 
+    implementation(libs.koin.android)
 }

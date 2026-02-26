@@ -14,10 +14,12 @@ import com.dalmuina.designsystem.tokens.Dimens
 fun DFButton(
     modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
+    isEnable: Boolean = true,
     onClick: () -> Unit
 ) {
 
     Button(
+        enabled = isEnable,
         onClick = onClick,
     ) {
        text()

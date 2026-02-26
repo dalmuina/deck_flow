@@ -1,8 +1,8 @@
 package com.dalmuina.feature.deck.ui.deckSelector
 
-import com.dalmuina.feature.deck.ui.model.DeckUi
+import com.dalmuina.feature.deck.ui.model.DFDeckUi
 
 data class DeckSelectorUiState(
     val loading: Boolean = false,
-    val deckList: List<DeckUi> = emptyList(),
+    val deckList: List<DFDeckUi> = emptyList(),
 )

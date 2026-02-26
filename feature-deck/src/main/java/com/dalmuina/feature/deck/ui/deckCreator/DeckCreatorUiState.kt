@@ -1,8 +1,8 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
-import com.dalmuina.feature.deck.ui.model.CardUi
+import com.dalmuina.feature.deck.ui.model.DFCardUi
 
 data class DeckCreatorUiState(
     val loading: Boolean = false,
-    val deckCard: List<CardUi> = emptyList(),
+    val deckCard: List<DFCardUi> = emptyList(),
 )

@@ -1,6 +1,5 @@
 package com.dalmuina.feature.deck.ui.component
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,21 +13,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckColors
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.ui.model.DeckUi
-import com.dalmuina.feature.deck.ui.model.EnergyLevel
-import com.dalmuina.feature.deck.ui.model.toDisplayString
+import com.dalmuina.feature.deck.ui.model.DFDeckUi
 
 @Composable
 fun DFDeckSlot(
-    deck: DeckUi,
+    deck: DFDeckUi,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -40,10 +35,10 @@ fun DFDeckSlot(
                 onEdit()
             },
         colors = CardDefaults.cardColors(
-            when (deck.energy) {
-                EnergyLevel.LOW -> DeckColors.Low
-                EnergyLevel.MEDIUM -> DeckColors.Medium
-                EnergyLevel.HIGH -> DeckColors.High
+            when (deck.cardList.size) {
+                in 0..2 -> DeckColors.Low
+                in 3..5 -> DeckColors.Medium
+                else -> DeckColors.High
             }
         )
     ) {
@@ -52,12 +47,7 @@ fun DFDeckSlot(
                 .padding(Spacing.l),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                stringResource(
-                    R.string.energy_deck,
-                    deck.energy.toDisplayString()
-                )
-            )
+            Text("New Deck")
 
             Text(
                 stringResource(
@@ -88,10 +78,9 @@ fun DFDeckSlot(
 fun DFDeckSlotPreview() {
     DeckFlowTheme {
         DFDeckSlot(
-            deck = DeckUi(
+            deck = DFDeckUi(
                 id = 0,
                 cardList = listOf(1),
-                energy = EnergyLevel.MEDIUM
             ),
             {},
             {},

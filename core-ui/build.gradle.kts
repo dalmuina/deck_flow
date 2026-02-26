@@ -19,4 +19,5 @@ extensions.configure<LibraryExtension>  {
 }
 
 dependencies {
+    implementation(libs.koin.android)
 }

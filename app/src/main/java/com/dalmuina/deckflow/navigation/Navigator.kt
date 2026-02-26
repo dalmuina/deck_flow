@@ -15,9 +15,6 @@ class Navigator(val state: NavigationState) {
         val currentStack = state.backStacks[state.topLevelRoute]
             ?: error("Back stack for ${state.topLevelRoute} doesn't exist")
 
-        println("Before pop -> size: ${currentStack.size}")
-        println("Stack content before: $currentStack")
-
         val currentRoute = currentStack.last()
 
         if (currentRoute == state.topLevelRoute) {
@@ -26,7 +23,5 @@ class Navigator(val state: NavigationState) {
             currentStack.removeLastOrNull()
         }
 
-        println("After pop -> size: ${currentStack.size}")
-        println("Stack content after: $currentStack")
     }
 }

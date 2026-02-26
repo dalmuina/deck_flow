@@ -1,6 +1,5 @@
 package com.dalmuina.feature.deck.ui.component
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,14 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
-import com.dalmuina.feature.deck.ui.model.CardUi
+import com.dalmuina.feature.deck.ui.model.DFCardUi
 import com.dalmuina.feature.deck.ui.model.toTimerText
-import java.util.UUID
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -29,8 +25,8 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun DFCardSlot(
     modifier: Modifier = Modifier,
-    card: CardUi,
-    onCheckedChanged: (String) -> Unit
+    card: DFCardUi,
+    onCheckedChanged: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -60,7 +56,7 @@ fun DFCardSlot(
         Checkbox(
             modifier = Modifier
                 .padding(Spacing.l),
-            checked = card.isChecked,
+            checked = false,//TODO()
             onCheckedChange = {onCheckedChanged(card.id)}
         )
     }
@@ -72,11 +68,10 @@ fun DFCardSlot(
 fun DFCardSlotPreview() {
     DeckFlowTheme {
         DFCardSlot(
-            card=CardUi(
-                id = UUID.randomUUID().toString(),
+            card= DFCardUi(
+                id = 0,
                 title = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,
-                false,
             ),
             onCheckedChanged = {},
         )
