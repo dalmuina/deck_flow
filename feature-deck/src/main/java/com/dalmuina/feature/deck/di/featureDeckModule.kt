@@ -8,11 +8,16 @@ import org.koin.dsl.module
 
 val featureDeckModule = module{
     viewModel {
-        DeckSelectorViewModel()
+        DeckSelectorViewModel(
+            getAllDecksUseCase = get(),
+            uiEventDispatcher = get(),
+        )
     }
     viewModel {
         DeckCreatorViewModel(
-            getAllCardsUseCase = get()
+            getAllCardsUseCase = get(),
+            createDeckUseCase = get(),
+            uiEventDispatcher = get(),
         )
     }
     viewModel {

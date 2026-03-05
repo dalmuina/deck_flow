@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.dalmuina.UiEvent
@@ -104,7 +103,9 @@ fun NavigationRoot(
                         )
                     }
                     entry<Route.DeckCreator> {
-                        DeckCreatorRoute()
+                        DeckCreatorRoute {
+                            navigator.goBack()
+                        }
                     }
                     entry<Route.CardCreator> {
                         CardCreatorRoute {

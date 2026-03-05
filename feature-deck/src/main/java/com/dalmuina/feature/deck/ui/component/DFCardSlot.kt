@@ -56,7 +56,7 @@ fun DFCardSlot(
         Checkbox(
             modifier = Modifier
                 .padding(Spacing.l),
-            checked = false,//TODO()
+            checked = card.isSelected,
             onCheckedChange = {onCheckedChanged(card.id)}
         )
     }
@@ -72,6 +72,7 @@ fun DFCardSlotPreview() {
                 id = 0,
                 title = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,
+                true,
             ),
             onCheckedChanged = {},
         )
