@@ -1,5 +1,6 @@
 package com.dalmuina.deckflow.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,8 +12,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.dalmuina.UiEvent
@@ -40,14 +45,23 @@ fun NavigationRoot(
     }
 
     val snackBarHostState = remember { SnackbarHostState() }
+    val context by rememberUpdatedState(LocalContext.current)
 
+    @SuppressLint("LocalContextGetResourceValueCall")
     LaunchedEffect(Unit) {
         uiEventDispatcher.events.collect { event ->
             when (event) {
                 is UiEvent.ShowSnackBar -> {
+
+                    val message = context.getString(event.messageRes)
+
+                    val action = event.actionLabelRes?.let {
+                        context.getString(it)
+                    }
+
                     snackBarHostState.showSnackbar(
-                        message = event.message,
-                        actionLabel = event.actionLabel
+                        message = message,
+                        actionLabel = action
                     )
                 }
             }
