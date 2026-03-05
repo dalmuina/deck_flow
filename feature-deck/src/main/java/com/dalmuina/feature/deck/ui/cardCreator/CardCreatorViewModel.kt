@@ -8,6 +8,8 @@ import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.SaveCardUseCase
+import com.dalmuina.feature.deck.R
+import com.dalmuina.feature.deck.ui.model.toUiMessage
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -76,15 +78,10 @@ class CardCreatorViewModel(
             )
             saveCardUseCase(card)
                 .onSuccess {
-                    uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar("Guardado con éxito")
-                    )
                     _events.send(CardCreatorEvent.CloseScreen)
-
-
-                }.onError {
+                }.onError { error ->
                     uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar("Error guardando la carta")
+                        UiEvent.ShowSnackBar(error.toUiMessage())
                     )
                 }
         }

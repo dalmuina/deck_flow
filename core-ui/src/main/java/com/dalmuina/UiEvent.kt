@@ -2,7 +2,7 @@ package com.dalmuina
 
 sealed interface UiEvent {
     data class ShowSnackBar(
-        val message: String,
-        val actionLabel: String? = null
+        val messageRes: Int,
+        val actionLabelRes: Int? = null
     ) : UiEvent
 }

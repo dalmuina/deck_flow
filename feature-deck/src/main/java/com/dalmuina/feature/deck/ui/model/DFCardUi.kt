@@ -27,5 +27,5 @@ fun Duration.toTimerText(): String {
 fun DFCard.toCardUi(): DFCardUi = DFCardUi(
     id = id,
     title = title,
-    duration = durationMillis.milliseconds,
+    duration = durationMillis.milliseconds
 )
