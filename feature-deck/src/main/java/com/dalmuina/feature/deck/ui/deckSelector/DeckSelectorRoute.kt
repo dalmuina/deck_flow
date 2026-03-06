@@ -80,7 +80,8 @@ fun DeckSelectorPreview() {
             items = listOf(
                 DFDeckUi(
                     id = 0,
-                    cardList = listOf(1, 2, 5),
+                    name = "asd",
+                    cardCount = 4,
                 )
             ),
         )

@@ -18,7 +18,7 @@ class LocalCardRepositoryImpl(
 
     override suspend fun saveCard(card: DFCard): DFResult<Unit, DataBaseError> {
         return safeDbCall {
-            dataSource.save(card.toEntity())
+            dataSource.saveCard(card.toEntity())
         }
     }
 

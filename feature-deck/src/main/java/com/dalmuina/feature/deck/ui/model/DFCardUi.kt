@@ -10,6 +10,7 @@ data class DFCardUi(
     val id: Int=0,
     val title: String,
     val duration: Duration,
+    val isSelected: Boolean,
 )
 
 fun Duration.toTimerText(): String {
@@ -27,5 +28,6 @@ fun Duration.toTimerText(): String {
 fun DFCard.toCardUi(): DFCardUi = DFCardUi(
     id = id,
     title = title,
-    duration = durationMillis.milliseconds
+    duration = durationMillis.milliseconds,
+    isSelected = true,
 )

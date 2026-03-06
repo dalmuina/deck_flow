@@ -1,6 +1,8 @@
 package com.dalmuina.domain.di
 
+import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
+import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,19 @@ val domainModule = module {
 
     factory {
         GetAllCardsUseCase(
+            repository = get(),
+        )
+    }
+
+    factory {
+        CreateDeckUseCase(
+            repository = get(),
+            dispatcher = get(named("IO"))
+        )
+    }
+
+    factory {
+        GetAllDecksUseCase(
             repository = get(),
         )
     }

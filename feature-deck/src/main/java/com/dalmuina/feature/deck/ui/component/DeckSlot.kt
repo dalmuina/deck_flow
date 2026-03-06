@@ -35,7 +35,7 @@ fun DFDeckSlot(
                 onEdit()
             },
         colors = CardDefaults.cardColors(
-            when (deck.cardList.size) {
+            when (deck.cardCount) {
                 in 0..2 -> DeckColors.Low
                 in 3..5 -> DeckColors.Medium
                 else -> DeckColors.High
@@ -52,7 +52,7 @@ fun DFDeckSlot(
             Text(
                 stringResource(
                     R.string.cards_count,
-                    deck.cardList.size
+                    deck.cardCount
                 )
             )
 
@@ -80,7 +80,8 @@ fun DFDeckSlotPreview() {
         DFDeckSlot(
             deck = DFDeckUi(
                 id = 0,
-                cardList = listOf(1),
+                name = "asd",
+                cardCount = 4,
             ),
             {},
             {},

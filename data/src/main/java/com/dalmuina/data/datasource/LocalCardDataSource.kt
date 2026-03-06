@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class LocalCardDataSource(
     private val dao: DFCardDao
 ) {
-    suspend fun save(card: DFCardEntity) {
+    suspend fun saveCard(card: DFCardEntity) {
         dao.insert(card)
     }
 
