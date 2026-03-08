@@ -13,6 +13,25 @@ interface DFCardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(card: DFCardEntity)
 
-    @Query("SELECT * FROM cards")
+    @Query(
+        """
+    UPDATE cards
+    SET title = :title
+    WHERE id = :cardId
+    """
+    )
+    suspend fun updateDeckName(cardId: Int, title: String)
+
+    @Query(
+        """
+        SELECT * FROM cards
+    """
+    )
     fun getAllCards(): Flow<List<DFCardEntity>>
+
+    @Query("""
+        SELECT * FROM cards WHERE id = :idCard
+    """)
+    suspend fun getCardById(idCard: Int): DFCardEntity
+
 }

@@ -50,15 +50,4 @@ class DeckSelectorViewModel(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = DeckSelectorUiState(loading = true)
             )
-
-    fun process(intent: DeckSelectorIntent) {
-        when (intent) {
-            DeckSelectorIntent.LoadDecks -> loadDecks()
-        }
-    }
-
-    private fun loadDecks() {
-
-    }
-
 }

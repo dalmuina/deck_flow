@@ -7,8 +7,9 @@ import com.dalmuina.UiEventDispatcher
 import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
+import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
-import com.dalmuina.feature.deck.R
+import com.dalmuina.domain.usecase.UpdateCardUseCase
 import com.dalmuina.feature.deck.ui.model.toUiMessage
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +18,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 class CardCreatorViewModel(
+    private val mode: CardCreatorMode,
     private val saveCardUseCase: SaveCardUseCase,
+    private val updateCardUseCase: UpdateCardUseCase,
+    private val getCardByIdUseCase: GetCardByIdUseCase,
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
 
@@ -29,6 +34,12 @@ class CardCreatorViewModel(
 
     private val _events = Channel<CardCreatorEvent>()
     val events = _events.receiveAsFlow()
+
+    init {
+        mode.cardId?.let {
+            loadCard(it)
+        }
+    }
 
     fun process(intent: CardCreatorIntent) {
         when (intent) {
@@ -43,6 +54,33 @@ class CardCreatorViewModel(
                 adjustMinutes { it - 1 }
 
             is CardCreatorIntent.SaveActivity -> saveCard()
+        }
+    }
+
+    private fun loadCard(cardId: Int) {
+        viewModelScope.launch {
+            reduce {
+                copy(
+                    loading = true,
+                )
+            }
+            getCardByIdUseCase(cardId)
+                .onSuccess { card ->
+                    reduce {
+                        copy(
+                            loading = false,
+                            title = card.title,
+                            duration = card.durationMillis.milliseconds
+                        )
+                    }
+                }
+                .onError {
+                    reduce {
+                        copy(
+                            loading = false,
+                        )
+                    }
+                }
         }
     }
 
@@ -71,12 +109,19 @@ class CardCreatorViewModel(
     private fun saveCard() {
         viewModelScope.launch {
             val card = DFCard(
+                id = mode.cardId ?: 0,
                 title = _uiState.value.title,
                 durationMillis = _uiState
                     .value
                     .duration.inWholeMilliseconds
             )
-            saveCardUseCase(card)
+            val result = when (mode) {
+                CardCreatorMode.Create ->
+                    saveCardUseCase(card)
+                is CardCreatorMode.Edit ->
+                    updateCardUseCase(card)
+            }
+            result
                 .onSuccess {
                     _events.send(CardCreatorEvent.CloseScreen)
                 }.onError { error ->

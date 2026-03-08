@@ -3,7 +3,11 @@ package com.dalmuina.domain.di
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
+import com.dalmuina.domain.usecase.GetCardByIdUseCase
+import com.dalmuina.domain.usecase.GetCardsIdsForDeckUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
+import com.dalmuina.domain.usecase.UpdateCardUseCase
+import com.dalmuina.domain.usecase.UpdateDeckUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
@@ -15,6 +19,13 @@ val domainModule = module {
 
     factory {
         SaveCardUseCase(
+            repository = get(),
+            dispatcher = get(named("IO"))
+        )
+    }
+
+    factory {
+        UpdateCardUseCase(
             repository = get(),
             dispatcher = get(named("IO"))
         )
@@ -34,8 +45,28 @@ val domainModule = module {
     }
 
     factory {
+        UpdateDeckUseCase(
+            repository = get(),
+            dispatcher = get(named("IO"))
+        )
+    }
+
+    factory {
         GetAllDecksUseCase(
             repository = get(),
+        )
+    }
+
+    factory {
+        GetCardsIdsForDeckUseCase(
+            repository = get(),
+        )
+    }
+
+    factory {
+        GetCardByIdUseCase(
+            repository = get(),
+            dispatcher = get(named("IO"))
         )
     }
 }

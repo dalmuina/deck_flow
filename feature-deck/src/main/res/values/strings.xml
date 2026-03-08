@@ -7,6 +7,7 @@
     <string name="energy_high">High</string>
     <string name="create_card">Create Card</string>
     <string name="create_deck">Create Deck</string>
+    <string name="update_deck">Update Deck</string>
     <string name="label_card">Activity</string>
     <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>

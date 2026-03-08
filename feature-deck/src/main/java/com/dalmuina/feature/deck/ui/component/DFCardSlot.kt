@@ -26,41 +26,42 @@ import kotlin.time.Duration.Companion.seconds
 fun DFCardSlot(
     modifier: Modifier = Modifier,
     card: DFCardUi,
+    onEditCard: (Int) -> Unit,
     onCheckedChanged: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
+                onEditCard(card.id)
             }
-        ){
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(Spacing.l)
+        Row(
+            modifier = modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = card.title
-            )
-            Spacer(modifier = Modifier.height(Spacing.s))
-            Text(
-                text = card.duration.toTimerText()
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(Spacing.l)
+            ) {
+                Text(
+                    text = card.title
+                )
+                Spacer(modifier = Modifier.height(Spacing.s))
+                Text(
+                    text = card.duration.toTimerText()
+                )
+            }
+            Checkbox(
+                modifier = Modifier
+                    .padding(Spacing.l),
+                checked = card.isSelected,
+                onCheckedChange = { onCheckedChanged(card.id) }
             )
         }
-        Checkbox(
-            modifier = Modifier
-                .padding(Spacing.l),
-            checked = card.isSelected,
-            onCheckedChange = {onCheckedChanged(card.id)}
-        )
     }
-}
 }
 
 @DFPreview
@@ -68,12 +69,13 @@ fun DFCardSlot(
 fun DFCardSlotPreview() {
     DeckFlowTheme {
         DFCardSlot(
-            card= DFCardUi(
+            card = DFCardUi(
                 id = 0,
                 title = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,
                 true,
             ),
+            onEditCard = {},
             onCheckedChanged = {},
         )
     }

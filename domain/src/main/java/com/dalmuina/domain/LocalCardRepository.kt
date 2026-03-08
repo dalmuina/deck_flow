@@ -7,8 +7,9 @@ import com.dalmuina.domain.model.DataBaseError
 import kotlinx.coroutines.flow.Flow
 
 interface LocalCardRepository {
-
     suspend fun saveCard(card: DFCard): DFResult<Unit, DataBaseError>
-
+    suspend fun updateCard(card: DFCard): DFResult<Unit, DataBaseError>
     fun getAllCards(): Flow<DFResult<List<DFCard>, DFError>>
+
+    suspend fun getCardById(cardId: Int): DFResult<DFCard, DataBaseError>
 }

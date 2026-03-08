@@ -1,7 +1,9 @@
 package com.dalmuina.feature.deck.di
 
+import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
 import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorViewModel
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorViewModel
+import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -13,16 +15,22 @@ val featureDeckModule = module{
             uiEventDispatcher = get(),
         )
     }
-    viewModel {
+    viewModel {(mode: DeckCreatorMode)->
         DeckCreatorViewModel(
+            mode = mode,
             getAllCardsUseCase = get(),
             createDeckUseCase = get(),
+            updateDeckUseCase = get(),
+            getCardsIdsForDeckUseCase = get(),
             uiEventDispatcher = get(),
         )
     }
-    viewModel {
+    viewModel {(mode: CardCreatorMode)->
         CardCreatorViewModel(
+            mode = mode,
             saveCardUseCase = get(),
+            updateCardUseCase = get(),
+            getCardByIdUseCase = get(),
             uiEventDispatcher = get(),
         )
     }

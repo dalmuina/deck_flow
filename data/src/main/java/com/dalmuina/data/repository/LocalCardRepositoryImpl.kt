@@ -15,10 +15,15 @@ import kotlin.coroutines.cancellation.CancellationException
 class LocalCardRepositoryImpl(
     private val dataSource: LocalCardDataSource,
 ) : LocalCardRepository {
-
     override suspend fun saveCard(card: DFCard): DFResult<Unit, DataBaseError> {
         return safeDbCall {
             dataSource.saveCard(card.toEntity())
+        }
+    }
+
+    override suspend fun updateCard(card: DFCard): DFResult<Unit, DataBaseError> {
+        return safeDbCall {
+            dataSource.updateCard(card.toEntity())
         }
     }
 
@@ -33,6 +38,12 @@ class LocalCardRepositoryImpl(
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataBaseError.Unknown(e)))
             }
+    }
+
+    override suspend fun getCardById(cardId: Int): DFResult<DFCard, DataBaseError> {
+        return safeDbCall {
+            dataSource.getCardByID(cardId).toDomain()
+        }
     }
 
 }

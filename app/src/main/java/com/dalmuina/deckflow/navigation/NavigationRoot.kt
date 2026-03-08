@@ -24,8 +24,11 @@ import com.dalmuina.UiEventDispatcher
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
+import com.dalmuina.designsystem.component.topbar.DFTopBar
 import com.dalmuina.feature.card.ui.CardRoute
+import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
 import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorRoute
+import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorRoute
 import org.koin.compose.koinInject
@@ -69,6 +72,13 @@ fun NavigationRoot(
 
     Scaffold(
         modifier = modifier,
+        topBar = {
+            DFTopBar(
+                title = navigationState.currentRoute?.title() ?: "",
+                showBack = navigationState.currentRoute !in TOP_LEVEL_DESTINATIONS,
+                onBack = navigator::goBack
+            )
+        },
         snackbarHost = {
             SnackbarHost(snackBarHostState)
         },
@@ -80,8 +90,8 @@ fun NavigationRoot(
                 })
         },
         floatingActionButton = {
-            FabArea(navigationState) {
-                navigator.navigate(it)
+            FabArea(navigationState) { route ->
+                navigator.navigate(route)
             }
         }
     ) { innerPadding ->
@@ -97,20 +107,33 @@ fun NavigationRoot(
                     }
                     entry<Route.DeckSelector> {
                         DeckSelectorRoute(
-                            onAddDeck = {
-                                navigator.navigate(Route.DeckCreator)
+                            onEditDeck = { deckId ->
+                                navigator.navigate(
+                                    Route.DeckCreator(
+                                        DeckCreatorMode.Edit(deckId)
+                                    )
+                                )
                             }
                         )
                     }
-                    entry<Route.DeckCreator> {
-                        DeckCreatorRoute {
-                            navigator.goBack()
-                        }
+                    entry<Route.DeckCreator> { backStackEntry ->
+                        DeckCreatorRoute(
+                            mode = backStackEntry.mode,
+                            onEditCard = { cardId ->
+                                navigator.navigate(
+                                    Route.CardCreator(
+                                        CardCreatorMode.Edit(cardId)
+                                    )
+                                )
+                            },
+                            onBack = { navigator.goBack() }
+                        )
                     }
-                    entry<Route.CardCreator> {
-                        CardCreatorRoute {
-                            navigator.goBack()
-                        }
+                    entry<Route.CardCreator> { backStackEntry ->
+                        CardCreatorRoute(
+                            mode = backStackEntry.mode,
+                            onBack = { navigator.goBack() }
+                        )
                     }
                 }
             )
@@ -146,7 +169,7 @@ fun FabArea(
                         )
                     }
                 ) {
-                    navigate(Route.DeckCreator)
+                    navigate(Route.DeckCreator(DeckCreatorMode.Create))
                 }
             }
 
@@ -163,7 +186,7 @@ fun FabArea(
                 }
             }
 
-            Route.DeckCreator -> {
+            is Route.DeckCreator -> {
                 DFFloatingButton(
                     icon = {
                         Icon(
@@ -172,7 +195,11 @@ fun FabArea(
                         )
                     }
                 ) {
-                    navigate(Route.CardCreator)
+                    navigate(
+                        Route.CardCreator(
+                            CardCreatorMode.Create
+                        )
+                    )
                 }
             }
 

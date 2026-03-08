@@ -6,6 +6,7 @@ import com.dalmuina.domain.LocalDeckRepository
 import com.dalmuina.domain.model.DFDeckSummary
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DeckForEdit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -20,7 +21,17 @@ class LocalDeckRepositoryImpl(
         cardIds: Set<Int>
     ): DFResult<Unit, DataBaseError> {
         return safeDbCall {
-            dataSource.saveDeck(name, cardIds)
+            dataSource.createDeck(name, cardIds)
+        }
+    }
+
+    override suspend fun updateDeck(
+        deckId: Int,
+        name: String,
+        cardIds: Set<Int>
+    ): DFResult<Unit, DataBaseError> {
+        return safeDbCall {
+            dataSource.updateDeck(deckId, name, cardIds)
         }
     }
 
@@ -31,6 +42,23 @@ class LocalDeckRepositoryImpl(
                 DFResult.Success(
                     entities.map { it.toDomain() }
                 ) as DFResult<List<DFDeckSummary>, DataBaseError>
+            }
+            .catch { e ->
+                if (e is CancellationException) throw e
+                emit(DFResult.Error(DataBaseError.Unknown(e)))
+            }
+    }
+
+    override fun getDeckForEdit(deckId: Int): Flow<DFResult<DeckForEdit, DataBaseError>> {
+        return dataSource
+            .getDeckWithCards(deckId)
+            .map { deck ->
+                DFResult.Success(
+                    DeckForEdit(
+                        name = deck.deck.name,
+                        cardIds = deck.cards.map { it.id }
+                    )
+                ) as DFResult<DeckForEdit, DataBaseError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
