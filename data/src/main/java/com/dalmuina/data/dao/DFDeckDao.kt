@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import com.dalmuina.data.entity.DFDeckCardCrossRef
 import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.DFDeckSummaryEntity
+import com.dalmuina.data.entity.DeckWithCards
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -54,4 +55,50 @@ interface DFDeckDao {
     """
     )
     fun getDeckSummaries(): Flow<List<DFDeckSummaryEntity>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM decks WHERE id = :deckId
+    """
+    )
+    fun getCardIdsForDeck(deckId: Int): Flow<DeckWithCards>
+
+    @Query(
+        """
+    UPDATE decks
+    SET name = :name
+    WHERE id = :deckId
+    """
+    )
+    suspend fun updateDeckName(deckId: Int, name: String)
+
+    @Query(
+        """
+    DELETE FROM deck_card_cross_ref
+    WHERE deckId = :deckId
+    """
+    )
+    suspend fun deleteCrossRefs(deckId: Int)
+
+    @Transaction
+    suspend fun updateDeckWithCards(
+        deckId: Int,
+        name: String,
+        cardIds: Set<Int>
+    ) {
+
+        updateDeckName(deckId, name)
+
+        deleteCrossRefs(deckId)
+
+        val refs = cardIds.map { cardId ->
+            DFDeckCardCrossRef(
+                deckId = deckId,
+                cardId = cardId
+            )
+        }
+
+        insertCrossRefs(refs)
+    }
 }

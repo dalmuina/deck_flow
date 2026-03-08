@@ -2,6 +2,7 @@ package com.dalmuina.feature.deck.ui.deckSelector
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,9 +14,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
+import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.ui.component.DFDeckSlot
@@ -25,21 +28,19 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun DeckSelectorRoute(
     viewModel: DeckSelectorViewModel = koinViewModel(),
-    onAddDeck: () -> Unit,
+    onEditDeck: (Int) -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        viewModel.process(DeckSelectorIntent.LoadDecks)
-    }
+
     DeckSelectorScreen(
-        onAddDeck = onAddDeck,
+        onEditDeck = onEditDeck,
         items = state.deckList,
     )
 }
 
 @Composable
 fun DeckSelectorScreen(
-    onAddDeck: () -> Unit,
+    onEditDeck: (Int) -> Unit,
     items: List<DFDeckUi>,
 ) {
     val isEmpty = items.isEmpty()
@@ -56,13 +57,17 @@ fun DeckSelectorScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(Spacing.l),
-            verticalArrangement = Arrangement.spacedBy(Spacing.l)
+            verticalArrangement = Arrangement.spacedBy(Spacing.l),
+            contentPadding = PaddingValues(
+                top= Spacing.l,
+                bottom= Dimens.fabSpacing
+            )
         ) {
             items(items, key = { it.id }) { deck ->
                 DFDeckSlot(
                     deck,
                     onEdit = {
-                        onAddDeck()
+                        onEditDeck(deck.id)
                     },
                     onDelete = {}
                 )
@@ -76,7 +81,7 @@ fun DeckSelectorScreen(
 fun DeckSelectorPreview() {
     DeckFlowTheme {
         DeckSelectorScreen(
-            onAddDeck = {},
+            onEditDeck = {},
             items = listOf(
                 DFDeckUi(
                     id = 0,
@@ -93,7 +98,7 @@ fun DeckSelectorPreview() {
 fun DeckSelectorEmptyPreview() {
     DeckFlowTheme {
         DeckSelectorScreen(
-            onAddDeck = {},
+            onEditDeck = {},
             items = emptyList(),
         )
     }

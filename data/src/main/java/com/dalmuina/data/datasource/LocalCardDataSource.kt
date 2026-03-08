@@ -7,11 +7,17 @@ import kotlinx.coroutines.flow.Flow
 class LocalCardDataSource(
     private val dao: DFCardDao
 ) {
-    suspend fun saveCard(card: DFCardEntity) {
+    suspend fun saveCard(card: DFCardEntity) =
         dao.insert(card)
-    }
 
-    fun getAllCards(): Flow<List<DFCardEntity>> {
-        return dao.getAllCards()
-    }
+    suspend fun updateCard(card: DFCardEntity) =
+        dao.insert(card)
+
+
+    fun getAllCards(): Flow<List<DFCardEntity>> =
+        dao.getAllCards()
+
+
+    suspend fun getCardByID(cardId: Int): DFCardEntity =
+        dao.getCardById(cardId)
 }

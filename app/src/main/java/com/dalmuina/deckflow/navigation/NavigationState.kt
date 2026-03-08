@@ -34,8 +34,8 @@ class NavigationState(
             listOf(startRoute, topLevelRoute)
         }
 
-    val currentRoute: NavKey?
-        get() = backStacks[topLevelRoute]?.lastOrNull()
+    val currentRoute: Route?
+        get() = backStacks[topLevelRoute]?.lastOrNull() as? Route
 }
 
 @Composable

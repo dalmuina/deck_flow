@@ -4,6 +4,7 @@ import org.gradle.kotlin.dsl.configure
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 extensions.configure<LibraryExtension>  {
@@ -55,4 +56,6 @@ dependencies {
     implementation(libs.koin.compose)
 
     implementation(libs.coil.compose)
+    
+    implementation(libs.kotlinx.serialization.json)
 }

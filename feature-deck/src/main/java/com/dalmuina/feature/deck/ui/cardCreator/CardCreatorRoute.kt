@@ -23,19 +23,21 @@ import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun CardCreatorRoute(
-    viewModel: CardCreatorViewModel = koinViewModel(),
+    mode: CardCreatorMode,
+    viewModel: CardCreatorViewModel = koinViewModel(parameters = { parametersOf(mode) }),
     onBack: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect {event->
+        viewModel.events.collect { event ->
             when (event) {
                 is CardCreatorEvent.CloseScreen -> onBack()
             }
@@ -50,7 +52,7 @@ fun CardCreatorRoute(
         onMoreTime = { viewModel.process(CardCreatorIntent.MoreTime) },
         onLessTime = { viewModel.process(CardCreatorIntent.LessTime) },
         onCancel = onBack,
-        onSaved = {viewModel.process(CardCreatorIntent.SaveActivity)}
+        onSaved = { viewModel.process(CardCreatorIntent.SaveActivity) }
     )
 }
 
@@ -98,7 +100,7 @@ fun CardCreatorScreen(
             )
             DFButton(
                 text = { Text(text = stringResource(R.string.button_ok)) },
-                isEnable = activity.isNotEmpty() && duration.inWholeMinutes >0,
+                isEnable = activity.isNotEmpty() && duration.inWholeMinutes > 0,
                 onClick = onSaved
             )
 
@@ -119,7 +121,7 @@ fun CardCreatorNoTimePreview() {
             onMoreTime = {},
             onLessTime = {},
             onCancel = {},
-            onSaved= {},
+            onSaved = {},
         )
     }
 }
@@ -136,7 +138,7 @@ fun CardCreatorButtonEnabledPreview() {
             onMoreTime = {},
             onLessTime = {},
             onCancel = {},
-            onSaved= {},
+            onSaved = {},
         )
     }
 }
@@ -153,7 +155,7 @@ fun CardCreatorNoTitlePreview() {
             onMoreTime = {},
             onLessTime = {},
             onCancel = {},
-            onSaved= {},
+            onSaved = {},
         )
     }
 }
