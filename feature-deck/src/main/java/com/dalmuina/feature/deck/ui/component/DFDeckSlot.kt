@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.dalmuina.designsystem.preview.DFPreview
-import com.dalmuina.designsystem.theme.DeckColors
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
@@ -26,7 +25,6 @@ import com.dalmuina.feature.deck.ui.model.DFDeckUi
 fun DFDeckSlot(
     deck: DFDeckUi,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -34,7 +32,7 @@ fun DFDeckSlot(
             .height(Dimens.deckHeight)
             .clickable { onEdit() },
         colors = CardDefaults.cardColors(
-            when (deck.cardCount) {
+            containerColor = when (deck.cardCount) {
                 in 0 until 1 -> MaterialTheme.colorScheme.primaryContainer
                 in 2 until 3 -> MaterialTheme.colorScheme.secondaryContainer
                 else -> MaterialTheme.colorScheme.tertiaryContainer
@@ -72,7 +70,6 @@ fun DFDeckSlotPreview() {
                 name = "asd",
                 cardCount = 4,
             ),
-            {},
             {},
         )
     }

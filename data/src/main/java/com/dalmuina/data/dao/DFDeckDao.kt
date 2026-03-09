@@ -37,6 +37,9 @@ interface DFDeckDao {
         insertCrossRefs(refs)
     }
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCrossRef(ref: DFDeckCardCrossRef)
+
     @Query(
         """
         DELETE FROM deck_card_cross_ref
@@ -101,4 +104,13 @@ interface DFDeckDao {
 
         insertCrossRefs(refs)
     }
+
+    @Query(
+        """
+    DELETE FROM decks
+    WHERE id = :deckId
+"""
+    )
+    suspend fun deleteDeck(deckId: Int)
+
 }

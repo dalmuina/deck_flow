@@ -11,6 +11,7 @@
     <string name="label_card">Activity</string>
     <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>
+    <string name="no_card_created">No Card Created</string>
 
     //Errors
     <string name="error_saving_card">Error saving the card</string>

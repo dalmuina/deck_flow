@@ -46,4 +46,10 @@ class LocalCardRepositoryImpl(
         }
     }
 
+    override suspend fun deleteCard(cardId:Int): DFResult<Unit, DataBaseError> {
+        return safeDbCall {
+            dataSource.deleteCard(cardId)
+        }
+    }
+
 }

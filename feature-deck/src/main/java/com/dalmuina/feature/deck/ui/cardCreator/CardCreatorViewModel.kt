@@ -7,6 +7,7 @@ import com.dalmuina.UiEventDispatcher
 import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
+import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
@@ -36,6 +37,7 @@ class CardCreatorViewModel(
     val events = _events.receiveAsFlow()
 
     init {
+        println(mode.cardId)
         mode.cardId?.let {
             loadCard(it)
         }
