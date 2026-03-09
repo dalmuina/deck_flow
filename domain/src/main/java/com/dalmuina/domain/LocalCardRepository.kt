@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface LocalCardRepository {
     suspend fun saveCard(card: DFCard): DFResult<Unit, DataBaseError>
     suspend fun updateCard(card: DFCard): DFResult<Unit, DataBaseError>
-    fun getAllCards(): Flow<DFResult<List<DFCard>, DFError>>
-
+    fun getAllCards(): Flow<DFResult<List<DFCard>, DataBaseError>>
     suspend fun getCardById(cardId: Int): DFResult<DFCard, DataBaseError>
-}
+
+    suspend fun deleteCard(cardId: Int): DFResult<Unit, DataBaseError>
+ }

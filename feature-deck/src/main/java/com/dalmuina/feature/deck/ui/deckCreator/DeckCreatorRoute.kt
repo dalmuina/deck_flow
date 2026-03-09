@@ -1,6 +1,7 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorEvent
 import com.dalmuina.feature.deck.ui.component.DFCardSlot
+import com.dalmuina.feature.deck.ui.component.DFSwipeToDelete
 import com.dalmuina.feature.deck.ui.model.DFCardUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -38,7 +40,7 @@ fun DeckCreatorRoute(
     mode: DeckCreatorMode,
     viewModel: DeckCreatorViewModel = koinViewModel(parameters = { parametersOf(mode) }),
     onEditCard: (Int) -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -59,6 +61,7 @@ fun DeckCreatorRoute(
         onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
         onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
         onEditCard = onEditCard,
+        onDelete = { id -> viewModel.process(DeckCreatorIntent.DeleteCard(id)) }
     )
 }
 
@@ -71,6 +74,7 @@ fun DeckCreatorScreen(
     onSaveDeck: () -> Unit,
     onNameChanged: (String) -> Unit,
     onEditCard: (Int) -> Unit,
+    onDelete: (Int) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -86,19 +90,44 @@ fun DeckCreatorScreen(
                 label = { Text(text = "Deck name") },
                 onTitleChanged = onNameChanged
             )
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(Spacing.m),
-                contentPadding = PaddingValues(
-                    top = Spacing.l,
-                    bottom = Dimens.fabSpacing
-                )
-            ) {
-                items(items) { card ->
-                    DFCardSlot(
-                        card = card,
-                        onEditCard = onEditCard,
-                        onCheckedChanged = { id -> onSelectedCard(id) }
+            val isEmpty = items.isEmpty()
+            if (isEmpty) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(stringResource(R.string.no_card_created))
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.m),
+                    contentPadding = PaddingValues(
+                        top = Spacing.l,
+                        bottom = Dimens.fabSpacing
                     )
+                ) {
+                    items(
+                        items = items,
+                        key = { it.id }
+                    ) { card ->
+                        Box(
+                            modifier = Modifier.animateItem(
+                                placementSpec = tween(350)
+                            )
+                        ) {
+                            DFSwipeToDelete(
+                                id = card.id,
+                                onDelete = onDelete
+                            ) {
+                                DFCardSlot(
+                                    card = card,
+                                    onEditCard = onEditCard,
+                                    onCheckedChanged = { id -> onSelectedCard(id) }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -106,16 +135,11 @@ fun DeckCreatorScreen(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(all = Spacing.l),
-            visible = items.any { it.isSelected }
+            visible = items.any { it.isSelected && !isEditMode }
         ) {
             DFElevatedButton(
                 text = {
-                    Text(
-                        if (isEditMode)
-                            stringResource(R.string.update_deck)
-                        else
-                            stringResource(R.string.create_deck)
-                    )
+                    Text(stringResource(R.string.create_deck))
                 }
             ) {
                 onSaveDeck()
@@ -150,6 +174,7 @@ fun DeckCreatorScreenPreview() {
             onSaveDeck = {},
             onNameChanged = {},
             onEditCard = {},
+            onDelete = {},
         )
     }
 }

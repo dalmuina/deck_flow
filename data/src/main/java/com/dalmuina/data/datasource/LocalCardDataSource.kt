@@ -11,13 +11,14 @@ class LocalCardDataSource(
         dao.insert(card)
 
     suspend fun updateCard(card: DFCardEntity) =
-        dao.insert(card)
-
+        dao.update(card)
 
     fun getAllCards(): Flow<List<DFCardEntity>> =
         dao.getAllCards()
 
-
     suspend fun getCardByID(cardId: Int): DFCardEntity =
         dao.getCardById(cardId)
+
+    suspend fun deleteCard(cardId: Int) =
+        dao.deleteCard(cardId)
 }

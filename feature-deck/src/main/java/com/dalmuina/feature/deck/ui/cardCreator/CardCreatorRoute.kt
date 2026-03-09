@@ -71,7 +71,7 @@ fun CardCreatorScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(Spacing.l),
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         DFOutlinedTextField(
             title = activity,

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.dalmuina.data.entity.DFCardEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ interface DFCardDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(card: DFCardEntity)
+
+    @Update
+    suspend fun update(card: DFCardEntity)
 
     @Query(
         """
@@ -33,5 +37,13 @@ interface DFCardDao {
         SELECT * FROM cards WHERE id = :idCard
     """)
     suspend fun getCardById(idCard: Int): DFCardEntity
+
+    @Query(
+        """
+    DELETE FROM cards
+    WHERE id = :cardId
+"""
+    )
+    suspend fun deleteCard(cardId: Int)
 
 }

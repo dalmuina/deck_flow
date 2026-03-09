@@ -25,13 +25,30 @@ class LocalDeckRepositoryImpl(
         }
     }
 
-    override suspend fun updateDeck(
+    override suspend fun updateDeckName(
         deckId: Int,
-        name: String,
-        cardIds: Set<Int>
+        name: String
     ): DFResult<Unit, DataBaseError> {
         return safeDbCall {
-            dataSource.updateDeck(deckId, name, cardIds)
+            dataSource.updateDeckName(deckId,name)
+        }
+    }
+
+    override suspend fun addCardToDeck(
+        deckId: Int,
+        cardId: Int
+    ): DFResult<Unit, DataBaseError> {
+        return safeDbCall {
+            dataSource.addCardToDeck(deckId,cardId)
+        }
+    }
+
+    override suspend fun removeCardFromDeck(
+        deckId: Int,
+        cardId: Int
+    ): DFResult<Unit, DataBaseError> {
+        return safeDbCall {
+            dataSource.removeCardFromDeck(deckId,cardId)
         }
     }
 
@@ -64,5 +81,11 @@ class LocalDeckRepositoryImpl(
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataBaseError.Unknown(e)))
             }
+    }
+
+    override suspend fun deleteDeck(deckId: Int) : DFResult<Unit, DataBaseError> {
+        return safeDbCall {
+            dataSource.deleteDeck(deckId)
+        }
     }
 }
