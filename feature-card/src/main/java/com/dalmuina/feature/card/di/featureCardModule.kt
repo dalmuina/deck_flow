@@ -6,6 +6,9 @@ import org.koin.dsl.module
 
 val featureCardModule = module{
     viewModel {
-        CardViewModel()
+        CardViewModel(
+            getSelectedDeckUseCase = get(),
+            getDeckByIdUseCase = get(),
+        )
     }
 }

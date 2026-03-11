@@ -86,9 +86,9 @@ fun DeckCreatorScreen(
         )
         {
             DFOutlinedTextField(
-                title = name,
+                name = name,
                 label = { Text(text = "Deck name") },
-                onTitleChanged = onNameChanged
+                onNameChanged = onNameChanged
             )
             val isEmpty = items.isEmpty()
             if (isEmpty) {
@@ -156,13 +156,13 @@ fun DeckCreatorScreenPreview() {
             items = listOf(
                 DFCardUi(
                     id = 0,
-                    title = "Test",
+                    name = "Test",
                     duration = 0L.hours + 15L.minutes + 0L.seconds,
                     true,
                 ),
                 DFCardUi(
                     id = 1,
-                    title = "Test",
+                    name = "Test",
                     duration = 2L.hours + 20L.minutes + 0L.seconds,
                     false,
                 ),

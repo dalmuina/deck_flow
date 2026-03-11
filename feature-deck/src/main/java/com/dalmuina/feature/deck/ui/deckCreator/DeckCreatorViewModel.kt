@@ -11,7 +11,8 @@ import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
-import com.dalmuina.domain.usecase.GetCardsIdsForDeckUseCase
+import com.dalmuina.domain.usecase.GetCardByIdUseCase
+import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorEvent
@@ -41,7 +42,7 @@ class DeckCreatorViewModel(
     private val updateDeckNameUseCase: UpdateDeckNameUseCase,
     private val addCardToDeckUseCase: AddCardToDeckUseCase,
     private val removeCardFromDeckUseCase: RemoveCardFromDeckUseCase,
-    private val getCardsIdsForDeckUseCase: GetCardsIdsForDeckUseCase,
+    private val getDeckByIdUseCase: GetDeckByIdUseCase,
     private val deleteCardUseCase: DeleteCardUseCase,
     private val uiEventDispatcher: UiEventDispatcher
 ) : ViewModel() {
@@ -108,12 +109,11 @@ class DeckCreatorViewModel(
             )
 
     private fun loadDeck(deckId: Int) {
-
-        getCardsIdsForDeckUseCase(deckId)
+        getDeckByIdUseCase(deckId)
             .onEach { result ->
                 when (result) {
                     is DFResult.Success -> {
-                        selectedCardIds.value = result.data.cardIds.toSet()
+                        selectedCardIds.value = result.data.cards.map{it.id}.toSet()
                         deckName.value = result.data.name
                     }
 

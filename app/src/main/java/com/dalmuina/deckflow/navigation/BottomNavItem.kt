@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 @Immutable
 class BottomNavItem(
     val icon: ImageVector,
-    val title: String,
+    val name: String,
 )
 
 val TOP_LEVEL_DESTINATIONS = mapOf(

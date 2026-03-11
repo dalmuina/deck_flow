@@ -45,9 +45,9 @@ fun CardCreatorRoute(
     }
 
     CardCreatorScreen(
-        activity = state.title,
+        activity = state.name,
         duration = state.duration,
-        onTitleChanged = { value -> viewModel.process(CardCreatorIntent.TitleChanged(value)) },
+        onNameChanged = { value -> viewModel.process(CardCreatorIntent.NameChanged(value)) },
         onTimeChanged = { value -> viewModel.process(CardCreatorIntent.TimeChanged(value)) },
         onMoreTime = { viewModel.process(CardCreatorIntent.MoreTime) },
         onLessTime = { viewModel.process(CardCreatorIntent.LessTime) },
@@ -60,7 +60,7 @@ fun CardCreatorRoute(
 fun CardCreatorScreen(
     activity: String,
     duration: Duration,
-    onTitleChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
     onTimeChanged: (String) -> Unit,
     onMoreTime: () -> Unit,
     onLessTime: () -> Unit,
@@ -74,9 +74,9 @@ fun CardCreatorScreen(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         DFOutlinedTextField(
-            title = activity,
+            name = activity,
             label = { Text(text = stringResource(R.string.label_card)) },
-            onTitleChanged = onTitleChanged
+            onNameChanged = onNameChanged
         )
         DFTimeInput(
             value = duration,
@@ -116,7 +116,7 @@ fun CardCreatorNoTimePreview() {
         CardCreatorScreen(
             activity = "Fitness",
             duration = 3L.minutes,
-            onTitleChanged = {},
+            onNameChanged = {},
             onTimeChanged = {},
             onMoreTime = {},
             onLessTime = {},
@@ -133,7 +133,7 @@ fun CardCreatorButtonEnabledPreview() {
         CardCreatorScreen(
             activity = "Fitness",
             duration = 24.minutes,
-            onTitleChanged = {},
+            onNameChanged = {},
             onTimeChanged = {},
             onMoreTime = {},
             onLessTime = {},
@@ -150,7 +150,7 @@ fun CardCreatorNoTitlePreview() {
         CardCreatorScreen(
             activity = "",
             duration = 10.hours,
-            onTitleChanged = {},
+            onNameChanged = {},
             onTimeChanged = {},
             onMoreTime = {},
             onLessTime = {},
