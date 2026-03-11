@@ -7,9 +7,11 @@ import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
-import com.dalmuina.domain.usecase.GetCardsIdsForDeckUseCase
+import com.dalmuina.domain.usecase.GetDeckByIdUseCase
+import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
+import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -62,12 +64,6 @@ val domainModule = module {
     }
 
     factory {
-        GetCardsIdsForDeckUseCase(
-            repository = get(),
-        )
-    }
-
-    factory {
         GetCardByIdUseCase(
             repository = get(),
             dispatcher = get(named("IO"))
@@ -99,6 +95,25 @@ val domainModule = module {
         RemoveCardFromDeckUseCase(
             repository = get(),
             dispatcher = get(named("IO"))
+        )
+    }
+
+    factory {
+        GetSelectedDeckUseCase(
+            repository = get(),
+        )
+    }
+
+    factory {
+        SetSelectedDeckUseCase(
+            repository = get(),
+            dispatcher = get(named("IO"))
+        )
+    }
+
+    factory {
+        GetDeckByIdUseCase(
+            repository = get(),
         )
     }
 }

@@ -1,26 +1,24 @@
-package com.dalmuina.feature.deck.ui.component
+package com.dalmuina.feature.card.ui.component
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
+import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
-import com.dalmuina.feature.deck.ui.model.DFCardUi
-import com.dalmuina.feature.deck.ui.model.toTimerText
+import com.dalmuina.feature.card.model.DFCardUi
+import com.dalmuina.feature.card.model.toTimerText
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -29,8 +27,6 @@ import kotlin.time.Duration.Companion.seconds
 fun DFCardSlot(
     modifier: Modifier = Modifier,
     card: DFCardUi,
-    onEditCard: (Int) -> Unit,
-    onCheckedChanged: (Int) -> Unit
 ) {
     val colors = arrayOf(
         MaterialTheme.colorScheme.primaryContainer,
@@ -40,37 +36,30 @@ fun DFCardSlot(
 
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                onEditCard(card.id)
-            },
+            .fillMaxSize(),
         colors = CardDefaults.cardColors(
             containerColor = colors[card.id % colors.size]
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
         )
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(Spacing.l)
-            ) {
-                Text(
-                    text = card.name
-                )
-                Spacer(modifier = Modifier.height(Spacing.s))
-                Text(
-                    text = card.duration.toTimerText()
-                )
-            }
-            Checkbox(
-                modifier = Modifier
-                    .padding(Spacing.l),
-                checked = card.isSelected,
-                onCheckedChange = { onCheckedChanged(card.id) }
+            Text(
+                text = card.name,
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.m))
+
+            Text(
+                text = card.duration.toTimerText(),
+                style = MaterialTheme.typography.displaySmall
             )
         }
     }
@@ -85,10 +74,7 @@ fun DFCardSlotPreview() {
                 id = 0,
                 name = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,
-                true,
             ),
-            onEditCard = {},
-            onCheckedChanged = {},
         )
     }
 }

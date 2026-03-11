@@ -6,6 +6,6 @@ import kotlin.time.Duration
 @Immutable
 data class CardCreatorUiState(
     val loading: Boolean = false,
-    val title: String = "",
+    val name: String = "",
     val duration: Duration = Duration.ZERO
 )

@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.util.fastCbrt
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.dalmuina.UiEvent
@@ -39,7 +40,7 @@ fun NavigationRoot(
     uiEventDispatcher: UiEventDispatcher = koinInject()
 ) {
     val navigationState = rememberNavigationState(
-        startRoute = Route.DeckSelector,
+        startRoute = Route.Card,
         topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
     )
     val navigator = remember {
@@ -149,7 +150,7 @@ fun FabArea(
 ) {
     val showFab = when (state.currentRoute) {
         is Route.DeckSelector -> true
-        is Route.Card -> true
+        is Route.Card -> false
         is Route.DeckCreator -> true
         else -> false
     }

@@ -27,11 +27,11 @@ fun DFNavigationBar(
                 icon = {
                     Icon(
                         imageVector = data.icon,
-                        contentDescription = data.title
+                        contentDescription = data.name
                     )
                 },
                 label = {
-                    Text(text = data.title)
+                    Text(text = data.name)
                 }
             )
         }

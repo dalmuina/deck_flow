@@ -8,7 +8,7 @@ import androidx.room.Transaction
 import com.dalmuina.data.entity.DFDeckCardCrossRef
 import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.DFDeckSummaryEntity
-import com.dalmuina.data.entity.DeckWithCards
+import com.dalmuina.data.entity.DFDeckWithCards
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -65,7 +65,7 @@ interface DFDeckDao {
         SELECT * FROM decks WHERE id = :deckId
     """
     )
-    fun getCardIdsForDeck(deckId: Int): Flow<DeckWithCards>
+    fun getCardIdsForDeck(deckId: Int): Flow<DFDeckWithCards>
 
     @Query(
         """
@@ -112,5 +112,13 @@ interface DFDeckDao {
 """
     )
     suspend fun deleteDeck(deckId: Int)
+
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM decks WHERE id = :deckId
+    """
+    )
+    fun getDeckById(deckId: Int): Flow<DFDeckEntity>
 
 }

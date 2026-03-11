@@ -14,15 +14,15 @@ import com.dalmuina.designsystem.theme.DeckFlowTheme
 @Composable
 fun DFOutlinedTextField(
     modifier: Modifier = Modifier,
-    title: String,
+    name: String,
     label: @Composable () -> Unit,
-    onTitleChanged: (String)->Unit,
+    onNameChanged: (String)->Unit,
 ) {
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth(),
-        value = title,
-        onValueChange = onTitleChanged,
+        value = name,
+        onValueChange = onNameChanged,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
@@ -36,7 +36,7 @@ fun DFOutlinedTextField(
 fun DFOutlinedTextFieldPreview() {
     DeckFlowTheme() {
         DFOutlinedTextField(
-            title = "",
+            name = "",
             label = {Text(text= "Actividad")}
         ) { }
     }

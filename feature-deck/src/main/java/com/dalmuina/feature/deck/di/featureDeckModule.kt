@@ -13,6 +13,8 @@ val featureDeckModule = module{
         DeckSelectorViewModel(
             getAllDecksUseCase = get(),
             deleteDeckUseCase = get(),
+            getSelectedDeckUseCase = get(),
+            setSelectedDeckUseCase = get(),
             uiEventDispatcher = get(),
         )
     }
@@ -24,7 +26,7 @@ val featureDeckModule = module{
             updateDeckNameUseCase = get(),
             addCardToDeckUseCase = get(),
             removeCardFromDeckUseCase = get(),
-            getCardsIdsForDeckUseCase = get(),
+            getDeckByIdUseCase = get(),
             deleteCardUseCase = get(),
             uiEventDispatcher = get(),
         )

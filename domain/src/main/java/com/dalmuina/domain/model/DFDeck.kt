@@ -1,6 +1,6 @@
 package com.dalmuina.domain.model
 
-data class DeckForEdit(
+data class DFDeck(
     val name: String,
-    val cardIds : List<Int>,
+    val cards : List<DFCard>,
 )

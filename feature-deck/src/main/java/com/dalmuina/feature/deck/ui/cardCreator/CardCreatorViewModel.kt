@@ -45,7 +45,7 @@ class CardCreatorViewModel(
 
     fun process(intent: CardCreatorIntent) {
         when (intent) {
-            is CardCreatorIntent.TitleChanged -> changeTitle(intent.value)
+            is CardCreatorIntent.NameChanged -> changeName(intent.value)
             is CardCreatorIntent.TimeChanged ->
                 changeMinutes(intent.value)
 
@@ -71,7 +71,7 @@ class CardCreatorViewModel(
                     reduce {
                         copy(
                             loading = false,
-                            title = card.title,
+                            name = card.name,
                             duration = card.durationMillis.milliseconds
                         )
                     }
@@ -86,10 +86,10 @@ class CardCreatorViewModel(
         }
     }
 
-    private fun changeTitle(value: String) {
+    private fun changeName(value: String) {
         reduce {
             copy(
-                title = value
+                name = value
             )
         }
     }
@@ -112,7 +112,7 @@ class CardCreatorViewModel(
         viewModelScope.launch {
             val card = DFCard(
                 id = mode.cardId ?: 0,
-                title = _uiState.value.title,
+                name = _uiState.value.name,
                 durationMillis = _uiState
                     .value
                     .duration.inWholeMilliseconds

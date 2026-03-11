@@ -20,11 +20,11 @@ interface DFCardDao {
     @Query(
         """
     UPDATE cards
-    SET title = :title
+    SET name = :name
     WHERE id = :cardId
     """
     )
-    suspend fun updateDeckName(cardId: Int, title: String)
+    suspend fun updateDeckName(cardId: Int, name: String)
 
     @Query(
         """

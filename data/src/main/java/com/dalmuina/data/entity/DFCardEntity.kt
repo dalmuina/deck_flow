@@ -8,14 +8,14 @@ import com.dalmuina.domain.model.DFCard
 data class DFCardEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val title: String,
+    val name: String,
     val duration: Long,
 )
 
 fun DFCard.toEntity(): DFCardEntity {
     return DFCardEntity(
         id = id,
-        title = title,
+        name = name,
         duration = durationMillis,
     )
 }
@@ -23,7 +23,7 @@ fun DFCard.toEntity(): DFCardEntity {
 fun DFCardEntity.toDomain(): DFCard {
     return DFCard (
         id = id,
-        title = title,
+        name = name,
         durationMillis = duration,
     )
 }
