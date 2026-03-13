@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.Flow
 interface DFCardDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(card: DFCardEntity)
+    suspend fun insert(card: DFCardEntity):Long
 
     @Update
-    suspend fun update(card: DFCardEntity)
+    suspend fun update(card: DFCardEntity):Int
 
     @Query(
         """

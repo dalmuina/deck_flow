@@ -13,13 +13,12 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
-import com.dalmuina.feature.deck.ui.model.DFCardUi
+import com.dalmuina.feature.deck.ui.model.DFCardSlotUi
 import com.dalmuina.feature.deck.ui.model.toTimerText
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -28,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun DFCardSlot(
     modifier: Modifier = Modifier,
-    card: DFCardUi,
+    card: DFCardSlotUi,
     onEditCard: (Int) -> Unit,
     onCheckedChanged: (Int) -> Unit
 ) {
@@ -81,7 +80,7 @@ fun DFCardSlot(
 fun DFCardSlotPreview() {
     DeckFlowTheme {
         DFCardSlot(
-            card = DFCardUi(
+            card = DFCardSlotUi(
                 id = 0,
                 name = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,

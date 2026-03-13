@@ -30,7 +30,6 @@ class CardViewModel(
     val deckFlow =
         getSelectedDeckUseCase()
             .flatMapLatest { deckId ->
-
                 if (deckId == null) {
                     sessionCards.value = emptyList()
                     flowOf(null)
@@ -74,11 +73,16 @@ class CardViewModel(
                 SessionState(loading = true)
             )
 
-    fun completeTopCard() {
+    fun process(intent: CardIntent){
+        when(intent) {
+            CardIntent.CompleteTopCard -> completeTopCard()
+        }
+    }
+
+    private fun completeTopCard() {
         sessionCards.update { cards ->
             if (cards.isEmpty()) cards
             else cards.drop(1) + cards.first()
         }
     }
-
 }

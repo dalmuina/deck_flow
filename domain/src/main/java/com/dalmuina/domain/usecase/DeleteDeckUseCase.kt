@@ -1,17 +1,62 @@
 package com.dalmuina.domain.usecase
 
 import com.dalmuina.domain.LocalDeckRepository
+import com.dalmuina.domain.SelectedDeckRepository
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.map
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class DeleteDeckUseCase(
     private val repository: LocalDeckRepository,
-    private val dispatcher: CoroutineDispatcher,
+    private val selectedDeckRepository: SelectedDeckRepository,
+    private val dispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(deckId: Int): DFResult<Unit, DataBaseError> =
+
+    suspend operator fun invoke(deckId: Int): DFResult<Int?, DataBaseError> =
         withContext(dispatcher) {
-            repository.deleteDeck(deckId)
+
+            when (val decksResult = repository.getAllDecksWithCards().first()) {
+
+                is DFResult.Error -> {
+                    DFResult.Error(decksResult.error)
+                }
+
+                is DFResult.Success -> {
+
+                    val decks = decksResult.data
+
+                    val selectedId = selectedDeckRepository.selectedDeckId.first()
+
+                    val nextDeck =
+                        if (selectedId == deckId)
+                            calculateNextDeck(deckId, decks.map { it.id })
+                        else null
+
+                    when (val deleteResult = repository.deleteDeck(deckId)) {
+
+                        is DFResult.Error ->
+                            DFResult.Error(deleteResult.error)
+
+                        is DFResult.Success ->
+                            DFResult.Success(nextDeck)
+                    }
+                }
+            }
         }
+
+    private fun calculateNextDeck(
+        deletedId: Int,
+        decks: List<Int>
+    ): Int? {
+
+        val index = decks.indexOf(deletedId)
+
+        if (index == -1) return null
+
+        return decks.getOrNull(index + 1)
+            ?: decks.getOrNull(index - 1)
+    }
 }

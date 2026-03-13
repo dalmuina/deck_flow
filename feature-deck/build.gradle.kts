@@ -30,7 +30,7 @@ extensions.configure<LibraryExtension>  {
 
 dependencies {
     implementation(project(":design-system"))
-    implementation(project(":core-ui"))
+    implementation(project(":core"))
     implementation(project(":domain"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -46,8 +46,9 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.turbine)
+    testImplementation(project(":core-test"))
 
-    // Compose UI tests (solo módulos UI)
+    // Compose UI tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 

@@ -2,10 +2,15 @@ package com.dalmuina.data.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "deck_card_cross_ref",
     primaryKeys = ["deckId","cardId"],
+    indices = [
+        Index("deckId"),
+        Index("cardId")
+    ],
     foreignKeys = [
         ForeignKey(
             entity = DFDeckEntity::class,

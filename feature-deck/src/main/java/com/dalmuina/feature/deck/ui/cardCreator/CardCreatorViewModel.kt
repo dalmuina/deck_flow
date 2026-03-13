@@ -2,21 +2,20 @@ package com.dalmuina.feature.deck.ui.cardCreator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.UiEvent
-import com.dalmuina.UiEventDispatcher
+import com.dalmuina.ui.UiEvent
+import com.dalmuina.ui.UiEventDispatcher
 import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
-import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
-import com.dalmuina.feature.deck.ui.model.toUiMessage
-import kotlinx.coroutines.channels.Channel
+import com.dalmuina.ui.toUiMessage
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -33,11 +32,10 @@ class CardCreatorViewModel(
     private val _uiState = MutableStateFlow(CardCreatorUiState())
     val uiState: StateFlow<CardCreatorUiState> = _uiState.asStateFlow()
 
-    private val _events = Channel<CardCreatorEvent>()
-    val events = _events.receiveAsFlow()
+    private val _events = MutableSharedFlow<CardCreatorEvent>()
+    val events = _events.asSharedFlow()
 
     init {
-        println(mode.cardId)
         mode.cardId?.let {
             loadCard(it)
         }
@@ -76,7 +74,10 @@ class CardCreatorViewModel(
                         )
                     }
                 }
-                .onError {
+                .onError { error ->
+                    uiEventDispatcher.dispatch(
+                        UiEvent.ShowSnackBar(error.toUiMessage())
+                    )
                     reduce {
                         copy(
                             loading = false,
@@ -95,9 +96,10 @@ class CardCreatorViewModel(
     }
 
     private fun changeMinutes(raw: String) {
-        val filtered = raw.filter { it.isDigit() }
-        val parsed = filtered.toLongOrNull() ?: 0
-        reduce { copy(duration = parsed.minutes) }
+        val filtered = raw
+            .filter(Char::isDigit)
+            .toLongOrNull() ?: 0
+        reduce { copy(duration = filtered.minutes) }
     }
 
     private fun adjustMinutes(transform: (Long) -> Long) {
@@ -110,28 +112,32 @@ class CardCreatorViewModel(
 
     private fun saveCard() {
         viewModelScope.launch {
-            val card = DFCard(
-                id = mode.cardId ?: 0,
-                name = _uiState.value.name,
-                durationMillis = _uiState
-                    .value
-                    .duration.inWholeMilliseconds
-            )
+            val card = buildCard()
             val result = when (mode) {
                 CardCreatorMode.Create ->
                     saveCardUseCase(card)
+
                 is CardCreatorMode.Edit ->
                     updateCardUseCase(card)
             }
             result
-                .onSuccess {
-                    _events.send(CardCreatorEvent.CloseScreen)
+                .onSuccess {cardId->
+                    _events.emit(CardCreatorEvent.CloseScreen(cardId))
                 }.onError { error ->
                     uiEventDispatcher.dispatch(
                         UiEvent.ShowSnackBar(error.toUiMessage())
                     )
                 }
         }
+    }
+
+    private fun buildCard(): DFCard {
+        val state = _uiState.value
+        return DFCard(
+            id = mode.cardId ?: 0,
+            name = state.name,
+            durationMillis = state.duration.inWholeMilliseconds
+        )
     }
 
     private inline fun reduce(

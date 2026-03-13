@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +23,7 @@ import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.ui.component.DFDeckSlot
 import com.dalmuina.feature.deck.ui.component.DFSwipeToDelete
-import com.dalmuina.feature.deck.ui.model.DFDeckUi
+import com.dalmuina.feature.deck.ui.model.DFDeckSlotUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -32,17 +33,26 @@ fun DeckSelectorRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DeckSelectorScreen(
-        items = state.deckList,
-        onEditDeck = onEditDeck,
-        onDelete = { deckId -> viewModel.process(DeckSelectorIntent.DeleteDeck(deckId)) },
-        onDeckSelected = { deckId -> viewModel.process(DeckSelectorIntent.SelectDeck(deckId)) },
-    )
+    if (state.loading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        DeckSelectorScreen(
+            items = state.deckList,
+            onEditDeck = onEditDeck,
+            onDelete = { deckId -> viewModel.process(DeckSelectorIntent.DeleteDeck(deckId)) },
+            onDeckSelected = { deckId -> viewModel.process(DeckSelectorIntent.SelectDeck(deckId)) },
+        )
+    }
 }
 
 @Composable
 fun DeckSelectorScreen(
-    items: List<DFDeckUi>,
+    items: List<DFDeckSlotUi>,
     onEditDeck: (Int) -> Unit,
     onDelete: (Int) -> Unit,
     onDeckSelected: (Int) -> Unit,
@@ -102,7 +112,7 @@ fun DeckSelectorPreview() {
     DeckFlowTheme {
         DeckSelectorScreen(
             items = listOf(
-                DFDeckUi(
+                DFDeckSlotUi(
                     id = 0,
                     name = "asd",
                     cardCount = 4,

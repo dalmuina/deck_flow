@@ -2,8 +2,9 @@ package com.dalmuina.feature.deck.ui.deckCreator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.UiEvent
-import com.dalmuina.UiEventDispatcher
+import com.dalmuina.ui.UiEvent
+import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.utils.toggleElement
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
@@ -11,18 +12,17 @@ import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
-import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorEvent
 import com.dalmuina.feature.deck.ui.model.toCardUi
-import com.dalmuina.feature.deck.ui.model.toUiMessage
+import com.dalmuina.ui.toUiMessage
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,15 +46,23 @@ class DeckCreatorViewModel(
     private val uiEventDispatcher: UiEventDispatcher
 ) : ViewModel() {
 
-    private val _events = Channel<CardCreatorEvent>()
-    val events = _events.receiveAsFlow()
+    companion object {
+        private const val DEFAULT_DECK_NAME = "Deck name"
+        private const val STOP_SUBSCRIPTION = 5_000L
+        private const val DELAY_PROCESS_INPUT = 1_000L
+    }
+
+    private val _events = MutableSharedFlow<DeckCreatorEvent>()
+    val events = _events.asSharedFlow()
 
     private val selectedCardIds = MutableStateFlow<Set<Int>>(emptySet())
+    private val deckName = MutableStateFlow(DEFAULT_DECK_NAME)
 
     init {
         mode.deckId?.let {
             loadDeck(it)
         }
+        observeDeckNameChange()
     }
 
     private val cardsUiFlow =
@@ -67,16 +74,15 @@ class DeckCreatorViewModel(
                 }
             }
 
-    private val deckName = MutableStateFlow("New Deck")
 
-    init {
+    private fun observeDeckNameChange() {
         @OptIn(FlowPreview::class)
         deckName
-            .debounce(1000)
+            .debounce(DELAY_PROCESS_INPUT)
             .distinctUntilChanged()
             .onEach { name ->
                 if (mode is DeckCreatorMode.Edit) {
-                    updateDeckNameUseCase(mode.deckId, deckName.value)
+                    updateDeckNameUseCase(mode.deckId, name)
                 }
             }
             .launchIn(viewModelScope)
@@ -85,9 +91,9 @@ class DeckCreatorViewModel(
 
     val uiState: StateFlow<DeckCreatorUiState> =
         combine(
-            flow = cardsUiFlow,
-            flow2 = selectedCardIds,
-            flow3 = deckName
+            cardsUiFlow,
+            selectedCardIds,
+            deckName
         ) { cards, selectedIds, name ->
 
             DeckCreatorUiState(
@@ -104,7 +110,7 @@ class DeckCreatorViewModel(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
                 initialValue = DeckCreatorUiState(loading = true)
             )
 
@@ -113,7 +119,7 @@ class DeckCreatorViewModel(
             .onEach { result ->
                 when (result) {
                     is DFResult.Success -> {
-                        selectedCardIds.value = result.data.cards.map{it.id}.toSet()
+                        selectedCardIds.value = result.data.cards.map { it.id }.toSet()
                         deckName.value = result.data.name
                     }
 
@@ -129,6 +135,8 @@ class DeckCreatorViewModel(
     fun process(intent: DeckCreatorIntent) {
         when (intent) {
             is DeckCreatorIntent.SelectedCard -> selectedCard(intent.id)
+            is DeckCreatorIntent.CardCreated ->
+                onCardCreated(intent.id)
             DeckCreatorIntent.SaveDeck -> saveDeck()
             is DeckCreatorIntent.NameChanged -> {
                 deckName.value = intent.value
@@ -138,11 +146,22 @@ class DeckCreatorViewModel(
         }
     }
 
+    private fun onCardCreated(cardId: Int) {
+
+        selectedCardIds.update { it + cardId }
+
+        if (mode is DeckCreatorMode.Edit) {
+            viewModelScope.launch {
+                addCardToDeckUseCase(mode.deckId, cardId)
+            }
+        }
+    }
+
 
     private fun saveDeck() {
         viewModelScope.launch {
             createDeckUseCase(deckName.value, selectedCardIds.value)
-                .onSuccess { _events.send(CardCreatorEvent.CloseScreen) }
+                .onSuccess { _events.emit(DeckCreatorEvent.CloseScreen) }
                 .onError { error ->
                     uiEventDispatcher.dispatch(
                         UiEvent.ShowSnackBar(error.toUiMessage())
@@ -153,20 +172,20 @@ class DeckCreatorViewModel(
 
     private fun selectedCard(cardId: Int) {
 
-        val wasSelected = cardId in selectedCardIds.value
-
         selectedCardIds.update { current ->
-            current.toggle(cardId)
-        }
 
-        if (mode is DeckCreatorMode.Edit) {
-            viewModelScope.launch {
-                if (wasSelected) {
-                    removeCardFromDeckUseCase(mode.deckId, cardId)
-                } else {
-                    addCardToDeckUseCase(mode.deckId, cardId)
+            val wasSelected = cardId in current
+
+            if (mode is DeckCreatorMode.Edit) {
+                viewModelScope.launch {
+                    if (wasSelected)
+                        removeCardFromDeckUseCase(mode.deckId, cardId)
+                    else
+                        addCardToDeckUseCase(mode.deckId, cardId)
                 }
             }
+
+            current.toggleElement(cardId)
         }
     }
 
@@ -182,6 +201,3 @@ class DeckCreatorViewModel(
         }
     }
 }
-
-fun Set<Int>.toggle(id: Int) =
-    if (id in this) this - id else this + id

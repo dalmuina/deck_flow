@@ -1,11 +1,10 @@
 package com.dalmuina.data.repository
 
 import com.dalmuina.data.datasource.LocalDeckDataSource
+import com.dalmuina.data.entity.DFDeckWithCards
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.DFDeck
-import com.dalmuina.domain.model.DFDeckSummary
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import kotlinx.coroutines.flow.Flow
@@ -53,13 +52,13 @@ class LocalDeckRepositoryImpl(
         }
     }
 
-    override fun getAllDecks(): Flow<DFResult<List<DFDeckSummary>, DataBaseError>> {
+    override fun getAllDecksWithCards(): Flow<DFResult<List<DFDeck>, DataBaseError>> {
         return dataSource
-            .getDeckSummaries()
+            .getAllDecksWithCards()
             .map { entities ->
                 DFResult.Success(
                     entities.map { it.toDomain() }
-                ) as DFResult<List<DFDeckSummary>, DataBaseError>
+                ) as DFResult<List<DFDeck>, DataBaseError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
@@ -73,6 +72,7 @@ class LocalDeckRepositoryImpl(
             .map { deck ->
                 DFResult.Success(
                     DFDeck(
+                        id = deck.deck.id,
                         name = deck.deck.name,
                         cards = deck.cards.map {
                             it.toDomain()

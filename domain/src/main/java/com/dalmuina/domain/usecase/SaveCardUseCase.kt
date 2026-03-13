@@ -12,7 +12,7 @@ class SaveCardUseCase(
     private val repository: LocalCardRepository,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(card: DFCard): DFResult<Unit, DataBaseError> =
+    suspend operator fun invoke(card: DFCard): DFResult<Int, DataBaseError> =
         withContext(dispatcher) {
             repository.saveCard(card)
         }

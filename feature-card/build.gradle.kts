@@ -43,8 +43,10 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.turbine)
+    testImplementation(project(":core-test"))
 
-    // Compose UI tests (solo módulos UI)
+
+    // Compose UI tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
