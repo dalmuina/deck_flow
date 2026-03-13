@@ -10,7 +10,6 @@ sealed interface CardCreatorMode {
     data object Create : CardCreatorMode {
         override val cardId: Int? = null
     }
-
     @Serializable
     data class Edit(override val cardId: Int) : CardCreatorMode
 }

@@ -26,14 +26,14 @@ val domainModule = module {
     factory {
         SaveCardUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
     factory {
         UpdateCardUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
@@ -46,14 +46,14 @@ val domainModule = module {
     factory {
         CreateDeckUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
     factory {
         UpdateDeckNameUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
@@ -66,35 +66,36 @@ val domainModule = module {
     factory {
         GetCardByIdUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
     factory {
         DeleteCardUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
     factory {
         DeleteDeckUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            selectedDeckRepository = get(),
+            dispatcher = get(named("IO")),
         )
     }
 
     factory {
         AddCardToDeckUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
     factory {
         RemoveCardFromDeckUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 
@@ -107,7 +108,7 @@ val domainModule = module {
     factory {
         SetSelectedDeckUseCase(
             repository = get(),
-            dispatcher = get(named("IO"))
+            dispatcher = get(named("IO")),
         )
     }
 

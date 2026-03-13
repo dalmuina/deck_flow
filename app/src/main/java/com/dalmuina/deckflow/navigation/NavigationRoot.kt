@@ -13,15 +13,16 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.util.fastCbrt
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.dalmuina.UiEvent
-import com.dalmuina.UiEventDispatcher
+import com.dalmuina.ui.UiEvent
+import com.dalmuina.ui.UiEventDispatcher
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
@@ -49,6 +50,7 @@ fun NavigationRoot(
 
     val snackBarHostState = remember { SnackbarHostState() }
     val context by rememberUpdatedState(LocalContext.current)
+    var createdCardId by remember { mutableStateOf<Int?>(null) }
 
     @SuppressLint("LocalContextGetResourceValueCall")
     LaunchedEffect(Unit) {
@@ -127,12 +129,17 @@ fun NavigationRoot(
                                     )
                                 )
                             },
+                            onCreatedCardConsumed = { createdCardId = null },
+                            createdCardId = createdCardId,
                             onBack = { navigator.goBack() }
                         )
                     }
                     entry<Route.CardCreator> { backStackEntry ->
                         CardCreatorRoute(
                             mode = backStackEntry.mode,
+                            onCardCreated = {cardId->
+                                createdCardId = cardId
+                            },
                             onBack = { navigator.goBack() }
                         )
                     }

@@ -20,11 +20,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.model.DFCardUi
-import com.dalmuina.feature.card.ui.component.DFCardSlot
+import com.dalmuina.feature.card.ui.component.DFCard
 import com.dalmuina.feature.card.ui.component.DFSwipeCard
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.hours
@@ -40,7 +39,7 @@ fun CardRoute(
     CardScreen(
         name = state.name,
         cards = state.cards.take(3),
-        onSwiped = { viewModel.completeTopCard() }
+        onSwiped = { viewModel.process(CardIntent.CompleteTopCard) }
     )
 }
 
@@ -97,14 +96,14 @@ fun CardScreen(
                         modifier = modifier,
                         onSwiped = onSwiped
                     ) {
-                        DFCardSlot(card = card)
+                        DFCard(card = card)
                     }
                 } else {
                     Card(
                         modifier = modifier,
                         elevation = CardDefaults.cardElevation(elevation)
                     ) {
-                        DFCardSlot(card = card)
+                        DFCard(card = card)
                     }
                 }
             }

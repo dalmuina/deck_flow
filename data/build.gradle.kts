@@ -4,11 +4,12 @@ import org.gradle.kotlin.dsl.configure
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 extensions.configure<LibraryExtension>  {
 
-    namespace = "com.dalmuina.data.network"
+    namespace = "com.dalmuina.data"
     compileSdk {
         version = release(36)
     }
@@ -21,6 +22,10 @@ extensions.configure<LibraryExtension>  {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {

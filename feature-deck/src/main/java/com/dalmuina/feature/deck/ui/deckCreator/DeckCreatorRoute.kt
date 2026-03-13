@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,10 +26,9 @@ import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorEvent
 import com.dalmuina.feature.deck.ui.component.DFCardSlot
 import com.dalmuina.feature.deck.ui.component.DFSwipeToDelete
-import com.dalmuina.feature.deck.ui.model.DFCardUi
+import com.dalmuina.feature.deck.ui.model.DFCardSlotUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
@@ -39,6 +39,8 @@ import kotlin.time.Duration.Companion.seconds
 fun DeckCreatorRoute(
     mode: DeckCreatorMode,
     viewModel: DeckCreatorViewModel = koinViewModel(parameters = { parametersOf(mode) }),
+    createdCardId: Int?,
+    onCreatedCardConsumed: () -> Unit,
     onEditCard: (Int) -> Unit,
     onBack: () -> Unit
 ) {
@@ -48,26 +50,42 @@ fun DeckCreatorRoute(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is CardCreatorEvent.CloseScreen -> onBack()
+                is DeckCreatorEvent.CloseScreen -> onBack()
             }
         }
     }
 
-    DeckCreatorScreen(
-        items = state.deckCard,
-        name = state.name,
-        isEditMode = state.isEditMode,
-        onSelectedCard = { id -> viewModel.process(DeckCreatorIntent.SelectedCard(id)) },
-        onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
-        onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
-        onEditCard = onEditCard,
-        onDelete = { id -> viewModel.process(DeckCreatorIntent.DeleteCard(id)) }
-    )
+    LaunchedEffect(createdCardId) {
+        createdCardId?.let {cardId->
+            viewModel.process(DeckCreatorIntent.CardCreated(cardId))
+            onCreatedCardConsumed()
+        }
+    }
+
+    if (state.loading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        DeckCreatorScreen(
+            items = state.deckCard,
+            name = state.name,
+            isEditMode = state.isEditMode,
+            onSelectedCard = { id -> viewModel.process(DeckCreatorIntent.SelectedCard(id)) },
+            onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
+            onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
+            onEditCard = onEditCard,
+            onDelete = { id -> viewModel.process(DeckCreatorIntent.DeleteCard(id)) }
+        )
+    }
 }
 
 @Composable
 fun DeckCreatorScreen(
-    items: List<DFCardUi>,
+    items: List<DFCardSlotUi>,
     name: String,
     isEditMode: Boolean,
     onSelectedCard: (Int) -> Unit,
@@ -154,13 +172,13 @@ fun DeckCreatorScreenPreview() {
     DeckFlowTheme {
         DeckCreatorScreen(
             items = listOf(
-                DFCardUi(
+                DFCardSlotUi(
                     id = 0,
                     name = "Test",
                     duration = 0L.hours + 15L.minutes + 0L.seconds,
                     true,
                 ),
-                DFCardUi(
+                DFCardSlotUi(
                     id = 1,
                     name = "Test",
                     duration = 2L.hours + 20L.minutes + 0L.seconds,
