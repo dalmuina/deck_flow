@@ -15,7 +15,7 @@ import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.core.ui.UiEventDispatcher
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify

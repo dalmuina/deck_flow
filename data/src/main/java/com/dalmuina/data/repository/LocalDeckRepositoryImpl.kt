@@ -1,5 +1,6 @@
 package com.dalmuina.data.repository
 
+import android.util.Log
 import com.dalmuina.data.datasource.LocalDeckDataSource
 import com.dalmuina.data.entity.DFDeckWithCards
 import com.dalmuina.data.entity.toDomain
@@ -66,19 +67,13 @@ class LocalDeckRepositoryImpl(
             }
     }
 
-    override fun getDeckById(deckId: Int): Flow<DFResult<DFDeck, DataBaseError>> {
+    override fun getDeckWithCardsById (deckId: Int): Flow<DFResult<DFDeck, DataBaseError>> {
         return dataSource
-            .getDeckWithCards(deckId)
-            .map { deck ->
+            .getDeckWithCardsById(deckId)
+            .map { deckWithCards ->
                 DFResult.Success(
-                    DFDeck(
-                        id = deck.deck.id,
-                        name = deck.deck.name,
-                        cards = deck.cards.map {
-                            it.toDomain()
-                        }
-                    )
-                ) as DFResult<DFDeck, DataBaseError>
+                    deckWithCards.toDomain()
+                    ) as DFResult<DFDeck, DataBaseError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.dalmuina.data.entity.DFDeckCardCrossRef
+import com.dalmuina.data.entity.DFDeckCardCrossEntity
 import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.DFDeckWithCards
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +17,7 @@ interface DFDeckDao {
     suspend fun insertDeck(deck: DFDeckEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertCrossRefs(refs: List<DFDeckCardCrossRef>)
+    suspend fun insertCrossRefs(refs: List<DFDeckCardCrossEntity>)
 
     @Transaction
     suspend fun insertDeckWithCards(
@@ -27,7 +27,7 @@ interface DFDeckDao {
         val deckId = insertDeck(deck).toInt()
 
         val refs = cardIds.map { cardId ->
-            DFDeckCardCrossRef(
+            DFDeckCardCrossEntity(
                 deckId = deckId,
                 cardId = cardId
             )
@@ -37,7 +37,7 @@ interface DFDeckDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertCrossRef(ref: DFDeckCardCrossRef)
+    suspend fun insertCrossRef(ref: DFDeckCardCrossEntity)
 
     @Query(
         """
@@ -51,13 +51,6 @@ interface DFDeckDao {
     @Query("SELECT * FROM decks")
     fun getAllDecksWithCards(): Flow<List<DFDeckWithCards>>
 
-    @Transaction
-    @Query(
-        """
-        SELECT * FROM decks WHERE id = :deckId
-    """
-    )
-    fun getDeckById(deckId: Int): Flow<DFDeckEntity>
 
     @Transaction
     @Query(
@@ -65,7 +58,7 @@ interface DFDeckDao {
         SELECT * FROM decks WHERE id = :deckId
     """
     )
-    fun getCardIdsForDeck(deckId: Int): Flow<DFDeckWithCards>
+    fun getDeckWithCardsById(deckId: Int): Flow<DFDeckWithCards>
 
     @Query(
         """
@@ -96,7 +89,7 @@ interface DFDeckDao {
         deleteCrossRefs(deckId)
 
         val refs = cardIds.map { cardId ->
-            DFDeckCardCrossRef(
+            DFDeckCardCrossEntity(
                 deckId = deckId,
                 cardId = cardId
             )

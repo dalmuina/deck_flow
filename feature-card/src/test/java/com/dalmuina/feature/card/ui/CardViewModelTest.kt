@@ -8,8 +8,11 @@ import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
 import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.DFDeck
+import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
+import com.dalmuina.domain.usecase.PostponeCardUseCase
+import com.dalmuina.feature.card.model.SwipeDirection
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -25,10 +28,16 @@ class CardViewModelRobot {
     val getSelectedDeckUseCase = mockk<GetSelectedDeckUseCase>(relaxed = true)
     val getDeckByIdUseCase = mockk<GetDeckByIdUseCase>(relaxed = true)
 
+    val completeCardUseCase = mockk<CompleteCardUseCase>(relaxed= true)
+
+    val postponeCardUseCase = mockk<PostponeCardUseCase>(relaxed = true)
+
     fun build() =
         CardViewModel(
             getSelectedDeckUseCase,
-            getDeckByIdUseCase
+            getDeckByIdUseCase,
+            completeCardUseCase,
+            postponeCardUseCase,
         )
 }
 
@@ -140,7 +149,7 @@ class CardViewModelTest {
 
             val initial = awaitItem()
 
-            viewModel.process(CardIntent.CompleteTopCard)
+            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT))
 
             val updated = awaitItem()
 
@@ -173,7 +182,7 @@ class CardViewModelTest {
 
             val initial = awaitItem()
 
-            viewModel.process(CardIntent.CompleteTopCard)
+            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT))
 
             expectNoEvents()
 

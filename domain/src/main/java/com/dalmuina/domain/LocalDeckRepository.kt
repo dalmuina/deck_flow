@@ -19,7 +19,7 @@ interface LocalDeckRepository {
 
     fun getAllDecksWithCards(): Flow<DFResult<List<DFDeck>, DataBaseError>>
 
-    fun getDeckById(deckId: Int): Flow<DFResult<DFDeck, DataBaseError>>
+    fun getDeckWithCardsById(deckId: Int): Flow<DFResult<DFDeck, DataBaseError>>
 
     suspend fun deleteDeck(deckId: Int): DFResult<Unit, DataBaseError>
 }

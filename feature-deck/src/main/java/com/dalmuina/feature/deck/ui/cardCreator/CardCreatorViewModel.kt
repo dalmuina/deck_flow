@@ -2,15 +2,15 @@ package com.dalmuina.feature.deck.ui.cardCreator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.ui.UiEvent
-import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.designsystem.error.toUiMessage
+import com.dalmuina.core.ui.UiEvent
+import com.dalmuina.core.ui.UiEventDispatcher
 import com.dalmuina.domain.model.DFCard
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
-import com.dalmuina.ui.toUiMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

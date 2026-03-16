@@ -14,13 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
+import com.dalmuina.feature.card.model.SwipeDirection
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun DFSwipeCard(
     modifier: Modifier = Modifier,
-    onSwiped: () -> Unit,
+    onSwiped: (SwipeDirection) -> Unit,
+    onDragProgress: (Float) -> Unit = {},
     content: @Composable () -> Unit
 ) {
 
@@ -42,7 +44,9 @@ fun DFSwipeCard(
                         change.consume()
 
                         scope.launch {
-                            offsetX.snapTo(offsetX.value + dragAmount.x)
+                            val newOffset = offsetX.value + dragAmount.x
+                            offsetX.snapTo(newOffset)
+                            onDragProgress(newOffset)
                         }
                     },
 
@@ -57,9 +61,22 @@ fun DFSwipeCard(
                                     animationSpec = tween(300)
                                 )
 
-                                onSwiped()
+                                onSwiped(SwipeDirection.RIGHT)
 
                                 offsetX.snapTo(0f)
+                                onDragProgress(0f)
+
+                            } else if (offsetX.value < -threshold) {
+
+                                offsetX.animateTo(
+                                    targetValue = -1000f,
+                                    animationSpec = tween(300)
+                                )
+
+                                onSwiped(SwipeDirection.LEFT)
+
+                                offsetX.snapTo(0f)
+                                onDragProgress(0f)
 
                             } else {
 
@@ -67,6 +84,8 @@ fun DFSwipeCard(
                                     targetValue = 0f,
                                     animationSpec = spring()
                                 )
+
+                                onDragProgress(0f)
                             }
                         }
                     }

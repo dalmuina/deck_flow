@@ -9,6 +9,8 @@ val featureCardModule = module{
         CardViewModel(
             getSelectedDeckUseCase = get(),
             getDeckByIdUseCase = get(),
+            completeCardUseCase = get(),
+            postponeCardUseCase = get(),
         )
     }
 }

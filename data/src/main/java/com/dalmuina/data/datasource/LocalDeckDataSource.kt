@@ -1,7 +1,7 @@
 package com.dalmuina.data.datasource
 
 import com.dalmuina.data.dao.DFDeckDao
-import com.dalmuina.data.entity.DFDeckCardCrossRef
+import com.dalmuina.data.entity.DFDeckCardCrossEntity
 import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.DFDeckWithCards
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,7 @@ class LocalDeckDataSource(
 
     suspend fun addCardToDeck(deckId: Int, cardId: Int) =
         dao.insertCrossRef(
-            DFDeckCardCrossRef(
+            DFDeckCardCrossEntity(
                 deckId = deckId,
                 cardId = cardId
             )
@@ -38,8 +38,8 @@ class LocalDeckDataSource(
     fun getAllDecksWithCards(): Flow<List<DFDeckWithCards>> =
         dao.getAllDecksWithCards()
 
-    fun getDeckWithCards(deckId: Int): Flow<DFDeckWithCards> =
-        dao.getCardIdsForDeck(deckId)
+    fun getDeckWithCardsById(deckId: Int): Flow<DFDeckWithCards> =
+        dao.getDeckWithCardsById(deckId)
 
     suspend fun deleteDeck(deckId: Int) =
         dao.deleteDeck(deckId)

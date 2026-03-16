@@ -6,7 +6,7 @@ import com.dalmuina.coretest.data.ErrorTestData
 import com.dalmuina.coretest.helpers.failure
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.core.ui.UiEventDispatcher
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase

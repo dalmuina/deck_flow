@@ -1,4 +1,4 @@
-package com.dalmuina.utils
+package com.dalmuina.core.utils
 
 fun Set<Int>.toggleElement(id: Int): Set<Int> {
     return if (contains(id)) {

@@ -73,6 +73,8 @@ fun DFCardPreview() {
                 id = 0,
                 name = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,
+                isCompleted = true,
+                isPostponed = true,
             ),
         )
     }

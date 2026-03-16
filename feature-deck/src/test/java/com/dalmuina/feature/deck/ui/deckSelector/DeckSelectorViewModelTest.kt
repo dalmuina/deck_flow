@@ -7,7 +7,7 @@ import com.dalmuina.coretest.helpers.awaitLoaded
 import com.dalmuina.coretest.helpers.failure
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.core.ui.UiEventDispatcher
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase

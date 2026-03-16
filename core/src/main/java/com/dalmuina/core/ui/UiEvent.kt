@@ -1,4 +1,4 @@
-package com.dalmuina.ui
+package com.dalmuina.core.ui
 
 sealed interface UiEvent {
     data class ShowSnackBar(
