@@ -2,8 +2,9 @@ package com.dalmuina.feature.deck.ui.deckSelector
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.ui.UiEvent
-import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.designsystem.error.toUiMessage
+import com.dalmuina.core.ui.UiEvent
+import com.dalmuina.core.ui.UiEventDispatcher
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
@@ -12,7 +13,6 @@ import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
 import com.dalmuina.feature.deck.ui.model.toDeckUi
-import com.dalmuina.ui.toUiMessage
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine

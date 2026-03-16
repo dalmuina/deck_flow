@@ -8,6 +8,8 @@ data class DFCardUi(
     val id: Int,
     val name: String,
     val duration: Duration,
+    val isCompleted: Boolean,
+    val isPostponed: Boolean,
 )
 
 fun Duration.toTimerText(): String {
@@ -25,5 +27,7 @@ fun Duration.toTimerText(): String {
 fun DFCard.toCardUi(): DFCardUi = DFCardUi(
     id = id,
     name = name,
-    duration = durationMillis.milliseconds
+    duration = durationMillis.milliseconds,
+    isCompleted = completedAt != null,
+    isPostponed = postponedAt != null,
 )

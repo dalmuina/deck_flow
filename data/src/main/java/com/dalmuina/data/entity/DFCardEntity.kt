@@ -20,10 +20,3 @@ fun DFCard.toEntity(): DFCardEntity {
     )
 }
 
-fun DFCardEntity.toDomain(): DFCard {
-    return DFCard (
-        id = id,
-        name = name,
-        durationMillis = duration,
-    )
-}

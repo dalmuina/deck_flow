@@ -2,9 +2,10 @@ package com.dalmuina.feature.deck.ui.deckCreator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.ui.UiEvent
-import com.dalmuina.ui.UiEventDispatcher
-import com.dalmuina.utils.toggleElement
+import com.dalmuina.designsystem.error.toUiMessage
+import com.dalmuina.core.ui.UiEvent
+import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.core.utils.toggleElement
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
@@ -16,7 +17,6 @@ import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.feature.deck.ui.model.toCardUi
-import com.dalmuina.ui.toUiMessage
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

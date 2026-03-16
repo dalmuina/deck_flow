@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.dalmuina.ui.UiEvent
-import com.dalmuina.ui.UiEventDispatcher
+import com.dalmuina.core.ui.UiEvent
+import com.dalmuina.core.ui.UiEventDispatcher
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton

@@ -35,6 +35,7 @@ extensions.configure<ApplicationExtension>  {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -88,4 +89,6 @@ dependencies {
     // Koin para ViewModels dentro de features
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

@@ -13,14 +13,15 @@ extensions.configure<LibraryExtension>  {
         minSdk = 24
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    implementation(project(":domain"))
 
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     //Unit test
     implementation(libs.koin.android)
 }

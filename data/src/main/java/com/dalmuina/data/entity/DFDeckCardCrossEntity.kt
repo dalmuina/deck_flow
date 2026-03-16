@@ -27,7 +27,7 @@ import androidx.room.Index
     ]
 )
 
-data class DFDeckCardCrossRef(
+data class DFDeckCardCrossEntity(
     val deckId: Int,
     val cardId: Int,
 )

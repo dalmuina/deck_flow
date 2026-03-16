@@ -1,53 +1,81 @@
 package com.dalmuina.feature.card.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.model.onSuccess
+import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
+import com.dalmuina.domain.usecase.PostponeCardUseCase
 import com.dalmuina.feature.card.model.DFCardUi
+import com.dalmuina.feature.card.model.SwipeDirection
 import com.dalmuina.feature.card.model.toCardUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlin.time.Clock
 
 class CardViewModel(
     private val getSelectedDeckUseCase: GetSelectedDeckUseCase,
     private val getDeckByIdUseCase: GetDeckByIdUseCase,
+    private val completeCardUseCase: CompleteCardUseCase,
+    private val postponeCardUseCase: PostponeCardUseCase,
 ) : ViewModel() {
 
     private val sessionCards = MutableStateFlow<List<DFCardUi>>(emptyList())
+    private var currentDeckId: Int? = null
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val deckFlow =
         getSelectedDeckUseCase()
             .flatMapLatest { deckId ->
                 if (deckId == null) {
-                    sessionCards.value = emptyList()
                     flowOf(null)
                 } else {
                     getDeckByIdUseCase(deckId)
-                        .onEach { result ->
-                            if (result is DFResult.Success) {
-                                sessionCards.value = result.data.cards.map { it.toCardUi() }
-                            }
-                        }
                 }
             }
 
+    init {
+        viewModelScope.launch {
+            deckFlow.collectLatest { result ->
+
+                if (result is DFResult.Success) {
+                    val deckId = result.data.id
+                    val dbCards = result.data.cards.map { it.toCardUi() }
+
+                    if (currentDeckId != deckId) {
+                        currentDeckId = deckId
+                        sessionCards.value = dbCards
+                        return@collectLatest
+                    }
+
+                    val dbCardsById = dbCards.associateBy { it.id }
+
+                    sessionCards.update { current ->
+                        current.map { card ->
+                            dbCardsById[card.id] ?: card
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     val uiState: StateFlow<SessionState> =
         combine(deckFlow, sessionCards) { result, session ->
-
             when (result) {
-
                 is DFResult.Success -> {
                     SessionState(
                         loading = false,
@@ -73,16 +101,26 @@ class CardViewModel(
                 SessionState(loading = true)
             )
 
-    fun process(intent: CardIntent){
-        when(intent) {
-            CardIntent.CompleteTopCard -> completeTopCard()
+    fun process(intent: CardIntent) {
+        when (intent) {
+            is CardIntent.SwipeTopCard -> swipeTopCard(intent.direction)
         }
     }
 
-    private fun completeTopCard() {
+    private fun swipeTopCard(direction: SwipeDirection) {
+
+        val card = sessionCards.value.firstOrNull() ?: return
+
+        viewModelScope.launch {
+            when (direction) {
+                SwipeDirection.RIGHT -> completeCardUseCase(card.id)
+                SwipeDirection.LEFT -> postponeCardUseCase(card.id)
+            }
+        }
+
         sessionCards.update { cards ->
-            if (cards.isEmpty()) cards
-            else cards.drop(1) + cards.first()
+            val first = cards.firstOrNull() ?: return@update cards
+            cards.drop(1) + first
         }
     }
 }

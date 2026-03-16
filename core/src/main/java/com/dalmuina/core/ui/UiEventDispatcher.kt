@@ -1,4 +1,4 @@
-package com.dalmuina.ui
+package com.dalmuina.core.ui
 
 import kotlinx.coroutines.flow.SharedFlow
 

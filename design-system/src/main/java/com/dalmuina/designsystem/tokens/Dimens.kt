@@ -11,7 +11,5 @@ object Dimens {
 
     //ICONS
     val mediumIcons = 36.dp
-
-    //TOPBAR
-    val topBarHeight=56.dp
+    
 }

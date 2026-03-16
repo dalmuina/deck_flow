@@ -1,6 +1,7 @@
 package com.dalmuina.data.repository
 
 import com.dalmuina.data.datasource.LocalCardDataSource
+import com.dalmuina.data.entity.DFCardProgressEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
 import com.dalmuina.domain.LocalCardRepository
@@ -28,6 +29,24 @@ class LocalCardRepositoryImpl(
         }
     }
 
+    override suspend fun completeCard(cardId: Int): DFResult<Int, DataBaseError> {
+        val now = System.currentTimeMillis()
+
+        return safeDbCall {
+            dataSource.completeCard(cardId, now)
+            cardId
+        }
+    }
+
+    override suspend fun postponeCard(cardId: Int): DFResult<Int, DataBaseError> {
+        val now = System.currentTimeMillis()
+
+        return safeDbCall {
+            dataSource.postponeCard(cardId, now)
+            cardId
+        }
+    }
+
     override fun getAllCards(): Flow<DFResult<List<DFCard>, DataBaseError>> {
         return dataSource
             .getAllCards()
@@ -47,7 +66,7 @@ class LocalCardRepositoryImpl(
         }
     }
 
-    override suspend fun deleteCard(cardId:Int): DFResult<Unit, DataBaseError> {
+    override suspend fun deleteCard(cardId: Int): DFResult<Unit, DataBaseError> {
         return safeDbCall {
             dataSource.deleteCard(cardId)
         }

@@ -5,11 +5,12 @@ import androidx.room.RoomDatabase
 import com.dalmuina.data.dao.DFCardDao
 import com.dalmuina.data.dao.DFDeckDao
 import com.dalmuina.data.entity.DFCardEntity
-import com.dalmuina.data.entity.DFDeckCardCrossRef
+import com.dalmuina.data.entity.DFCardProgressEntity
+import com.dalmuina.data.entity.DFDeckCardCrossEntity
 import com.dalmuina.data.entity.DFDeckEntity
 
 @Database(
-    entities = [DFCardEntity::class, DFDeckEntity::class, DFDeckCardCrossRef::class],
+    entities = [DFCardEntity::class, DFDeckEntity::class, DFDeckCardCrossEntity::class, DFCardProgressEntity::class],
     version = 1,
 )
 
