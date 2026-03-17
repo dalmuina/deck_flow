@@ -20,7 +20,6 @@ class GetDeckByIdUseCase(
         repository.getDeckWithCardsById(deckId)
             .map { result ->
                 result.map { deck ->
-                    Log.d("DeckDebug", "deck in usecase $deck")
                     normalizeDeck(deck)
                 }
             }
