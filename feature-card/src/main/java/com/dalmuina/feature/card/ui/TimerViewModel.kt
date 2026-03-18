@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,7 +17,15 @@ class TimerViewModel : ViewModel() {
     private var timerJob: Job? = null
     private var endTime: Long? = null
 
-    fun start(durationMillis: Long? = null) {
+    fun process(intent: TimerIntent) {
+        when (intent) {
+            is TimerIntent.Play -> play(intent.durationMillis)
+            is TimerIntent.Reset -> reset(intent.durationMillis)
+            TimerIntent.Stop -> stop()
+        }
+    }
+
+    private fun play(durationMillis: Long? = null) {
 
         if (_timerState.value.isRunning) return
 
@@ -37,26 +44,30 @@ class TimerViewModel : ViewModel() {
                 val remaining = endTime!! - System.currentTimeMillis()
 
                 if (remaining <= 0) {
-                    _timerState.value = TimerState(
-                        totalMillis = _timerState.value.totalMillis,
-                        remainingMillis = 0,
-                        isRunning = false
-                    )
+                    reduce {
+                        this.copy(
+                            totalMillis = _timerState.value.totalMillis,
+                            remainingMillis = 0,
+                            isRunning = false
+                        )
+                    }
                     break
                 }
 
-                _timerState.value = TimerState(
-                    totalMillis = _timerState.value.totalMillis,
-                    remainingMillis = remaining,
-                    isRunning = true
-                )
+                reduce {
+                    this.copy(
+                        totalMillis = _timerState.value.totalMillis,
+                        remainingMillis = remaining,
+                        isRunning = true
+                    )
+                }
 
                 delay(1000)
             }
         }
     }
 
-    fun stop() {
+    private fun stop() {
         timerJob?.cancel()
         timerJob = null
 
@@ -65,22 +76,32 @@ class TimerViewModel : ViewModel() {
 
         endTime = null
 
-        _timerState.update {
-            it.copy(
+        reduce {
+            this.copy(
                 remainingMillis = remaining.coerceAtLeast(0),
                 isRunning = false
             )
         }
     }
 
-    fun reset(durationMillis: Long) {
+    private fun reset(durationMillis: Long) {
         timerJob?.cancel()
         endTime = null
 
-        _timerState.value = TimerState(
-            totalMillis = durationMillis,
-            remainingMillis = durationMillis,
-            isRunning = false
-        )
+        reduce {
+            this.copy(
+                totalMillis = durationMillis,
+                remainingMillis = durationMillis,
+                isRunning = false
+            )
+        }
+    }
+
+    private inline fun reduce(
+        reducer: TimerState.() -> TimerState
+    ) {
+        _timerState.update {
+            it.reducer()
+        }
     }
 }

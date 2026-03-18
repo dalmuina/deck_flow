@@ -1,5 +1,6 @@
 package com.dalmuina.feature.card.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.domain.model.DFResult
@@ -79,14 +80,15 @@ class CardViewModel(
 
             when (result) {
 
+
                 is DFResult.Success -> {
+                    Log.d("DF debug",result.data.cards.toString())
                     SessionState(
                         loading = false,
                         name = result.data.name,
                         cards = session
                     )
                 }
-
                 else -> {
                     SessionState(
                         loading = false,

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "47c5e4e6044bfe41b9e27cc2a72c2a1e",
+    "identityHash": "e89f1c23048046807e6a65987ab2f43b",
     "entities": [
       {
         "tableName": "cards",
@@ -60,7 +60,7 @@
       },
       {
         "tableName": "deck_card_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` INTEGER NOT NULL, `cardId` INTEGER NOT NULL, PRIMARY KEY(`deckId`, `cardId`), FOREIGN KEY(`deckId`) REFERENCES `decks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`cardId`) REFERENCES `cards`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` INTEGER NOT NULL, `cardId` INTEGER NOT NULL, `order` INTEGER NOT NULL, PRIMARY KEY(`deckId`, `cardId`), FOREIGN KEY(`deckId`) REFERENCES `decks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`cardId`) REFERENCES `cards`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "deckId",
@@ -71,6 +71,12 @@
           {
             "fieldPath": "cardId",
             "columnName": "cardId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -171,7 +177,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47c5e4e6044bfe41b9e27cc2a72c2a1e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e89f1c23048046807e6a65987ab2f43b')"
     ]
   }
 }

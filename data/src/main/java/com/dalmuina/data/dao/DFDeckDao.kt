@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.dalmuina.data.entity.DFCardInDeckEntity
 import com.dalmuina.data.entity.DFDeckCardCrossEntity
 import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.DFDeckWithCards
@@ -22,14 +23,15 @@ interface DFDeckDao {
     @Transaction
     suspend fun insertDeckWithCards(
         deck: DFDeckEntity,
-        cardIds: Set<Int>
+        cardIds: List<Int>
     ) {
         val deckId = insertDeck(deck).toInt()
 
-        val refs = cardIds.map { cardId ->
+        val refs = cardIds.mapIndexed { index, cardId ->
             DFDeckCardCrossEntity(
                 deckId = deckId,
-                cardId = cardId
+                cardId = cardId,
+                order = index,
             )
         }
 
@@ -50,15 +52,6 @@ interface DFDeckDao {
     @Transaction
     @Query("SELECT * FROM decks")
     fun getAllDecksWithCards(): Flow<List<DFDeckWithCards>>
-
-
-    @Transaction
-    @Query(
-        """
-        SELECT * FROM decks WHERE id = :deckId
-    """
-    )
-    fun getDeckWithCardsById(deckId: Int): Flow<DFDeckWithCards>
 
     @Query(
         """
@@ -88,10 +81,11 @@ interface DFDeckDao {
 
         deleteCrossRefs(deckId)
 
-        val refs = cardIds.map { cardId ->
+        val refs = cardIds.mapIndexed { index, cardId ->
             DFDeckCardCrossEntity(
                 deckId = deckId,
-                cardId = cardId
+                cardId = cardId,
+                order = index,
             )
         }
 
@@ -106,4 +100,48 @@ interface DFDeckDao {
     )
     suspend fun deleteDeck(deckId: Int)
 
+
+    @Query(
+        """
+SELECT 
+    c.id,
+    c.name,
+    c.duration,
+    p.completedAt,
+    p.postponeAt AS postponedAt,
+    x.`order`
+FROM deck_card_cross_ref x
+INNER JOIN cards c ON c.id = x.cardId
+LEFT JOIN card_progress p ON p.cardId = c.id
+WHERE x.deckId = :deckId
+ORDER BY x.`order`
+"""
+    )
+    fun getCardsForDeck(deckId: Int): Flow<List<DFCardInDeckEntity>>
+
+    @Query("SELECT * FROM decks WHERE id = :deckId")
+    fun getDeckById(deckId: Int): Flow<DFDeckEntity>
+
+
+    @Transaction
+    suspend fun replaceDeckCards(deckId: Int, cardIds: List<Int>) {
+
+        // 1. eliminar todo
+        deleteCrossRefs(deckId)
+
+        // 2. insertar con nuevo orden
+        val refs = cardIds.mapIndexed { index, cardId ->
+            DFDeckCardCrossEntity(
+                deckId = deckId,
+                cardId = cardId,
+                order = index
+            )
+        }
+
+        insertCrossRefs(refs)
+    }
+
 }
+
+
+

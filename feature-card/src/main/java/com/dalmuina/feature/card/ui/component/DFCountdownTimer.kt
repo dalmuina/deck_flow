@@ -6,24 +6,31 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.dalmuina.designsystem.component.button.DFButton
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
-import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.ui.TimerState
 
 @Composable
 fun DFCountdownTimer(
     state: TimerState,
-    onStart: () -> Unit,
-    onStop: () -> Unit,
+    onPlay: (Boolean) -> Unit,
+    onReset: () -> Unit,
 ) {
 
     val displayMillis =
@@ -34,6 +41,9 @@ fun DFCountdownTimer(
 
     val minutes = (displayMillis / 1000) / 60
     val seconds = (displayMillis / 1000) % 60
+
+    val isPlaying = state.isRunning
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -46,18 +56,25 @@ fun DFCountdownTimer(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            DFButton(
-                text = { Text(text = stringResource(R.string.button_stop)) },
-                onClick = onStop
-            )
+            IconButton(onClick = {
+                onPlay(false)
+                onReset()
+            }) {
+                Icon(imageVector = Icons.Default.Replay, contentDescription = "")
+            }
             Spacer(
                 modifier = Modifier
                     .width(Spacing.l)
             )
-            DFButton(
-                text = { Text(text = stringResource(R.string.button_start)) },
-                onClick = onStart
-            )
+            IconButton(onClick = {
+                if (isPlaying) onPlay(true)
+                else onPlay(false)
+            }) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = ""
+                )
+            }
         }
     }
 }
@@ -72,8 +89,8 @@ fun DFCountdownTimerPreview() {
                 remainingMillis = 0L,
                 isRunning = false,
             ),
-            onStart = {},
-            onStop = {},
+            onPlay = {},
+            onReset = {},
         )
     }
 }

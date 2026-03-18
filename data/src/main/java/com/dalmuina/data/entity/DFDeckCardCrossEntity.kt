@@ -30,4 +30,5 @@ import androidx.room.Index
 data class DFDeckCardCrossEntity(
     val deckId: Int,
     val cardId: Int,
+    val order: Int,
 )

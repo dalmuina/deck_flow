@@ -3,8 +3,7 @@ package com.dalmuina.data.entity
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.dalmuina.domain.model.DFCard
-import com.dalmuina.domain.model.DFDeck
+import com.dalmuina.domain.model.DFDeckDomain
 
 data class DFDeckWithCards(
 
@@ -24,20 +23,12 @@ data class DFDeckWithCards(
     val cards: List<DFCardWithProgress>
 )
 
-fun DFDeckWithCards.toDomain(): DFDeck {
-    return DFDeck(
+fun DFDeckWithCards.toDomain(): DFDeckDomain {
+    return DFDeckDomain(
         id = deck.id,
         name = deck.name,
         cards = cards
-            .map { it.toDomain() }
-            .sortedWith(
-                compareBy<DFCard> {
-                    when {
-                        it.completedAt != null -> 2
-                        it.postponedAt != null -> 1
-                        else -> 0
-                    }
-                }
-            )
+            .map { it.toDomain()
+            }
     )
 }

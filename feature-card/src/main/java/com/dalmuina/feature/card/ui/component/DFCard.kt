@@ -31,8 +31,8 @@ fun DFCard(
 fun DFCardWithTimer(
     card: DFCardUi,
     timerState: TimerState,
-    onStart: () -> Unit,
-    onStop: () -> Unit,
+    onPlay: (Boolean) -> Unit,
+    onReset: () -> Unit,
 ) {
 
     DFCardContainer(card = card) {
@@ -43,8 +43,8 @@ fun DFCardWithTimer(
 
         DFCountdownTimer(
             state = timerState,
-            onStart = onStart,
-            onStop = onStop
+            onPlay = onPlay,
+            onReset = onReset,
         )
     }
 }

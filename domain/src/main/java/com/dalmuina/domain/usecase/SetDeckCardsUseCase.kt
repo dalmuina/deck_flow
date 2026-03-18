@@ -6,15 +6,12 @@ import com.dalmuina.domain.model.DataBaseError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-class CreateDeckUseCase(
+class SetDeckCardsUseCase(
     private val repository: LocalDeckRepository,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(
-        name: String,
-        cardIds: List<Int>,
-    ): DFResult<Unit, DataBaseError> =
+    suspend operator fun invoke(deckId: Int, orderedIds: List<Int>): DFResult<Unit, DataBaseError> =
         withContext(dispatcher) {
-            repository.createDeck(name, cardIds)
+            repository.setDeckCards(deckId,orderedIds)
         }
 }

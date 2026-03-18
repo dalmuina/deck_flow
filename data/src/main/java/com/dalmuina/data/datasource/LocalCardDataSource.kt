@@ -29,10 +29,10 @@ class LocalCardDataSource(
         dao.markPostponed(cardId, time)
     }
 
-    fun getAllCards(): Flow<List<DFCardWithProgress>> =
+    fun getAllCards(): Flow<List<DFCardEntity>> =
         dao.getAllCards()
 
-    suspend fun getCardByID(cardId: Int): DFCardWithProgress =
+    suspend fun getCardByID(cardId: Int): DFCardEntity =
         dao.getCardById(cardId)
 
     suspend fun deleteCard(cardId: Int) =

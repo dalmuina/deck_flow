@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,11 +50,12 @@ fun CardRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
+    var duration by remember { mutableLongStateOf(0) }
 
     LaunchedEffect(state.cards.firstOrNull()?.id) {
-        val duration =
+        duration =
             state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: return@LaunchedEffect
-        timerViewModel.reset(duration)
+        timerViewModel.process(TimerIntent.Reset(duration))
     }
 
     CardScreen(
@@ -61,13 +63,17 @@ fun CardRoute(
         cards = state.cards.take(3),
         timerState = timerState,
         onSwiped = { direction ->
-            timerViewModel.stop()
+            timerViewModel.process(TimerIntent.Stop)
             viewModel.process(CardIntent.SwipeTopCard(direction))
         },
-        onStart = {
-            timerViewModel.start()
+        onPlay = { isPLaying ->
+            if (isPLaying)
+                timerViewModel.process(TimerIntent.Stop)
+            else
+                timerViewModel.process(TimerIntent.Play())
         },
-        onStop = { timerViewModel.stop() },
+        onReset = {
+            timerViewModel.process(TimerIntent.Reset(duration)) },
     )
 }
 
@@ -77,8 +83,8 @@ fun CardScreen(
     cards: List<DFCardUi>,
     onSwiped: (SwipeDirection) -> Unit,
     timerState: TimerState,
-    onStart: () -> Unit,
-    onStop: () -> Unit,
+    onPlay: (Boolean) -> Unit,
+    onReset: () -> Unit,
 
     ) {
     val isEmpty = cards.isEmpty()
@@ -144,8 +150,8 @@ fun CardScreen(
                             signedProgress = signedProgress,
                             card = card,
                             timerState = timerState,
-                            onStart = onStart,
-                            onStop = onStop
+                            onPlay = onPlay,
+                            onReset = onReset,
                         )
 
                     }
@@ -165,8 +171,8 @@ fun SwipeCardContent(
     signedProgress: Float,
     card: DFCardUi,
     timerState: TimerState,
-    onStart: () -> Unit,
-    onStop: () -> Unit,
+    onPlay: (Boolean) -> Unit,
+    onReset: () -> Unit,
 ) {
 
     val leftAlphaAnimated = (-signedProgress).coerceIn(0f, 1f)
@@ -178,8 +184,8 @@ fun SwipeCardContent(
         DFCardWithTimer(
             card = card,
             timerState = timerState,
-            onStart = onStart,
-            onStop = onStop,
+            onPlay = onPlay,
+            onReset = onReset,
         )
         Box(
             modifier = Modifier
@@ -264,8 +270,8 @@ fun CardScreenPreview() {
                 isRunning = false,
             ),
             onSwiped = {},
-            onStart = {},
-            onStop = {},
+            onPlay = {},
+            onReset = {},
         )
     }
 }

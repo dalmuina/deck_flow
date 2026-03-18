@@ -23,7 +23,7 @@ import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.ui.component.DFDeckSlot
 import com.dalmuina.feature.deck.ui.component.DFSwipeToDelete
-import com.dalmuina.feature.deck.ui.model.DFDeckSlotUi
+import com.dalmuina.feature.deck.ui.model.DFDeckUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,7 +52,7 @@ fun DeckSelectorRoute(
 
 @Composable
 fun DeckSelectorScreen(
-    items: List<DFDeckSlotUi>,
+    items: List<DFDeckUi>,
     onEditDeck: (Int) -> Unit,
     onDelete: (Int) -> Unit,
     onDeckSelected: (Int) -> Unit,
@@ -112,7 +112,7 @@ fun DeckSelectorPreview() {
     DeckFlowTheme {
         DeckSelectorScreen(
             items = listOf(
-                DFDeckSlotUi(
+                DFDeckUi(
                     id = 0,
                     name = "asd",
                     cardCount = 4,

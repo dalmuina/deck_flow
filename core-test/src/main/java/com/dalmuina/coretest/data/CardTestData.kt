@@ -1,6 +1,6 @@
 package com.dalmuina.coretest.data
 
-import com.dalmuina.domain.model.DFCard
+import com.dalmuina.domain.model.DFCardDomain
 
 object CardTestData {
 
@@ -8,12 +8,12 @@ object CardTestData {
         id: Int = 1,
         name: String = "Card $id",
         durationMillis: Long = 15000L
-    ) = DFCard(
+    ) = DFCardDomain(
         id = id,
         name = name,
         durationMillis = durationMillis
     )
 
-    fun cards(vararg ids: Int): List<DFCard> =
+    fun cards(vararg ids: Int): List<DFCardDomain> =
         ids.map { card(id = it) }
 }
