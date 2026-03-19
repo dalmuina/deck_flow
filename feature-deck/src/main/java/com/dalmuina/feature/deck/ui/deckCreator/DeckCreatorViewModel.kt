@@ -9,7 +9,6 @@ import com.dalmuina.designsystem.error.toUiMessage
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
-import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
@@ -119,9 +118,7 @@ class DeckCreatorViewModel(
                     ),
                 name = name,
                 isEditMode = mode is DeckCreatorMode.Edit
-            ).also {
-                Log.d("Debug", it.deckCard.toString())
-            }
+            )
         }
             .onStart {
                 emit(DeckCreatorUiState(loading = true))

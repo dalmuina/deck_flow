@@ -34,25 +34,6 @@ class LocalDeckRepositoryImpl(
         }
     }
 
-    override suspend fun addCardToDeck(
-        deckId: Int,
-        cardId: Int,
-        order: Int,
-    ): DFResult<Unit, DataBaseError> {
-        return safeDbCall {
-            dataSource.addCardToDeck(deckId,cardId,order)
-        }
-    }
-
-    override suspend fun removeCardFromDeck(
-        deckId: Int,
-        cardId: Int
-    ): DFResult<Unit, DataBaseError> {
-        return safeDbCall {
-            dataSource.removeCardFromDeck(deckId,cardId)
-        }
-    }
-
     override fun getAllDecksWithCards(): Flow<DFResult<List<DFDeckDomain>, DataBaseError>> {
         return dataSource
             .getAllDecksWithCards()

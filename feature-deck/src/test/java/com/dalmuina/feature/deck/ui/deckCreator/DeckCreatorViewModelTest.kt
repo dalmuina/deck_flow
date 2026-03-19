@@ -8,14 +8,13 @@ import com.dalmuina.coretest.helpers.failure
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
-import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -35,8 +34,7 @@ class DeckCreatorViewModelRobot {
     val getAllCardsUseCase = mockk<GetAllCardsUseCase>(relaxed = true)
     val createDeckUseCase = mockk<CreateDeckUseCase>(relaxed = true)
     val updateDeckNameUseCase = mockk<UpdateDeckNameUseCase>(relaxed = true)
-    val addCardToDeckUseCase = mockk<AddCardToDeckUseCase>(relaxed = true)
-    val removeCardFromDeckUseCase = mockk<RemoveCardFromDeckUseCase>(relaxed = true)
+    val setDeckCardsUseCase = mockk<SetDeckCardsUseCase>(relaxed = true)
     val getDeckByIdUseCase = mockk<GetDeckByIdUseCase>(relaxed = true)
     val deleteCardUseCase = mockk<DeleteCardUseCase>(relaxed = true)
     val uiEventDispatcher = mockk<UiEventDispatcher>(relaxed = true)
@@ -47,10 +45,9 @@ class DeckCreatorViewModelRobot {
             getAllCardsUseCase = getAllCardsUseCase,
             createDeckUseCase = createDeckUseCase,
             updateDeckNameUseCase = updateDeckNameUseCase,
-            addCardToDeckUseCase = addCardToDeckUseCase,
-            removeCardFromDeckUseCase = removeCardFromDeckUseCase,
             getDeckByIdUseCase = getDeckByIdUseCase,
             deleteCardUseCase = deleteCardUseCase,
+            setDeckCardsUseCase = setDeckCardsUseCase,
             uiEventDispatcher = uiEventDispatcher
         )
 }
@@ -112,7 +109,7 @@ class DeckCreatorViewModelTest {
         advanceUntilIdle()
 
         coVerify {
-            robot.createDeckUseCase(any(), setOf(1))
+            robot.createDeckUseCase(any(), listOf(1))
         }
     }
 
@@ -151,7 +148,7 @@ class DeckCreatorViewModelTest {
         advanceUntilIdle()
 
         coVerify {
-            robot.addCardToDeckUseCase(10, 1)
+            robot.setDeckCardsUseCase(10,listOf(1))
         }
     }
 

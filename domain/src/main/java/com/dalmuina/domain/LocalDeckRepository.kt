@@ -9,10 +9,6 @@ interface LocalDeckRepository {
 
     suspend fun createDeck(name: String, cardIds: List<Int>): DFResult<Unit, DataBaseError>
 
-    suspend fun addCardToDeck(deckId: Int, cardId: Int, order: Int): DFResult<Unit, DataBaseError>
-
-    suspend fun removeCardFromDeck(deckId: Int, cardId: Int): DFResult<Unit, DataBaseError>
-
     suspend fun updateDeckName(deckId: Int, name: String): DFResult<Unit, DataBaseError>
 
     fun getAllDecksWithCards(): Flow<DFResult<List<DFDeckDomain>, DataBaseError>>

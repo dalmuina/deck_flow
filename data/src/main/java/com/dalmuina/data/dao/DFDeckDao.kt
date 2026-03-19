@@ -126,10 +126,8 @@ ORDER BY x.`order`
     @Transaction
     suspend fun replaceDeckCards(deckId: Int, cardIds: List<Int>) {
 
-        // 1. eliminar todo
         deleteCrossRefs(deckId)
 
-        // 2. insertar con nuevo orden
         val refs = cardIds.mapIndexed { index, cardId ->
             DFDeckCardCrossEntity(
                 deckId = deckId,

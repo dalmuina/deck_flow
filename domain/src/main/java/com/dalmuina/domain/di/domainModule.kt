@@ -1,6 +1,5 @@
 package com.dalmuina.domain.di
 
-import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
@@ -11,7 +10,6 @@ import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
-import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
@@ -84,20 +82,6 @@ val domainModule = module {
         DeleteDeckUseCase(
             repository = get(),
             selectedDeckRepository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        AddCardToDeckUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        RemoveCardFromDeckUseCase(
-            repository = get(),
             dispatcher = get(named("IO")),
         )
     }

@@ -25,18 +25,6 @@ class LocalDeckDataSource(
         dao.updateDeckName(deckId, name)
     }
 
-    suspend fun addCardToDeck(deckId: Int, cardId: Int, order: Int) =
-        dao.insertCrossRef(
-            DFDeckCardCrossEntity(
-                deckId = deckId,
-                cardId = cardId,
-                order = order,
-            )
-        )
-
-    suspend fun removeCardFromDeck(deckId: Int, cardId: Int) =
-        dao.deleteCrossRef(deckId, cardId)
-
     fun getAllDecksWithCards(): Flow<List<DFDeckWithCards>> =
         dao.getAllDecksWithCards()
 

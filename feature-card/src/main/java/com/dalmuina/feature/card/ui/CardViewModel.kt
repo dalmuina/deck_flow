@@ -82,7 +82,6 @@ class CardViewModel(
 
 
                 is DFResult.Success -> {
-                    Log.d("DF debug",result.data.cards.toString())
                     SessionState(
                         loading = false,
                         name = result.data.name,
