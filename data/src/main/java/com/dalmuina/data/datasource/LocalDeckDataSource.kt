@@ -1,6 +1,7 @@
 package com.dalmuina.data.datasource
 
 import com.dalmuina.data.dao.DFDeckDao
+import com.dalmuina.data.entity.DFCardInDeckEntity
 import com.dalmuina.data.entity.DFDeckCardCrossEntity
 import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.DFDeckWithCards
@@ -10,7 +11,7 @@ class LocalDeckDataSource(
     private val dao: DFDeckDao
 ) {
 
-    suspend fun createDeck(name: String, cardIds: Set<Int>) {
+    suspend fun createDeck(name: String, cardIds: List<Int>) {
         dao.insertDeckWithCards(
             deck = DFDeckEntity(name = name),
             cardIds = cardIds
@@ -24,24 +25,19 @@ class LocalDeckDataSource(
         dao.updateDeckName(deckId, name)
     }
 
-    suspend fun addCardToDeck(deckId: Int, cardId: Int) =
-        dao.insertCrossRef(
-            DFDeckCardCrossEntity(
-                deckId = deckId,
-                cardId = cardId
-            )
-        )
-
-    suspend fun removeCardFromDeck(deckId: Int, cardId: Int) =
-        dao.deleteCrossRef(deckId, cardId)
-
     fun getAllDecksWithCards(): Flow<List<DFDeckWithCards>> =
         dao.getAllDecksWithCards()
 
-    fun getDeckWithCardsById(deckId: Int): Flow<DFDeckWithCards> =
-        dao.getDeckWithCardsById(deckId)
+    fun getDeck(deckId: Int): Flow<DFDeckEntity> =
+        dao.getDeckById(deckId)
+
+    fun getCardsForDeck(deckId: Int): Flow<List<DFCardInDeckEntity>> =
+        dao.getCardsForDeck(deckId)
 
     suspend fun deleteDeck(deckId: Int) =
         dao.deleteDeck(deckId)
+
+    suspend fun setDeckCards(deckId: Int, orderedIds: List<Int>) =
+        dao.replaceDeckCards(deckId, orderedIds)
 
 }

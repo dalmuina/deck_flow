@@ -1,11 +1,10 @@
 package com.dalmuina.data.repository
 
 import com.dalmuina.data.datasource.LocalCardDataSource
-import com.dalmuina.data.entity.DFCardProgressEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
 import com.dalmuina.domain.LocalCardRepository
-import com.dalmuina.domain.model.DFCard
+import com.dalmuina.domain.model.DFCardDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import kotlinx.coroutines.flow.Flow
@@ -16,13 +15,13 @@ import kotlin.coroutines.cancellation.CancellationException
 class LocalCardRepositoryImpl(
     private val dataSource: LocalCardDataSource,
 ) : LocalCardRepository {
-    override suspend fun saveCard(card: DFCard): DFResult<Int, DataBaseError> {
+    override suspend fun saveCard(card: DFCardDomain): DFResult<Int, DataBaseError> {
         return safeDbCall {
             dataSource.saveCard(card.toEntity()).toInt()
         }
     }
 
-    override suspend fun updateCard(card: DFCard): DFResult<Int, DataBaseError> {
+    override suspend fun updateCard(card: DFCardDomain): DFResult<Int, DataBaseError> {
         return safeDbCall {
             dataSource.updateCard(card.toEntity())
             card.id
@@ -47,12 +46,12 @@ class LocalCardRepositoryImpl(
         }
     }
 
-    override fun getAllCards(): Flow<DFResult<List<DFCard>, DataBaseError>> {
+    override fun getAllCards(): Flow<DFResult<List<DFCardDomain>, DataBaseError>> {
         return dataSource
             .getAllCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<DFCard>, DataBaseError>
+                        as DFResult<List<DFCardDomain>, DataBaseError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
@@ -60,7 +59,7 @@ class LocalCardRepositoryImpl(
             }
     }
 
-    override suspend fun getCardById(cardId: Int): DFResult<DFCard, DataBaseError> {
+    override suspend fun getCardById(cardId: Int): DFResult<DFCardDomain, DataBaseError> {
         return safeDbCall {
             dataSource.getCardByID(cardId).toDomain()
         }

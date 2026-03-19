@@ -1,7 +1,7 @@
 package com.dalmuina.feature.deck.ui.model
 
 import androidx.compose.runtime.Immutable
-import com.dalmuina.domain.model.DFCard
+import com.dalmuina.domain.model.DFCardDomain
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -11,6 +11,7 @@ data class DFCardSlotUi(
     val name: String,
     val duration: Duration,
     val isSelected: Boolean,
+    val order: Int? = null,
 )
 
 fun Duration.toTimerText(): String {
@@ -25,9 +26,10 @@ fun Duration.toTimerText(): String {
     }
 }
 
-fun DFCard.toCardUi(): DFCardSlotUi = DFCardSlotUi(
+fun DFCardDomain.toCardUi(): DFCardSlotUi = DFCardSlotUi(
     id = id,
     name = name,
     duration = durationMillis.milliseconds,
     isSelected = true,
+    order = order,
 )

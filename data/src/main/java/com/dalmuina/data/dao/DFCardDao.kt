@@ -47,7 +47,7 @@ interface DFCardDao {
         SELECT * FROM cards
     """
     )
-    fun getAllCards(): Flow<List<DFCardWithProgress>>
+    fun getAllCards(): Flow<List<DFCardEntity>>
 
     @Transaction
     @Query(
@@ -55,7 +55,7 @@ interface DFCardDao {
         SELECT * FROM cards WHERE id = :idCard
     """
     )
-    suspend fun getCardById(idCard: Int): DFCardWithProgress
+    suspend fun getCardById(idCard: Int): DFCardEntity
 
     @Query(
         """

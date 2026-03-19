@@ -1,8 +1,7 @@
 package com.dalmuina.domain.usecase
 
-import android.util.Log
 import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.model.DFDeck
+import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import com.dalmuina.domain.model.map
@@ -16,16 +15,15 @@ class GetDeckByIdUseCase(
     private val clock: Clock,
 ) {
 
-    operator fun invoke(deckId: Int): Flow<DFResult<DFDeck, DataBaseError>> =
+    operator fun invoke(deckId: Int): Flow<DFResult<DFDeckDomain, DataBaseError>> =
         repository.getDeckWithCardsById(deckId)
             .map { result ->
                 result.map { deck ->
-                    Log.d("DeckDebug", "deck in usecase $deck")
                     normalizeDeck(deck)
                 }
             }
 
-    private fun normalizeDeck(deck: DFDeck): DFDeck {
+    private fun normalizeDeck(deck: DFDeckDomain): DFDeckDomain {
 
         val now = clock.millis()
 

@@ -1,6 +1,5 @@
 package com.dalmuina.domain.di
 
-import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
@@ -11,10 +10,10 @@ import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
-import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
+import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -88,20 +87,6 @@ val domainModule = module {
     }
 
     factory {
-        AddCardToDeckUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        RemoveCardFromDeckUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
         GetSelectedDeckUseCase(
             repository = get(),
         )
@@ -130,6 +115,13 @@ val domainModule = module {
 
     factory {
         PostponeCardUseCase(
+            repository = get(),
+            dispatcher = get(named("IO")),
+        )
+    }
+
+    factory {
+        SetDeckCardsUseCase(
             repository = get(),
             dispatcher = get(named("IO")),
         )

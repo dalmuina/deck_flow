@@ -3,11 +3,8 @@ package com.dalmuina.feature.card.ui
 import app.cash.turbine.test
 import com.dalmuina.coretest.data.CardTestData
 import com.dalmuina.coretest.data.DeckTestData
-import com.dalmuina.coretest.helpers.awaitLoaded
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.model.DFCard
-import com.dalmuina.domain.model.DFDeck
 import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase

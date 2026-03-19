@@ -12,7 +12,7 @@ class CreateDeckUseCase(
 ) {
     suspend operator fun invoke(
         name: String,
-        cardIds: Set<Int>,
+        cardIds: List<Int>,
     ): DFResult<Unit, DataBaseError> =
         withContext(dispatcher) {
             repository.createDeck(name, cardIds)

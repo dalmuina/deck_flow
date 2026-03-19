@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
@@ -24,7 +23,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 class CardViewModel(
     private val getSelectedDeckUseCase: GetSelectedDeckUseCase,
@@ -35,6 +33,7 @@ class CardViewModel(
 
     private val sessionCards = MutableStateFlow<List<DFCardUi>>(emptyList())
     private var currentDeckId: Int? = null
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val deckFlow =
@@ -55,7 +54,10 @@ class CardViewModel(
                     val deckId = result.data.id
                     val dbCards = result.data.cards.map { it.toCardUi() }
 
-                    if (currentDeckId != deckId) {
+                    val hasStructureChanged =
+                        sessionCards.value.map { it.id } != dbCards.map { it.id }
+
+                    if (currentDeckId != deckId || hasStructureChanged) {
                         currentDeckId = deckId
                         sessionCards.value = dbCards
                         return@collectLatest
@@ -75,7 +77,10 @@ class CardViewModel(
 
     val uiState: StateFlow<SessionState> =
         combine(deckFlow, sessionCards) { result, session ->
+
             when (result) {
+
+
                 is DFResult.Success -> {
                     SessionState(
                         loading = false,
@@ -83,7 +88,6 @@ class CardViewModel(
                         cards = session
                     )
                 }
-
                 else -> {
                     SessionState(
                         loading = false,

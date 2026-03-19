@@ -1,6 +1,6 @@
 package com.dalmuina.feature.card.model
 
-import com.dalmuina.domain.model.DFCard
+import com.dalmuina.domain.model.DFCardDomain
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -24,7 +24,7 @@ fun Duration.toTimerText(): String {
     }
 }
 
-fun DFCard.toCardUi(): DFCardUi = DFCardUi(
+fun DFCardDomain.toCardUi(): DFCardUi = DFCardUi(
     id = id,
     name = name,
     duration = durationMillis.milliseconds,

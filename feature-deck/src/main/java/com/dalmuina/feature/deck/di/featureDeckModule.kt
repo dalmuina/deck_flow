@@ -24,10 +24,9 @@ val featureDeckModule = module{
             getAllCardsUseCase = get(),
             createDeckUseCase = get(),
             updateDeckNameUseCase = get(),
-            addCardToDeckUseCase = get(),
-            removeCardFromDeckUseCase = get(),
             getDeckByIdUseCase = get(),
             deleteCardUseCase = get(),
+            setDeckCardsUseCase = get(),
             uiEventDispatcher = get(),
         )
     }

@@ -2,7 +2,7 @@ package com.dalmuina.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dalmuina.domain.model.DFCard
+import com.dalmuina.domain.model.DFCardDomain
 
 @Entity(tableName = "cards")
 data class DFCardEntity(
@@ -12,11 +12,19 @@ data class DFCardEntity(
     val duration: Long,
 )
 
-fun DFCard.toEntity(): DFCardEntity {
+fun DFCardDomain.toEntity(): DFCardEntity {
     return DFCardEntity(
         id = id,
         name = name,
         duration = durationMillis,
+    )
+}
+
+fun DFCardEntity.toDomain(): DFCardDomain {
+    return DFCardDomain(
+        id= id,
+        name = name,
+        durationMillis = duration,
     )
 }
 

@@ -1,21 +1,22 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.designsystem.error.toUiMessage
 import com.dalmuina.core.ui.UiEvent
 import com.dalmuina.core.ui.UiEventDispatcher
-import com.dalmuina.core.utils.toggleElement
+import com.dalmuina.designsystem.error.toUiMessage
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
-import com.dalmuina.domain.usecase.AddCardToDeckUseCase
 import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
-import com.dalmuina.domain.usecase.RemoveCardFromDeckUseCase
+import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
+import com.dalmuina.feature.deck.ui.model.DFCardSlotUi
+import com.dalmuina.feature.deck.ui.deckCreator.SelectedCard
 import com.dalmuina.feature.deck.ui.model.toCardUi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,10 +40,9 @@ class DeckCreatorViewModel(
     private val getAllCardsUseCase: GetAllCardsUseCase,
     private val createDeckUseCase: CreateDeckUseCase,
     private val updateDeckNameUseCase: UpdateDeckNameUseCase,
-    private val addCardToDeckUseCase: AddCardToDeckUseCase,
-    private val removeCardFromDeckUseCase: RemoveCardFromDeckUseCase,
     private val getDeckByIdUseCase: GetDeckByIdUseCase,
     private val deleteCardUseCase: DeleteCardUseCase,
+    private val setDeckCardsUseCase: SetDeckCardsUseCase,
     private val uiEventDispatcher: UiEventDispatcher
 ) : ViewModel() {
 
@@ -55,12 +55,13 @@ class DeckCreatorViewModel(
     private val _events = MutableSharedFlow<DeckCreatorEvent>()
     val events = _events.asSharedFlow()
 
-    private val selectedCardIds = MutableStateFlow<Set<Int>>(emptySet())
+    private val selectedCards =
+        MutableStateFlow<List<SelectedCard>>(emptyList())
     private val deckName = MutableStateFlow(DEFAULT_DECK_NAME)
 
     init {
-        mode.deckId?.let {
-            loadDeck(it)
+        mode.deckId?.let { deckId ->
+            loadDeck(deckId)
         }
         observeDeckNameChange()
     }
@@ -68,12 +69,15 @@ class DeckCreatorViewModel(
     private val cardsUiFlow =
         getAllCardsUseCase()
             .map { result ->
+
                 when (result) {
-                    is DFResult.Success -> result.data.map { it.toCardUi() }
+                    is DFResult.Success -> {
+                        result.data.map { it.toCardUi() }
+                    }
+
                     is DFResult.Error -> emptyList()
                 }
             }
-
 
     private fun observeDeckNameChange() {
         @OptIn(FlowPreview::class)
@@ -92,15 +96,26 @@ class DeckCreatorViewModel(
     val uiState: StateFlow<DeckCreatorUiState> =
         combine(
             cardsUiFlow,
-            selectedCardIds,
+            selectedCards,
             deckName
         ) { cards, selectedIds, name ->
+
+            val orderMap = selectedCards.value.associate { it.id to it.order }
 
             DeckCreatorUiState(
                 loading = false,
                 deckCard = cards.map { card ->
-                    card.copy(isSelected = selectedIds.contains(card.id))
-                },
+                    val order = orderMap[card.id]
+
+                    card.copy(
+                        isSelected = order != null,
+                        order = order,
+                    )
+                }
+                    .sortedWith(
+                        compareBy<DFCardSlotUi> { it.order == null }
+                            .thenBy { it.order }
+                    ),
                 name = name,
                 isEditMode = mode is DeckCreatorMode.Edit
             )
@@ -119,7 +134,14 @@ class DeckCreatorViewModel(
             .onEach { result ->
                 when (result) {
                     is DFResult.Success -> {
-                        selectedCardIds.value = result.data.cards.map { it.id }.toSet()
+                        selectedCards.value =
+                            result.data.cards
+                                .mapNotNull { card ->
+                                    card.order?.let { order ->
+                                        SelectedCard(card.id, order)
+                                    }
+                                }
+                                .sortedBy { it.order }
                         deckName.value = result.data.name
                     }
 
@@ -137,55 +159,75 @@ class DeckCreatorViewModel(
             is DeckCreatorIntent.SelectedCard -> selectedCard(intent.id)
             is DeckCreatorIntent.CardCreated ->
                 onCardCreated(intent.id)
+
             DeckCreatorIntent.SaveDeck -> saveDeck()
             is DeckCreatorIntent.NameChanged -> {
                 deckName.value = intent.value
             }
 
             is DeckCreatorIntent.DeleteCard -> deleteCard(intent.id)
+
+            is DeckCreatorIntent.Reorder -> reorder(intent.from, intent.to)
         }
     }
 
     private fun onCardCreated(cardId: Int) {
 
-        selectedCardIds.update { it + cardId }
-
-        if (mode is DeckCreatorMode.Edit) {
-            viewModelScope.launch {
-                addCardToDeckUseCase(mode.deckId, cardId)
-            }
+        selectedCards.update { current ->
+            current + SelectedCard(
+                id = cardId,
+                order = current.size
+            )
         }
     }
 
 
     private fun saveDeck() {
         viewModelScope.launch {
-            createDeckUseCase(deckName.value, selectedCardIds.value)
+            createDeckUseCase(
+                deckName.value,
+                selectedCards.value
+                    .map { it.id }
+            )
                 .onSuccess { _events.emit(DeckCreatorEvent.CloseScreen) }
                 .onError { error ->
-                    uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar(error.toUiMessage())
-                    )
-                }
+                uiEventDispatcher.dispatch(
+                    UiEvent.ShowSnackBar(error.toUiMessage())
+                )
+            }
         }
     }
 
     private fun selectedCard(cardId: Int) {
 
-        selectedCardIds.update { current ->
+        selectedCards.update { current ->
 
-            val wasSelected = cardId in current
+            val exists = current.any { it.id == cardId }
+
+            val newList =
+                if (exists) {
+                    current
+                        .filterNot { it.id == cardId }
+                        .mapIndexed { index, card ->
+                            card.copy(order = index)
+                        }
+                } else {
+                    current + SelectedCard(
+                        id = cardId,
+                        order = current.size
+                    )
+                }
 
             if (mode is DeckCreatorMode.Edit) {
                 viewModelScope.launch {
-                    if (wasSelected)
-                        removeCardFromDeckUseCase(mode.deckId, cardId)
-                    else
-                        addCardToDeckUseCase(mode.deckId, cardId)
+                    setDeckCardsUseCase(
+                        mode.deckId,
+                        newList.map { it.id }
+                    )
                 }
             }
 
-            current.toggleElement(cardId)
+            newList
         }
     }
 
@@ -198,6 +240,34 @@ class DeckCreatorViewModel(
                         UiEvent.ShowSnackBar(error.toUiMessage())
                     )
                 }
+        }
+    }
+
+    private fun reorder(from: Int, to: Int) {
+
+        selectedCards.update { current ->
+
+            if (from == to) return@update current
+
+            val mutable = current.toMutableList()
+
+            val item = mutable.removeAt(from)
+            mutable.add(to, item)
+
+            val reordered = mutable.mapIndexed { index, card ->
+                card.copy(order = index)
+            }
+
+            if (mode is DeckCreatorMode.Edit) {
+                viewModelScope.launch {
+                    setDeckCardsUseCase(
+                        mode.deckId,
+                        reordered.map { it.id }
+                    )
+                }
+            }
+
+            reordered
         }
     }
 }

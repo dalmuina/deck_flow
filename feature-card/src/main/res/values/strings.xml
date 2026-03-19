@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_deck_created">No Deck Selected</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
 </resources>

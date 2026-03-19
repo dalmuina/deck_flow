@@ -22,11 +22,11 @@ import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.ui.model.DFDeckSlotUi
+import com.dalmuina.feature.deck.ui.model.DFDeckUi
 
 @Composable
 fun DFDeckSlot(
-    deck: DFDeckSlotUi,
+    deck: DFDeckUi,
     onEdit: () -> Unit,
     onDeckSelected: (Int) -> Unit,
 ) {
@@ -81,7 +81,7 @@ fun DFDeckSlot(
 fun DFDeckSlotPreview() {
     DeckFlowTheme {
         DFDeckSlot(
-            deck = DFDeckSlotUi(
+            deck = DFDeckUi(
                 id = 0,
                 name = "asd",
                 cardCount = 4,

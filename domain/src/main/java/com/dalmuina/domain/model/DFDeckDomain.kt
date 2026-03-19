@@ -1,7 +1,7 @@
 package com.dalmuina.domain.model
 
-data class DFDeck(
+data class DFDeckDomain(
     val id: Int,
     val name: String,
-    val cards : List<DFCard>,
+    val cards : List<DFCardDomain>,
 )
