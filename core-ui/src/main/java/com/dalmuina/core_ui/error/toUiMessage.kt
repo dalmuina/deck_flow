@@ -1,8 +1,7 @@
-package com.dalmuina.designsystem.error
+package com.dalmuina.core_ui.error
 
-import com.dalmuina.designsystem.R
+import com.dalmuina.core_ui.R
 import com.dalmuina.domain.model.DataBaseError
-
 
 fun DataBaseError.toUiMessage(): Int {
     return when (this) {

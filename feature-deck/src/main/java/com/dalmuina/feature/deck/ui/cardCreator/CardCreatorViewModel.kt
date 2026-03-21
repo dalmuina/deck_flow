@@ -2,9 +2,9 @@ package com.dalmuina.feature.deck.ui.cardCreator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.designsystem.error.toUiMessage
 import com.dalmuina.core.ui.UiEvent
 import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.core_ui.error.toUiMessage
 import com.dalmuina.domain.model.DFCardDomain
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
@@ -29,8 +29,8 @@ class CardCreatorViewModel(
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CardCreatorUiState())
-    val uiState: StateFlow<CardCreatorUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(CardCreatorState())
+    val uiState: StateFlow<CardCreatorState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<CardCreatorEvent>()
     val events = _events.asSharedFlow()
@@ -116,11 +116,12 @@ class CardCreatorViewModel(
             val result = when (mode) {
                 CardCreatorMode.Create ->
                     saveCardUseCase(card)
+
                 is CardCreatorMode.Edit ->
                     updateCardUseCase(card)
             }
             result
-                .onSuccess {cardId->
+                .onSuccess { cardId ->
                     _events.emit(CardCreatorEvent.CloseScreen(cardId))
                 }.onError { error ->
                     uiEventDispatcher.dispatch(
@@ -140,7 +141,7 @@ class CardCreatorViewModel(
     }
 
     private inline fun reduce(
-        reducer: CardCreatorUiState.() -> CardCreatorUiState
+        reducer: CardCreatorState.() -> CardCreatorState
     ) {
         _uiState.update {
             it.reducer()

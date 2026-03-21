@@ -13,16 +13,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.card.model.DFCardUi
 import com.dalmuina.feature.card.ui.TimerState
 
 @Composable
 fun DFCard(
-    card: DFCardUi
+    card: DFCardUi,
+    containerColor: Color,
 ) {
-    DFCardContainer(card = card) {
+    DFCardContainer(containerColor = containerColor) {
         DFCardContent(card)
     }
 }
@@ -30,12 +31,13 @@ fun DFCard(
 @Composable
 fun DFCardWithTimer(
     card: DFCardUi,
+    containerColor: Color,
     timerState: TimerState,
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
 ) {
 
-    DFCardContainer(card = card) {
+    DFCardContainer(containerColor = containerColor) {
 
         DFCardContent(card)
 
@@ -52,21 +54,16 @@ fun DFCardWithTimer(
 @Composable
 fun DFCardContainer(
     modifier: Modifier = Modifier,
-    card: DFCardUi,
+    containerColor: Color,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val colors = arrayOf(
-        MaterialTheme.colorScheme.primaryContainer,
-        MaterialTheme.colorScheme.secondaryContainer,
-        MaterialTheme.colorScheme.tertiaryContainer,
-    )
 
     Card(
         modifier = modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
-            containerColor = colors[card.id % colors.size]
+            containerColor = containerColor
         ),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(Spacing.s)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

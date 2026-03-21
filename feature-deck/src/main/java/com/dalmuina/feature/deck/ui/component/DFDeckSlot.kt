@@ -1,6 +1,5 @@
 package com.dalmuina.feature.deck.ui.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.dalmuina.designsystem.preview.DFPreview
+import com.dalmuina.designsystem.theme.DFTheme
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
@@ -30,17 +31,22 @@ fun DFDeckSlot(
     onEdit: () -> Unit,
     onDeckSelected: (Int) -> Unit,
 ) {
+    val containerColor =
+        if (deck.isSelected) {
+            DFTheme.extraColors.cardSlotSelectedContainer
+        } else {
+            DFTheme.extraColors.cardSlotUnselectedContainer
+        }
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Dimens.deckHeight)
-            .clickable { onEdit() },
+            .height(Dimens.deckHeight),
+        onClick = { onEdit() },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (deck.isSelected) 6.dp else 0.dp
+        ),
         colors = CardDefaults.cardColors(
-            containerColor = when (deck.cardCount) {
-                in 0 until 1 -> MaterialTheme.colorScheme.primaryContainer
-                in 2 until 3 -> MaterialTheme.colorScheme.secondaryContainer
-                else -> MaterialTheme.colorScheme.tertiaryContainer
-            }
+            containerColor = containerColor
         )
     ) {
         Column(
@@ -52,9 +58,8 @@ fun DFDeckSlot(
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                , verticalAlignment = Alignment.CenterVertically
-            ){
+                    .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     modifier = Modifier
                         .weight(1f),
@@ -63,7 +68,7 @@ fun DFDeckSlot(
                 )
                 Checkbox(
                     checked = deck.isSelected,
-                    onCheckedChange = {onDeckSelected(deck.id)}
+                    onCheckedChange = { onDeckSelected(deck.id) }
                 )
             }
 

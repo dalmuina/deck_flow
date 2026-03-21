@@ -6,6 +6,7 @@ import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import com.dalmuina.domain.model.map
 import com.dalmuina.core.utils.isToday
+import com.dalmuina.domain.utils.sortedForSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Clock
@@ -27,20 +28,22 @@ class GetDeckByIdUseCase(
 
         val now = clock.millis()
 
+        val normalizedCards = deck.cards.map { card ->
+
+            val completedToday =
+                card.completedAt?.let { isToday(it, now) } == true
+
+            val postponedToday =
+                card.postponedAt?.let { isToday(it, now) } == true
+
+            card.copy(
+                completedAt = if (completedToday) card.completedAt else null,
+                postponedAt = if (postponedToday) card.postponedAt else null
+            )
+        }
+
         return deck.copy(
-            cards = deck.cards.map { card ->
-
-                val completedToday =
-                    card.completedAt?.let { isToday(it, now) } == true
-
-                val postponedToday =
-                    card.postponedAt?.let { isToday(it, now) } == true
-
-                card.copy(
-                    completedAt = if (completedToday) card.completedAt else null,
-                    postponedAt = if (postponedToday) card.postponedAt else null
-                )
-            }
+            cards = normalizedCards.sortedForSession()
         )
     }
 }

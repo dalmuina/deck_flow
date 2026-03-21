@@ -1,6 +1,5 @@
 package com.dalmuina.feature.card.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.domain.model.DFResult
@@ -77,21 +76,19 @@ class CardViewModel(
 
     val uiState: StateFlow<SessionState> =
         combine(deckFlow, sessionCards) { result, session ->
-
             when (result) {
-
-
                 is DFResult.Success -> {
                     SessionState(
                         loading = false,
                         name = result.data.name,
-                        cards = session
+                        cards = session.filter { !it.isCompleted },
+                        isDeckSelected = true,
                     )
                 }
                 else -> {
                     SessionState(
                         loading = false,
-                        cards = emptyList()
+                        isDeckSelected = false,
                     )
                 }
             }
@@ -123,8 +120,7 @@ class CardViewModel(
         }
 
         sessionCards.update { cards ->
-            val first = cards.firstOrNull() ?: return@update cards
-            cards.drop(1) + first
+            cards.drop(1)
         }
     }
 }

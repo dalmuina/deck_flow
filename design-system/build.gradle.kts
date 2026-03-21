@@ -7,7 +7,7 @@ plugins {
 }
 
 extensions.configure<LibraryExtension>  {
-    namespace = "com.dalmuina.designsystem"
+    namespace = "com.dalmuina.design_system"
     compileSdk = 36
 
     defaultConfig {

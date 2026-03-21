@@ -9,13 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dalmuina.designsystem.component.infoState.DFCircularLoading
+import com.dalmuina.designsystem.component.infoState.EmptyState
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
@@ -34,12 +35,7 @@ fun DeckSelectorRoute(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.loading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        DFCircularLoading()
     } else {
         DeckSelectorScreen(
             items = state.deckList,
@@ -59,13 +55,7 @@ fun DeckSelectorScreen(
 ) {
     val isEmpty = items.isEmpty()
     if (isEmpty) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(stringResource(R.string.no_deck_created))
-        }
+        EmptyState(stringResource(R.string.no_deck_created))
     } else {
         LazyColumn(
             modifier = Modifier

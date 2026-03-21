@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.dalmuina.designsystem.preview.DFPreview
+import com.dalmuina.designsystem.theme.DFTheme
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.ui.model.DFCardSlotUi
@@ -31,20 +34,21 @@ fun DFCardSlot(
     onEditCard: (Int) -> Unit,
     onCheckedChanged: (Int) -> Unit
 ) {
-    val colors = arrayOf(
-        MaterialTheme.colorScheme.primaryContainer,
-        MaterialTheme.colorScheme.secondaryContainer,
-        MaterialTheme.colorScheme.tertiaryContainer,
-    )
-
+    val containerColor =
+        if (card.isSelected) {
+            DFTheme.extraColors.cardSlotSelectedContainer
+        } else {
+            DFTheme.extraColors.cardSlotUnselectedContainer
+        }
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                onEditCard(card.id)
-            },
+            .fillMaxWidth(),
+        onClick = {onEditCard(card.id)},
         colors = CardDefaults.cardColors(
-            containerColor = colors[card.id % colors.size]
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (card.isSelected) 6.dp else 0.dp
         )
     ) {
         Row(
@@ -58,7 +62,7 @@ fun DFCardSlot(
                     .padding(Spacing.l)
             ) {
                 Text(
-                    text = card.name
+                    text = "${card.order?:""} ${card.name}"
                 )
                 Spacer(modifier = Modifier.height(Spacing.s))
                 Text(
