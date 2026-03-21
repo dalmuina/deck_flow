@@ -2,16 +2,22 @@ package com.dalmuina.coretest.data
 
 import com.dalmuina.domain.model.DFCardDomain
 
-object CardTestData {
+object CardDomainTestData {
 
     fun card(
         id: Int = 1,
         name: String = "Card $id",
-        durationMillis: Long = 15000L
+        durationMillis: Long = 15000L,
+        completedAt: Long? = null,
+        postponedAt: Long? = null,
+        order: Int? = null
     ) = DFCardDomain(
         id = id,
         name = name,
-        durationMillis = durationMillis
+        durationMillis = durationMillis,
+        completedAt  = completedAt,
+        postponedAt  = postponedAt,
+        order  = order,
     )
 
     fun cards(vararg ids: Int): List<DFCardDomain> =

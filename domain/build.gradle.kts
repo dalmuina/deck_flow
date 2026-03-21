@@ -1,11 +1,10 @@
 import com.android.build.api.dsl.LibraryExtension
-import org.gradle.kotlin.dsl.configure
 
 plugins {
     alias(libs.plugins.android.library)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.domain"
     compileSdk {
         version = release(36)
@@ -30,4 +29,11 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     implementation(project(":core"))
+
+    testImplementation(libs.junit)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.mockk)
+    testImplementation (libs.kotest.assertions)
+    testImplementation (libs.turbine)
+    testImplementation(project(":core-test"))
 }

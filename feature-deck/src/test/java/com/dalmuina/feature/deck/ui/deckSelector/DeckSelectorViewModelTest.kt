@@ -1,7 +1,7 @@
 package com.dalmuina.feature.deck.ui.deckSelector
 
 import app.cash.turbine.test
-import com.dalmuina.coretest.data.DeckTestData
+import com.dalmuina.coretest.data.DeckDomainTestData
 import com.dalmuina.coretest.data.ErrorTestData
 import com.dalmuina.coretest.helpers.awaitLoaded
 import com.dalmuina.coretest.helpers.failure
@@ -61,7 +61,7 @@ class DeckSelectorViewModelTest {
     @Test
     fun `when decks loaded then emits decks with selected`() = runTest {
 
-        val decks = DeckTestData.decks(1,2,3)
+        val decks = DeckDomainTestData.decks(1,2,3)
 
         every { robot.getAllDecksUseCase() } returns flowOf(
             success(decks)
@@ -98,7 +98,7 @@ class DeckSelectorViewModelTest {
     @Test
     fun `when deleting selected deck selects next deck`() = runTest {
 
-        val decks = DeckTestData.decks(1,2,3)
+        val decks = DeckDomainTestData.decks(1,2,3)
 
         every { robot.getAllDecksUseCase() } returns flowOf(
             success(decks)
@@ -143,7 +143,7 @@ class DeckSelectorViewModelTest {
     @Test
     fun `when no selected deck then first deck becomes selected`() = runTest {
 
-        val decks = DeckTestData.decks(1,2,3)
+        val decks = DeckDomainTestData.decks(1,2,3)
 
         every { robot.getAllDecksUseCase() } returns flowOf(
             success(decks)
