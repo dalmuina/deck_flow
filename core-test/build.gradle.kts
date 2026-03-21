@@ -6,7 +6,7 @@ plugins {
 }
 
 extensions.configure<LibraryExtension>  {
-    namespace = "com.dalmuina.coretest"
+    namespace = "com.dalmuina.core_test"
     compileSdk = 36
 
     defaultConfig {

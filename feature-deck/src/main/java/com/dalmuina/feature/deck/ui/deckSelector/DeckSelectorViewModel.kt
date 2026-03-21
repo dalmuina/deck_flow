@@ -2,9 +2,9 @@ package com.dalmuina.feature.deck.ui.deckSelector
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.designsystem.error.toUiMessage
 import com.dalmuina.core.ui.UiEvent
 import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.core_ui.error.toUiMessage
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
@@ -28,7 +28,7 @@ class DeckSelectorViewModel(
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
 
-    val uiState: StateFlow<DeckSelectorUiState> =
+    val uiState: StateFlow<DeckSelectorState> =
         combine(
             getAllDecksUseCase(),
             getSelectedDeckUseCase(),
@@ -52,7 +52,7 @@ class DeckSelectorViewModel(
                         }
 
                     decks.forEach { println(it.id) }
-                    DeckSelectorUiState(
+                    DeckSelectorState(
                         loading = false,
                         deckList = decks.map { deck ->
                             deck.copy(isSelected = deck.id == finalSelected)
@@ -61,7 +61,7 @@ class DeckSelectorViewModel(
                 }
 
                 is DFResult.Error -> {
-                    DeckSelectorUiState(
+                    DeckSelectorState(
                         loading = false,
                         deckList = emptyList()
                     )
@@ -69,12 +69,12 @@ class DeckSelectorViewModel(
             }
         }
             .onStart {
-                emit(DeckSelectorUiState(loading = true))
+                emit(DeckSelectorState(loading = true))
             }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
-                DeckSelectorUiState(loading = true)
+                DeckSelectorState(loading = true)
             )
 
     fun process(intent: DeckSelectorIntent) {

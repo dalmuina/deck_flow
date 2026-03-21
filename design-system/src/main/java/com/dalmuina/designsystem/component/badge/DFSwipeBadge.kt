@@ -17,7 +17,7 @@ fun DFSwipeBadge(
     modifier: Modifier = Modifier,
     text: String,
     color: Color,
-    alpha: Float
+    alpha: Float = 1f,
 ) {
     Box(
         modifier = modifier

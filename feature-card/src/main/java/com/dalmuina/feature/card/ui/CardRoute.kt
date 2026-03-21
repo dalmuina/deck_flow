@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,9 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.component.badge.DFSwipeBadge
+import com.dalmuina.designsystem.component.infoState.DFCircularLoading
+import com.dalmuina.designsystem.component.infoState.EmptyState
+import com.dalmuina.designsystem.theme.DFExtraColors
+import com.dalmuina.designsystem.theme.DFTheme
 import com.dalmuina.designsystem.theme.DeckFlowTheme
-import com.dalmuina.designsystem.theme.GreenPop
-import com.dalmuina.designsystem.theme.OrangePop
+import com.dalmuina.designsystem.theme.Malachite
+import com.dalmuina.designsystem.theme.TiaMaria
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.model.DFCardUi
@@ -57,112 +60,116 @@ fun CardRoute(
             state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: return@LaunchedEffect
         timerViewModel.process(TimerIntent.Reset(duration))
     }
+    when {
+        state.loading -> {
+            DFCircularLoading()
+        }
 
-    CardScreen(
-        deckName = state.name,
-        cards = state.cards.take(3),
-        timerState = timerState,
-        onSwiped = { direction ->
-            timerViewModel.process(TimerIntent.Stop)
-            viewModel.process(CardIntent.SwipeTopCard(direction))
-        },
-        onPlay = { isPLaying ->
-            if (isPLaying)
-                timerViewModel.process(TimerIntent.Stop)
-            else
-                timerViewModel.process(TimerIntent.Play())
-        },
-        onReset = {
-            timerViewModel.process(TimerIntent.Reset(duration)) },
-    )
+        !state.isDeckSelected -> {
+            EmptyState(stringResource(R.string.no_deck_created))
+        }
+
+        state.cards.isEmpty() -> {
+            EmptyState(stringResource(R.string.no_pending_tasks))
+        }
+
+        else -> {
+            CardScreen(
+                cards = state.cards,
+                timerState = timerState,
+                onSwiped = { direction ->
+                    timerViewModel.process(TimerIntent.Stop)
+                    viewModel.process(CardIntent.SwipeTopCard(direction))
+                },
+                onPlay = { isPLaying ->
+                    if (isPLaying)
+                        timerViewModel.process(TimerIntent.Stop)
+                    else
+                        timerViewModel.process(TimerIntent.Play())
+                },
+                onReset = {
+                    timerViewModel.process(TimerIntent.Reset(duration))
+                },
+            )
+        }
+    }
 }
 
 @Composable
 fun CardScreen(
-    deckName: String,
     cards: List<DFCardUi>,
-    onSwiped: (SwipeDirection) -> Unit,
     timerState: TimerState,
+    onSwiped: (SwipeDirection) -> Unit,
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
-
+) {
+    Box(
+        modifier = Modifier
+            .padding(Spacing.l)
+            .fillMaxSize()
     ) {
-    val isEmpty = cards.isEmpty()
+        var dragOffsetX by remember { mutableFloatStateOf(0f) }
+        val swipeProgress = (abs(dragOffsetX) / 300f).coerceIn(0f, 1f)
+        val signedProgress = (dragOffsetX / 300f).coerceIn(-1f, 1f)
 
-    if (isEmpty) {
-        Box(
-            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-        ) {
-            Text(stringResource(R.string.no_deck_created))
-        }
-    } else {
-        Box(
-            modifier = Modifier
-                .padding(Spacing.l)
-                .fillMaxSize()
-        ) {
-            var dragOffsetX by remember { mutableFloatStateOf(0f) }
-            val swipeProgress = (abs(dragOffsetX) / 300f).coerceIn(0f, 1f)
-            val signedProgress = (dragOffsetX / 300f).coerceIn(-1f, 1f)
+        cards.reversed().forEachIndexed { index, card ->
 
-            cards.reversed().forEachIndexed { index, card ->
+            val depth = cards.size - index - 1
+            val baseScale = 1f - (depth * 0.05f)
 
-                val depth = cards.size - index - 1
-                val baseScale = 1f - (depth * 0.05f)
-
-                val targetScale =
-                    if (depth == 1) {
-                        baseScale + (0.05f * swipeProgress)
-                    } else {
-                        baseScale
-                    }
-
-                val scale by animateFloatAsState(
-                    targetValue = targetScale, label = "cardScale"
-                )
-
-                val baseOffset = (depth * 16).dp
-
-                val targetOffset =
-                    if (depth == 1) {
-                        baseOffset * (1 - swipeProgress)
-                    } else {
-                        baseOffset
-                    }
-
-                val offset by animateDpAsState(
-                    targetValue = targetOffset, label = "cardOffset"
-                )
-
-                if (depth == 0) {
-                    DFSwipeCard(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .offset(y = offset)
-                            .scale(scale),
-                        onSwiped = { direction ->
-                            dragOffsetX = 0f
-                            onSwiped(direction)
-                        },
-                        onDragProgress = { dragOffsetX = it },
-                    ) {
-                        SwipeCardContent(
-                            signedProgress = signedProgress,
-                            card = card,
-                            timerState = timerState,
-                            onPlay = onPlay,
-                            onReset = onReset,
-                        )
-
-                    }
+            val targetScale =
+                if (depth == 1) {
+                    baseScale + (0.05f * swipeProgress)
                 } else {
-                    DFCard(
-                        card = card
+                    baseScale
+                }
+
+            val scale by animateFloatAsState(
+                targetValue = targetScale, label = "cardScale"
+            )
+
+            val baseOffset = (depth * 16).dp
+
+            val targetOffset =
+                if (depth == 1) {
+                    baseOffset * (1 - swipeProgress)
+                } else {
+                    baseOffset
+                }
+
+            val offset by animateDpAsState(
+                targetValue = targetOffset, label = "cardOffset"
+            )
+
+            if (depth == 0) {
+                DFSwipeCard(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset(y = offset)
+                        .scale(scale),
+                    onSwiped = { direction ->
+                        dragOffsetX = 0f
+                        onSwiped(direction)
+                    },
+                    onDragProgress = { dragOffsetX = it },
+                ) {
+                    SwipeCardContent(
+                        signedProgress = signedProgress,
+                        card = card,
+                        timerState = timerState,
+                        onPlay = onPlay,
+                        onReset = onReset,
                     )
                 }
+            } else {
+                DFCard(
+                    card = card,
+                    containerColor = DFTheme.extraColors.cardSlotUnselectedContainer,
+                )
             }
         }
     }
+
 }
 
 @Composable
@@ -183,6 +190,7 @@ fun SwipeCardContent(
     ) {
         DFCardWithTimer(
             card = card,
+            DFTheme.extraColors.cardSlotSelectedContainer,
             timerState = timerState,
             onPlay = onPlay,
             onReset = onReset,
@@ -195,11 +203,11 @@ fun SwipeCardContent(
         ) {
             DFSwipeBadge(
                 text = when {
-                    card.isCompleted -> "Completed"
-                    card.isPostponed -> "Postponed"
+                    card.isCompleted -> stringResource(R.string.completed_level)
+                    card.isPostponed -> stringResource(R.string.postponed_level)
                     else -> ""
                 },
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.secondary,
                 alpha = if (card.isCompleted || card.isPostponed) 1f else 0f
             )
         }
@@ -211,13 +219,13 @@ fun SwipeCardContent(
         )
         {
             DFSwipeBadge(
-                text = "Completed",
-                color = GreenPop,
+                text = stringResource(R.string.completed_level),
+                color = Malachite,
                 alpha = rightAlphaAnimated
             )
             DFSwipeBadge(
-                text = "Postponed",
-                color = OrangePop,
+                text = stringResource(R.string.postponed_level),
+                color = TiaMaria,
                 alpha = leftAlphaAnimated
             )
         }
@@ -242,23 +250,22 @@ fun CardScreenPreview() {
 
     DeckFlowTheme {
         CardScreen(
-            deckName = "My Deck",
             cards = listOf(
                 DFCardUi(
                     id = 0,
-                    name = "leer",
+                    name = "Reading",
                     duration = 3L.minutes,
                     isCompleted = true,
                     isPostponed = false,
                 ), DFCardUi(
                     id = 1,
-                    name = "escribir",
+                    name = "Writing",
                     duration = 30L.minutes,
                     isCompleted = false,
                     isPostponed = false,
                 ), DFCardUi(
                     id = 2,
-                    name = "estudiar",
+                    name = "Studying",
                     duration = 1L.hours,
                     isCompleted = false,
                     isPostponed = true,

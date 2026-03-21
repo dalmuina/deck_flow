@@ -1,11 +1,10 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.core.ui.UiEvent
 import com.dalmuina.core.ui.UiEventDispatcher
-import com.dalmuina.designsystem.error.toUiMessage
+import com.dalmuina.core_ui.error.toUiMessage
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
@@ -16,7 +15,6 @@ import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.feature.deck.ui.model.DFCardSlotUi
-import com.dalmuina.feature.deck.ui.deckCreator.SelectedCard
 import com.dalmuina.feature.deck.ui.model.toCardUi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -92,41 +90,43 @@ class DeckCreatorViewModel(
             .launchIn(viewModelScope)
     }
 
-
-    val uiState: StateFlow<DeckCreatorUiState> =
+    val uiState: StateFlow<DeckCreatorState> =
         combine(
             cardsUiFlow,
             selectedCards,
             deckName
-        ) { cards, selectedIds, name ->
+        ) { cards, selected, name ->
 
-            val orderMap = selectedCards.value.associate { it.id to it.order }
+            val orderMap = selected.associate { it.id to it.order }
 
-            DeckCreatorUiState(
-                loading = false,
-                deckCard = cards.map { card ->
+            val deckCards = cards
+                .map { card ->
                     val order = orderMap[card.id]
 
                     card.copy(
                         isSelected = order != null,
-                        order = order,
+                        order = order
                     )
                 }
-                    .sortedWith(
-                        compareBy<DFCardSlotUi> { it.order == null }
-                            .thenBy { it.order }
-                    ),
+                .sortedWith(
+                    compareBy<DFCardSlotUi> { !it.isSelected }
+                        .thenBy { it.order ?: Int.MAX_VALUE }
+                )
+
+            DeckCreatorState(
+                loading = false,
+                deckCard = deckCards,
                 name = name,
                 isEditMode = mode is DeckCreatorMode.Edit
             )
         }
             .onStart {
-                emit(DeckCreatorUiState(loading = true))
+                emit(DeckCreatorState(loading = true))
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
-                initialValue = DeckCreatorUiState(loading = true)
+                initialValue = DeckCreatorState(loading = true)
             )
 
     private fun loadDeck(deckId: Int) {
@@ -172,15 +172,24 @@ class DeckCreatorViewModel(
     }
 
     private fun onCardCreated(cardId: Int) {
-
         selectedCards.update { current ->
-            current + SelectedCard(
+            val newList = current + SelectedCard(
                 id = cardId,
                 order = current.size
             )
+
+            if (mode is DeckCreatorMode.Edit) {
+                viewModelScope.launch {
+                    setDeckCardsUseCase(
+                        mode.deckId,
+                        newList.map { it.id }
+                    )
+                }
+            }
+
+            newList
         }
     }
-
 
     private fun saveDeck() {
         viewModelScope.launch {
@@ -191,10 +200,10 @@ class DeckCreatorViewModel(
             )
                 .onSuccess { _events.emit(DeckCreatorEvent.CloseScreen) }
                 .onError { error ->
-                uiEventDispatcher.dispatch(
-                    UiEvent.ShowSnackBar(error.toUiMessage())
-                )
-            }
+                    uiEventDispatcher.dispatch(
+                        UiEvent.ShowSnackBar(error.toUiMessage())
+                    )
+                }
         }
     }
 

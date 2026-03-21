@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.dalmuina.feature.deck.ui.model.DFDeckUi
 
 @Immutable
-data class DeckSelectorUiState(
+data class DeckSelectorState(
     val loading: Boolean = false,
     val deckList: List<DFDeckUi> = emptyList(),
 )

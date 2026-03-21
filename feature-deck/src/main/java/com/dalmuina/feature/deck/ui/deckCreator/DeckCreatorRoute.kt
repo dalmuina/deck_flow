@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.component.button.DFElevatedButton
+import com.dalmuina.designsystem.component.infoState.DFCircularLoading
+import com.dalmuina.designsystem.component.infoState.EmptyState
 import com.dalmuina.designsystem.component.textfield.DFOutlinedTextField
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme
@@ -63,12 +65,7 @@ fun DeckCreatorRoute(
     }
 
     if (state.loading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        DFCircularLoading()
     } else {
         DeckCreatorScreen(
             items = state.deckCard,
@@ -110,13 +107,7 @@ fun DeckCreatorScreen(
             )
             val isEmpty = items.isEmpty()
             if (isEmpty) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(stringResource(R.string.no_card_created))
-                }
+                EmptyState(stringResource(R.string.no_card_created))
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Spacing.m),

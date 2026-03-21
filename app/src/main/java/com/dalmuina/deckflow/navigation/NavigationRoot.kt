@@ -19,10 +19,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.dalmuina.core.ui.UiEvent
 import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.deckflow.R
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
@@ -170,10 +172,11 @@ fun FabArea(
         when (state.currentRoute) {
             Route.DeckSelector -> {
                 DFFloatingButton(
+                    label = stringResource(R.string.create_deck_action),
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Create Deck"
+                            contentDescription = stringResource(R.string.create_deck_action)
                         )
                     }
                 ) {
@@ -183,10 +186,11 @@ fun FabArea(
 
             Route.Card -> {
                 DFFloatingButton(
+                    label = stringResource(R.string.select_deck_action),
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Add Deck"
+                            contentDescription = stringResource(R.string.select_deck_action)
                         )
                     }
                 ) {
@@ -196,10 +200,11 @@ fun FabArea(
 
             is Route.DeckCreator -> {
                 DFFloatingButton(
+                    label = stringResource(R.string.create_card_action),
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Add Card"
+                            contentDescription = stringResource(R.string.create_card_action)
                         )
                     }
                 ) {

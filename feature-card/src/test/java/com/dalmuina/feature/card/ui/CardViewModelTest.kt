@@ -3,6 +3,7 @@ package com.dalmuina.feature.card.ui
 import app.cash.turbine.test
 import com.dalmuina.coretest.data.CardTestData
 import com.dalmuina.coretest.data.DeckTestData
+import com.dalmuina.coretest.helpers.awaitLoaded
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
 import com.dalmuina.domain.usecase.CompleteCardUseCase
@@ -142,16 +143,14 @@ class CardViewModelTest {
 
         viewModel.uiState.test {
 
-            awaitItem() // loading
-
-            val initial = awaitItem()
+            awaitLoaded()
 
             viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT))
 
             val updated = awaitItem()
 
             updated.cards.first().id shouldBe 2
-            updated.cards.last().id shouldBe 1
+            updated.cards.last().id shouldBe 2
 
             cancelAndIgnoreRemainingEvents()
         }

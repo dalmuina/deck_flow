@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlin.time.Duration
 
 @Immutable
-data class CardCreatorUiState(
+data class CardCreatorState(
     val loading: Boolean = false,
     val name: String = "",
     val duration: Duration = Duration.ZERO
