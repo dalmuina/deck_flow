@@ -1,6 +1,5 @@
 package com.dalmuina.feature.deck.ui.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,20 +8,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.dalmuina.core_ui.utils.toTimerText
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DFTheme
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.ui.model.DFCardSlotUi
-import com.dalmuina.feature.deck.ui.model.toTimerText
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -43,7 +40,7 @@ fun DFCardSlot(
     Card(
         modifier = modifier
             .fillMaxWidth(),
-        onClick = {onEditCard(card.id)},
+        onClick = { onEditCard(card.id) },
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         ),
@@ -62,7 +59,7 @@ fun DFCardSlot(
                     .padding(Spacing.l)
             ) {
                 Text(
-                    text = "${card.order?:""} ${card.name}"
+                    text = "${card.order ?: ""} ${card.name}"
                 )
                 Spacer(modifier = Modifier.height(Spacing.s))
                 Text(
