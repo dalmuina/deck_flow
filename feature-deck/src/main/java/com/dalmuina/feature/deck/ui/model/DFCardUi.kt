@@ -14,18 +14,6 @@ data class DFCardSlotUi(
     val order: Int? = null,
 )
 
-fun Duration.toTimerText(): String {
-    val totalMinutes = inWholeMinutes
-    val hours = totalMinutes / 60
-    val minutes = totalMinutes % 60
-
-    return if (hours > 0) {
-        "%02dh:%02dm".format(hours, minutes)
-    } else {
-        "%02dm".format(minutes)
-    }
-}
-
 fun DFCardDomain.toCardUi(): DFCardSlotUi = DFCardSlotUi(
     id = id,
     name = name,

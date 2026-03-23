@@ -3,7 +3,7 @@ package com.dalmuina.coretest.data
 import com.dalmuina.domain.model.DFCardDomain
 import com.dalmuina.domain.model.DFDeckDomain
 
-object DeckTestData {
+object DeckDomainTestData {
 
     fun deck(
         id: Int = 1,

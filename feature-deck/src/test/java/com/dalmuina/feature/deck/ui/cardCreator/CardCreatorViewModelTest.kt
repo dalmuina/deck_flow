@@ -1,12 +1,12 @@
 package com.dalmuina.feature.deck.ui.cardCreator
 
 import app.cash.turbine.test
-import com.dalmuina.coretest.data.CardTestData
 import com.dalmuina.coretest.data.ErrorTestData
 import com.dalmuina.coretest.helpers.failure
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
 import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.coretest.data.CardDomainTestData
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
@@ -124,16 +124,13 @@ class CardCreatorViewModelTest {
     @Test
     fun `when edit mode loads card then uiState populated`() = runTest {
 
-        val card = CardTestData.card(5)
+        val card = CardDomainTestData.card(5)
 
         coEvery { robot.getCardByIdUseCase(5) } returns success(card)
 
         viewModel = robot.build(CardCreatorMode.Edit(5))
 
         viewModel.uiState.test {
-
-            val initial = awaitItem()
-            initial.loading shouldBe false
 
             val loading = awaitItem()
             loading.loading shouldBe true

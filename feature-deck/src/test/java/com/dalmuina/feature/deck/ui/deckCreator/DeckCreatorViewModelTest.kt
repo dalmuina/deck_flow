@@ -1,7 +1,6 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
 import app.cash.turbine.test
-import com.dalmuina.coretest.data.CardTestData
 import com.dalmuina.coretest.data.ErrorTestData
 import com.dalmuina.coretest.helpers.awaitLoaded
 import com.dalmuina.coretest.helpers.failure
@@ -14,6 +13,7 @@ import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.coretest.data.CardDomainTestData
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -69,7 +69,7 @@ class DeckCreatorViewModelTest {
     @Test
     fun `when cards loaded then emits cards in uiState`() = runTest {
 
-        val cards = CardTestData.cards(1, 2, 3)
+        val cards = CardDomainTestData.cards(1, 2, 3)
 
         every { robot.getAllCardsUseCase() } returns flowOf(
             success(cards)
@@ -91,7 +91,7 @@ class DeckCreatorViewModelTest {
     @Test
     fun `when save deck then createDeckUseCase called`() = runTest {
 
-        val cards = CardTestData.cards(1, 2)
+        val cards = CardDomainTestData.cards(1, 2)
 
         every { robot.getAllCardsUseCase() } returns flowOf(
             success(cards)
@@ -135,7 +135,7 @@ class DeckCreatorViewModelTest {
     @Test
     fun `when selecting card in edit mode then addCardToDeckUseCase called`() = runTest {
 
-        val cards = CardTestData.cards(1)
+        val cards = CardDomainTestData.cards(1)
 
         every { robot.getAllCardsUseCase() } returns flowOf(
             success(cards)

@@ -29,7 +29,9 @@ class CardCreatorViewModel(
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CardCreatorState())
+    private val _uiState = MutableStateFlow(CardCreatorState(
+        loading = mode is CardCreatorMode.Edit
+    ))
     val uiState: StateFlow<CardCreatorState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<CardCreatorEvent>()
@@ -54,6 +56,7 @@ class CardCreatorViewModel(
                 adjustMinutes { it - 1 }
 
             is CardCreatorIntent.SaveActivity -> saveCard()
+            CardCreatorIntent.Cancel -> cancel()
         }
     }
 
@@ -96,10 +99,13 @@ class CardCreatorViewModel(
     }
 
     private fun changeMinutes(raw: String) {
-        val filtered = raw
-            .filter(Char::isDigit)
-            .toLongOrNull() ?: 0
-        reduce { copy(duration = filtered.minutes) }
+        val filtered = raw.filter(Char::isDigit)
+        val minutes = if (filtered.isBlank()) {
+            0L
+        } else {
+            filtered.toLongOrNull() ?: 0L
+        }
+        reduce { copy(duration = minutes.minutes) }
     }
 
     private fun adjustMinutes(transform: (Long) -> Long) {
@@ -112,6 +118,7 @@ class CardCreatorViewModel(
 
     private fun saveCard() {
         viewModelScope.launch {
+            reduce { copy(processing = true) }
             val card = buildCard()
             val result = when (mode) {
                 CardCreatorMode.Create ->
@@ -127,6 +134,7 @@ class CardCreatorViewModel(
                     uiEventDispatcher.dispatch(
                         UiEvent.ShowSnackBar(error.toUiMessage())
                     )
+                    reduce { copy(processing = false) }
                 }
         }
     }
@@ -138,6 +146,13 @@ class CardCreatorViewModel(
             name = state.name,
             durationMillis = state.duration.inWholeMilliseconds,
         )
+    }
+
+    private fun cancel() {
+        viewModelScope.launch {
+            reduce { copy(processing = true) }
+            _events.emit(CardCreatorEvent.CloseScreen(null))
+        }
     }
 
     private inline fun reduce(

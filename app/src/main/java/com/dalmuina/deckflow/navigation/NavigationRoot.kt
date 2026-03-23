@@ -30,8 +30,8 @@ import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
 import com.dalmuina.designsystem.component.topbar.DFTopBar
 import com.dalmuina.feature.card.ui.CardRoute
+import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorDialogNavRoute
 import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorRoute
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorRoute
@@ -137,12 +137,12 @@ fun NavigationRoot(
                         )
                     }
                     entry<Route.CardCreator> { backStackEntry ->
-                        CardCreatorRoute(
+                        CardCreatorDialogNavRoute (
                             mode = backStackEntry.mode,
-                            onCardCreated = {cardId->
+                            onCardSaved = { cardId ->
                                 createdCardId = cardId
                             },
-                            onBack = { navigator.goBack() }
+                            onDismiss = { navigator.goBack() }
                         )
                     }
                 }

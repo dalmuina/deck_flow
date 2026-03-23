@@ -1,8 +1,8 @@
 package com.dalmuina.feature.card.ui
 
 import app.cash.turbine.test
-import com.dalmuina.coretest.data.CardTestData
-import com.dalmuina.coretest.data.DeckTestData
+import com.dalmuina.coretest.data.CardDomainTestData
+import com.dalmuina.coretest.data.DeckDomainTestData
 import com.dalmuina.coretest.helpers.awaitLoaded
 import com.dalmuina.coretest.helpers.success
 import com.dalmuina.coretest.rules.MainDispatcherRule
@@ -92,12 +92,12 @@ class CardViewModelTest {
     @Test
     fun `when deck selected then emits cards`() = runTest {
 
-        val deck = DeckTestData.deck(
+        val deck = DeckDomainTestData.deck(
             id = 1,
             cards = listOf(
-                CardTestData.card(1),
-                CardTestData.card(2),
-                CardTestData.card(3)
+                CardDomainTestData.card(1),
+                CardDomainTestData.card(2),
+                CardDomainTestData.card(3)
             )
         )
 
@@ -125,11 +125,11 @@ class CardViewModelTest {
     @Test
     fun `when completeTopCard then moves first card to end`() = runTest {
 
-        val deck = DeckTestData.deck(
+        val deck = DeckDomainTestData.deck(
             id = 1,
             cards = listOf(
-                CardTestData.card(1),
-                CardTestData.card(2)
+                CardDomainTestData.card(1),
+                CardDomainTestData.card(2)
             )
         )
 
@@ -159,7 +159,7 @@ class CardViewModelTest {
     @Test
     fun `when completeTopCard with empty cards then state unchanged`() = runTest {
 
-        val deck = DeckTestData.deck(
+        val deck = DeckDomainTestData.deck(
             id = 1,
             cards = emptyList()
         )
