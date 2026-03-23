@@ -132,9 +132,6 @@ class CardCreatorViewModelTest {
 
         viewModel.uiState.test {
 
-            val initial = awaitItem()
-            initial.loading shouldBe false
-
             val loading = awaitItem()
             loading.loading shouldBe true
 

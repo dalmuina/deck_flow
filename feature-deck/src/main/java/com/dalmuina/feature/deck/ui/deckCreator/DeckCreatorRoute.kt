@@ -1,5 +1,6 @@
 package com.dalmuina.feature.deck.ui.deckCreator
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -63,20 +64,21 @@ fun DeckCreatorRoute(
             onCreatedCardConsumed()
         }
     }
-
-    if (state.loading) {
-        DFCircularLoading()
-    } else {
-        DeckCreatorScreen(
-            items = state.deckCard,
-            name = state.name,
-            isEditMode = state.isEditMode,
-            onSelectedCard = { id -> viewModel.process(DeckCreatorIntent.SelectedCard(id)) },
-            onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
-            onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
-            onEditCard = onEditCard,
-            onDelete = { id -> viewModel.process(DeckCreatorIntent.DeleteCard(id)) }
-        )
+    AnimatedContent(targetState = state.loading) {loading->
+        if (loading) {
+            DFCircularLoading()
+        } else {
+            DeckCreatorScreen(
+                items = state.deckCard,
+                name = state.name,
+                isEditMode = state.isEditMode,
+                onSelectedCard = { id -> viewModel.process(DeckCreatorIntent.SelectedCard(id)) },
+                onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
+                onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
+                onEditCard = onEditCard,
+                onDelete = { id -> viewModel.process(DeckCreatorIntent.DeleteCard(id)) }
+            )
+        }
     }
 }
 

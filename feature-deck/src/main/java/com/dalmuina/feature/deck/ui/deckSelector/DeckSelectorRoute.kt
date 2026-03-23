@@ -1,5 +1,6 @@
 package com.dalmuina.feature.deck.ui.deckSelector
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,10 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,15 +33,18 @@ fun DeckSelectorRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (state.loading) {
-        DFCircularLoading()
-    } else {
-        DeckSelectorScreen(
-            items = state.deckList,
-            onEditDeck = onEditDeck,
-            onDelete = { deckId -> viewModel.process(DeckSelectorIntent.DeleteDeck(deckId)) },
-            onDeckSelected = { deckId -> viewModel.process(DeckSelectorIntent.SelectDeck(deckId)) },
-        )
+    AnimatedContent(targetState = state.loading) {loading->
+
+        if (loading) {
+            DFCircularLoading()
+        } else {
+            DeckSelectorScreen(
+                items = state.deckList,
+                onEditDeck = onEditDeck,
+                onDelete = { deckId -> viewModel.process(DeckSelectorIntent.DeleteDeck(deckId)) },
+                onDeckSelected = { deckId -> viewModel.process(DeckSelectorIntent.SelectDeck(deckId)) },
+            )
+        }
     }
 }
 

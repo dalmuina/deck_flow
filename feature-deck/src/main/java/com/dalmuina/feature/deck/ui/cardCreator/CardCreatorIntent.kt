@@ -6,4 +6,5 @@ sealed interface CardCreatorIntent {
     data object MoreTime: CardCreatorIntent
     data object LessTime: CardCreatorIntent
     data object SaveActivity: CardCreatorIntent
+    data object Cancel: CardCreatorIntent
 }
