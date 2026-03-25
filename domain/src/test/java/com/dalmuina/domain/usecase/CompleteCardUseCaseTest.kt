@@ -31,14 +31,15 @@ class CompleteCardUseCaseTest {
         )
 
         val cardId = 1
+        val spentMillis = 15000L
         val expected = DFResult.Success(1)
 
-        coEvery { repository.completeCard(cardId) } returns expected
+        coEvery { repository.completeCard(cardId,spentMillis) } returns expected
 
-        val result = useCase(cardId)
+        val result = useCase(cardId,spentMillis)
 
         result shouldBe expected
-        coVerify(exactly = 1) { repository.completeCard(cardId) }
+        coVerify(exactly = 1) { repository.completeCard(cardId,spentMillis) }
     }
 
     @Test
@@ -50,13 +51,14 @@ class CompleteCardUseCaseTest {
         )
 
         val cardId = 1
+        val spentMillis = 15000L
         val expected = DFResult.Error(DataBaseError.ConstraintViolation)
 
-        coEvery { repository.completeCard(cardId) } returns expected
+        coEvery { repository.completeCard(cardId,spentMillis) } returns expected
 
-        val result = useCase(cardId)
+        val result = useCase(cardId,spentMillis)
 
         result shouldBe expected
-        coVerify(exactly = 1) { repository.completeCard(cardId) }
+        coVerify(exactly = 1) { repository.completeCard(cardId,spentMillis) }
     }
 }

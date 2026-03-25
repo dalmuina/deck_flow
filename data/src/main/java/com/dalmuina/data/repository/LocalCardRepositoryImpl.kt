@@ -28,11 +28,11 @@ class LocalCardRepositoryImpl(
         }
     }
 
-    override suspend fun completeCard(cardId: Int): DFResult<Int, DataBaseError> {
+    override suspend fun completeCard(cardId: Int, spentMillis: Long): DFResult<Int, DataBaseError> {
         val now = System.currentTimeMillis()
 
         return safeDbCall {
-            dataSource.completeCard(cardId, now)
+            dataSource.completeCard(cardId, now, spentMillis)
             cardId
         }
     }

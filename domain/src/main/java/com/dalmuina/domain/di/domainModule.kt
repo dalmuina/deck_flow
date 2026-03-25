@@ -9,8 +9,10 @@ import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
+import com.dalmuina.domain.usecase.ObserveTimerStateUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
+import com.dalmuina.domain.usecase.SaveTimerStateUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
@@ -122,6 +124,19 @@ val domainModule = module {
 
     factory {
         SetDeckCardsUseCase(
+            repository = get(),
+            dispatcher = get(named("IO")),
+        )
+    }
+
+    factory {
+        ObserveTimerStateUseCase(
+            repository = get(),
+        )
+    }
+
+    factory {
+        SaveTimerStateUseCase(
             repository = get(),
             dispatcher = get(named("IO")),
         )

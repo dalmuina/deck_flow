@@ -104,17 +104,16 @@ class CardViewModel(
 
     fun process(intent: CardIntent) {
         when (intent) {
-            is CardIntent.SwipeTopCard -> swipeTopCard(intent.direction)
+            is CardIntent.SwipeTopCard -> swipeTopCard(intent.direction, intent.total)
         }
     }
 
-    private fun swipeTopCard(direction: SwipeDirection) {
-
+    private fun swipeTopCard(direction: SwipeDirection, spentMillis:Long) {
         val card = sessionCards.value.firstOrNull() ?: return
 
         viewModelScope.launch {
             when (direction) {
-                SwipeDirection.RIGHT -> completeCardUseCase(card.id)
+                SwipeDirection.RIGHT -> completeCardUseCase(card.id, spentMillis)
                 SwipeDirection.LEFT -> postponeCardUseCase(card.id)
             }
         }

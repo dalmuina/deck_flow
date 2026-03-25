@@ -10,4 +10,5 @@ sealed interface DataBaseError: DFError {
 
 sealed interface PreferencesError: DFError {
     data class Unknown(val throwable: Throwable) : PreferencesError
+    data object Storage: PreferencesError
 }

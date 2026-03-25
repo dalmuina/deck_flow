@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.component.badge.DFSwipeBadge
 import com.dalmuina.designsystem.component.infoState.DFCircularLoading
 import com.dalmuina.designsystem.component.infoState.EmptyState
-import com.dalmuina.designsystem.theme.DFExtraColors
 import com.dalmuina.designsystem.theme.DFTheme
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.theme.Malachite
@@ -48,18 +45,13 @@ import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun CardRoute(
-    viewModel: CardViewModel = koinViewModel(),
+    cardViewModel: CardViewModel = koinViewModel(),
     timerViewModel: TimerViewModel = koinViewModel()
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by cardViewModel.uiState.collectAsStateWithLifecycle()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
-    var duration by remember { mutableLongStateOf(0) }
+    val duration = state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: 0L
 
-    LaunchedEffect(state.cards.firstOrNull()?.id) {
-        duration =
-            state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: return@LaunchedEffect
-        timerViewModel.process(TimerIntent.Reset(duration))
-    }
     when {
         state.loading -> {
             DFCircularLoading()
@@ -78,14 +70,14 @@ fun CardRoute(
                 cards = state.cards,
                 timerState = timerState,
                 onSwiped = { direction ->
-                    timerViewModel.process(TimerIntent.Stop)
-                    viewModel.process(CardIntent.SwipeTopCard(direction))
+                    timerViewModel.process(TimerIntent.Reset(duration))
+                    cardViewModel.process(CardIntent.SwipeTopCard(direction, (timerState.totalMillis-timerState.remainingMillis)))
                 },
                 onPlay = { isPLaying ->
                     if (isPLaying)
-                        timerViewModel.process(TimerIntent.Stop)
+                        timerViewModel.process(TimerIntent.Pause)
                     else
-                        timerViewModel.process(TimerIntent.Play())
+                        timerViewModel.process(TimerIntent.Resume)
                 },
                 onReset = {
                     timerViewModel.process(TimerIntent.Reset(duration))

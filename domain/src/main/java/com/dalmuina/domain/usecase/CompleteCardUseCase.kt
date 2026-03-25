@@ -10,8 +10,8 @@ class CompleteCardUseCase(
     private val repository: LocalCardRepository,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(cardId: Int): DFResult<Int, DataBaseError> =
+    suspend operator fun invoke(cardId: Int, spentMillis: Long): DFResult<Int, DataBaseError> =
         withContext(dispatcher) {
-            repository.completeCard(cardId)
+            repository.completeCard(cardId, spentMillis)
         }
 }
