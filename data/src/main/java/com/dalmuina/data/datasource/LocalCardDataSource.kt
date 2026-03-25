@@ -1,7 +1,9 @@
 package com.dalmuina.data.datasource
 
+import com.dalmuina.core.utils.startOfDayMillis
 import com.dalmuina.data.dao.DFCardDao
 import com.dalmuina.data.entity.DFCardEntity
+import com.dalmuina.data.entity.DFCardHistoryEntity
 import com.dalmuina.data.entity.DFCardProgressEntity
 import com.dalmuina.data.entity.DFCardWithProgress
 import kotlinx.coroutines.flow.Flow
@@ -15,11 +17,20 @@ class LocalCardDataSource(
     suspend fun updateCard(card: DFCardEntity) =
         dao.update(card)
 
-    suspend fun completeCard(cardId: Int, time: Long) {
+    suspend fun completeCard(cardId: Int, completedAt: Long, spentMillis: Long) {
         dao.insertProgress(
             DFCardProgressEntity(cardId = cardId)
         )
-        dao.markCompleted(cardId, time)
+        dao.markCompleted(cardId, completedAt)
+
+        dao.insertCompletedStat(
+            DFCardHistoryEntity(
+                cardId = cardId,
+                spentMillis = spentMillis,
+                completedAt = completedAt,
+                dayStart = completedAt.startOfDayMillis()
+            )
+        )
     }
 
     suspend fun postponeCard(cardId: Int, time: Long) {

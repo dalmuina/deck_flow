@@ -145,7 +145,7 @@ class CardViewModelTest {
 
             awaitLoaded()
 
-            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT))
+            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT,15000L))
 
             val updated = awaitItem()
 
@@ -178,7 +178,7 @@ class CardViewModelTest {
 
             val initial = awaitItem()
 
-            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT))
+            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT, 15000L))
 
             expectNoEvents()
 

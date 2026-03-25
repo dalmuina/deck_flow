@@ -15,6 +15,9 @@ val featureCardModule = module{
         )
     }
     viewModel {
-        TimerViewModel()
+        TimerViewModel(
+            observeTimerStateUseCase = get(),
+            saveTimerStateUseCase = get(),
+        )
     }
 }

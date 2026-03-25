@@ -30,6 +30,7 @@ room {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":core"))
 
     // Koin
     implementation(libs.koin.android)

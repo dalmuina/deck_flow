@@ -11,9 +11,11 @@ import com.dalmuina.data.datasource.LocalDeckDataSource
 import com.dalmuina.data.repository.LocalCardRepositoryImpl
 import com.dalmuina.data.repository.LocalDeckRepositoryImpl
 import com.dalmuina.data.repository.SelectedDeckRepositoryImpl
+import com.dalmuina.data.repository.TimerRepositoryImpl
 import com.dalmuina.domain.LocalCardRepository
 import com.dalmuina.domain.LocalDeckRepository
 import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.TimerRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import kotlin.jvm.java
@@ -55,5 +57,9 @@ val dataModule = module {
 
     single<SelectedDeckRepository> {
         SelectedDeckRepositoryImpl(get())
+    }
+
+    single<TimerRepository> {
+        TimerRepositoryImpl(get())
     }
 }
