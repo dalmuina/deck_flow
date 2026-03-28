@@ -6,6 +6,7 @@ import com.dalmuina.core.di.coreUiModule
 import com.dalmuina.domain.di.domainModule
 import com.dalmuina.feature.card.di.featureCardModule
 import com.dalmuina.feature.deck.di.featureDeckModule
+import com.dalmuina.feature.stats.di.featureStatsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
@@ -18,6 +19,7 @@ class App : Application() {
             modules(
                 featureCardModule,
                 featureDeckModule,
+                featureStatsModule,
                 domainModule,
                 dataModule,
                 coreUiModule,

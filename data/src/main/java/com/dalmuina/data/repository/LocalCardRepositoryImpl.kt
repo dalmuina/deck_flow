@@ -1,10 +1,12 @@
 package com.dalmuina.data.repository
 
 import com.dalmuina.data.datasource.LocalCardDataSource
+import com.dalmuina.data.entity.DFDeckWithCards
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
 import com.dalmuina.domain.LocalCardRepository
 import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.DFDailyStatsDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import kotlinx.coroutines.flow.Flow
@@ -71,4 +73,15 @@ class LocalCardRepositoryImpl(
         }
     }
 
+    override fun getDailyStatsForCard(cardId: Int, fromDay: Long, toDay: Long): Flow<DFResult<List<DFDailyStatsDomain>, DataBaseError>> =
+         dataSource
+            .getDailyStatsForCard(cardId, fromDay, toDay)
+            .map { entities ->
+                DFResult.Success(entities.map { it.toDomain() })
+                        as DFResult<List<DFDailyStatsDomain>, DataBaseError>
+            }
+            .catch { e ->
+                if (e is CancellationException) throw e
+                emit(DFResult.Error(DataBaseError.Unknown(e)))
+            }
 }

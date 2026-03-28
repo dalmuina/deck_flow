@@ -74,6 +74,7 @@ val serializersConfig = SavedStateConfiguration {
             subclass(Route.DeckSelector::class, Route.DeckSelector.serializer())
             subclass(Route.DeckCreator::class, Route.DeckCreator.serializer())
             subclass(Route.CardCreator::class, Route.CardCreator.serializer())
+            subclass(Route.Stats::class, Route.Stats.serializer())
         }
     }
 }

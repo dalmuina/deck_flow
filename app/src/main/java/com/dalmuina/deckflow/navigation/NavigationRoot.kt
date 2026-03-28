@@ -35,6 +35,7 @@ import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
 import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorRoute
+import com.dalmuina.feature.stats.ui.StatsRoute
 import org.koin.compose.koinInject
 
 @Composable
@@ -137,13 +138,16 @@ fun NavigationRoot(
                         )
                     }
                     entry<Route.CardCreator> { backStackEntry ->
-                        CardCreatorDialogNavRoute (
+                        CardCreatorDialogNavRoute(
                             mode = backStackEntry.mode,
                             onCardSaved = { cardId ->
                                 createdCardId = cardId
                             },
                             onDismiss = { navigator.goBack() }
                         )
+                    }
+                    entry<Route.Stats> {
+                        StatsRoute()
                     }
                 }
             )

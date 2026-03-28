@@ -84,11 +84,11 @@ interface DFCardDao {
     ORDER BY h.dayStart ASC
     """
     )
-    suspend fun getDailyStatsForDeck(
+    fun getDailyStatsForDeck(
         deckId: Int,
         fromDay: Long,
         toDay: Long
-    ): List<DFDailyStatsEntity>
+    ): Flow<List<DFDailyStatsEntity>>
 
     @Query(
         """
@@ -103,10 +103,10 @@ interface DFCardDao {
     ORDER BY h.dayStart ASC
     """
     )
-    suspend fun getDailyStatsForCard(
+    fun getDailyStatsForCard(
         cardId: Int,
         fromDay: Long,
         toDay: Long
-    ): List<DFDailyStatsEntity>
+    ): Flow<List<DFDailyStatsEntity>>
 
 }
