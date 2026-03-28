@@ -1,6 +1,7 @@
 package com.dalmuina.domain
 
 import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.DFDailyStatsDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +14,6 @@ interface LocalCardRepository {
 
     fun getAllCards(): Flow<DFResult<List<DFCardDomain>, DataBaseError>>
     suspend fun getCardById(cardId: Int): DFResult<DFCardDomain, DataBaseError>
-
     suspend fun deleteCard(cardId: Int): DFResult<Unit, DataBaseError>
+    fun getDailyStatsForCard(cardId: Int, fromDay: Long, toDay: Long) : Flow<DFResult<List<DFDailyStatsDomain>, DataBaseError>>
  }

@@ -63,7 +63,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":feature-card"))
     implementation(project(":feature-deck"))
-
+    implementation(project(":feature-stats"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

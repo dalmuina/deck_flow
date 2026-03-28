@@ -6,6 +6,7 @@ import com.dalmuina.data.entity.DFCardEntity
 import com.dalmuina.data.entity.DFCardHistoryEntity
 import com.dalmuina.data.entity.DFCardProgressEntity
 import com.dalmuina.data.entity.DFCardWithProgress
+import com.dalmuina.data.entity.DFDailyStatsEntity
 import kotlinx.coroutines.flow.Flow
 
 class LocalCardDataSource(
@@ -48,4 +49,7 @@ class LocalCardDataSource(
 
     suspend fun deleteCard(cardId: Int) =
         dao.deleteCard(cardId)
+
+    fun getDailyStatsForCard(cardId: Int, fromDay: Long, toDay: Long): Flow<List<DFDailyStatsEntity>> =
+        dao.getDailyStatsForCard(cardId, fromDay, toDay)
 }
