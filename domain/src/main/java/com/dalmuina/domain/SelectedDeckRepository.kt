@@ -1,12 +1,13 @@
 package com.dalmuina.domain
 
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.PreferencesError
+import com.dalmuina.domain.model.DataError
+import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.flow.Flow
 
 interface SelectedDeckRepository {
 
-    val selectedDeckId: Flow<Int?>
+    val selectedDeckId: Flow<DFResult<Int?, DataError.Preferences>>
 
-    suspend fun setSelectedDeck(id: Int): DFResult<Unit, PreferencesError>
+    suspend fun setSelectedDeck(id: Int): EmptyResult<DataError.Preferences>
 }

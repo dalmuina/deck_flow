@@ -1,11 +1,11 @@
 package com.dalmuina.domain.usecase
 
+import com.dalmuina.core.utils.isToday
 import com.dalmuina.domain.LocalDeckRepository
 import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.map
-import com.dalmuina.core.utils.isToday
 import com.dalmuina.domain.utils.sortedForSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,7 +16,7 @@ class GetDeckByIdUseCase(
     private val clock: Clock,
 ) {
 
-    operator fun invoke(deckId: Int): Flow<DFResult<DFDeckDomain, DataBaseError>> =
+    operator fun invoke(deckId: Int): Flow<DFResult<DFDeckDomain, DataError.Local>> =
         repository.getDeckWithCardsById(deckId)
             .map { result ->
                 result.map { deck ->

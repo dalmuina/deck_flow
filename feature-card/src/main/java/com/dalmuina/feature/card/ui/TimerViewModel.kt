@@ -1,8 +1,8 @@
 package com.dalmuina.feature.card.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.PersistedTimerState
 import com.dalmuina.domain.usecase.ObserveTimerStateUseCase
 import com.dalmuina.domain.usecase.SaveTimerStateUseCase
@@ -40,42 +40,53 @@ class TimerViewModel(
 
     private fun restoreTimer() {
         viewModelScope.launch {
-            val persisted = observeTimerStateUseCase().firstOrNull() ?: return@launch
-            val now = System.currentTimeMillis()
-            val persistedEndTime = persisted.endTimeMillis
+            when (val persistedResult = observeTimerStateUseCase().firstOrNull()) {
+                null -> return@launch
 
-            if (persisted.isRunning && persistedEndTime != null) {
-                val remaining = (persistedEndTime - now).coerceAtLeast(0L)
-                if (remaining == 0L) {
-                    _timerState.value = TimerState(
-                        totalMillis = persisted.totalMillis,
-                        remainingMillis = 0L,
-                        isRunning = false
-                    )
-                    endTime = null
-
-                    savePersistedState(
-                        totalMillis = persisted.totalMillis,
-                        remainingMillis = 0L,
-                        isRunning = false,
-                        endTimeMillis = null
-                    )
-                } else {
-                    _timerState.value = TimerState(
-                        totalMillis = persisted.totalMillis,
-                        remainingMillis = remaining,
-                        isRunning = true
-                    )
-                    endTime = persistedEndTime
-                    startTicker()
+                is DFResult.Error -> {
+                    return@launch
                 }
-            } else {
-                _timerState.value = TimerState(
-                    totalMillis = persisted.totalMillis,
-                    remainingMillis = persisted.remainingMillis,
-                    isRunning = false
-                )
-                endTime = null
+
+                is DFResult.Success -> {
+                    val persisted = persistedResult.data
+                    val now = System.currentTimeMillis()
+                    val persistedEndTime = persisted.endTimeMillis
+
+                    if (persisted.isRunning && persistedEndTime != null) {
+                        val remaining = (persistedEndTime - now).coerceAtLeast(0L)
+
+                        if (remaining == 0L) {
+                            _timerState.value = TimerState(
+                                totalMillis = persisted.totalMillis,
+                                remainingMillis = 0L,
+                                isRunning = false
+                            )
+                            endTime = null
+
+                            savePersistedState(
+                                totalMillis = persisted.totalMillis,
+                                remainingMillis = 0L,
+                                isRunning = false,
+                                endTimeMillis = null
+                            )
+                        } else {
+                            _timerState.value = TimerState(
+                                totalMillis = persisted.totalMillis,
+                                remainingMillis = remaining,
+                                isRunning = true
+                            )
+                            endTime = persistedEndTime
+                            startTicker()
+                        }
+                    } else {
+                        _timerState.value = TimerState(
+                            totalMillis = persisted.totalMillis,
+                            remainingMillis = persisted.remainingMillis,
+                            isRunning = false
+                        )
+                        endTime = null
+                    }
+                }
             }
         }
     }

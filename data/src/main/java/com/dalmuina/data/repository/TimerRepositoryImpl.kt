@@ -8,9 +8,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.dalmuina.domain.TimerRepository
 import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.model.DataError
+import com.dalmuina.domain.model.EmptyResult
 import com.dalmuina.domain.model.PersistedTimerState
-import com.dalmuina.domain.model.PreferencesError
+import com.dalmuina.domain.model.asEmptyResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 
@@ -25,34 +28,39 @@ class TimerRepositoryImpl(
         private val END_TIME_MILLIS = longPreferencesKey("timer_end_time_millis")
     }
 
-    override fun observeTimerState(): Flow<PersistedTimerState> {
-        return dataStore.data.map { prefs ->
-            PersistedTimerState(
-                totalMillis = prefs[TOTAL_MILLIS] ?: 0L,
-                remainingMillis = prefs[REMAINING_MILLIS] ?: 0L,
-                isRunning = prefs[IS_RUNNING] ?: false,
-                endTimeMillis = prefs[END_TIME_MILLIS]
-            )
-        }
+    override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError.Preferences>> {
+        return dataStore.data
+            .map<Preferences, DFResult<PersistedTimerState, DataError.Preferences>> { prefs ->
+                DFResult.Success(
+                    PersistedTimerState(
+                        totalMillis = prefs[TOTAL_MILLIS] ?: 0L,
+                        remainingMillis = prefs[REMAINING_MILLIS] ?: 0L,
+                        isRunning = prefs[IS_RUNNING] ?: false,
+                        endTimeMillis = prefs[END_TIME_MILLIS]
+                    )
+                )
+            }
+            .catch { e ->
+                if (e is IOException) {
+                    emit(DFResult.Error(DataError.Preferences.Storage))
+                } else {
+                    throw e
+                }
+            }
     }
 
     override suspend fun saveTimerState(
         state: PersistedTimerState
-    ): DFResult<Unit, PreferencesError> {
-        return try {
+    ): EmptyResult<DataError.Preferences> {
+        return safePreferencesCall {
             dataStore.edit { prefs ->
                 prefs[TOTAL_MILLIS] = state.totalMillis
                 prefs[REMAINING_MILLIS] = state.remainingMillis
                 prefs[IS_RUNNING] = state.isRunning
 
-                val endTimeMillis = state.endTimeMillis
-                endTimeMillis?.let {
-                    prefs[END_TIME_MILLIS] = it
-                } ?: prefs.remove(END_TIME_MILLIS)
+                state.endTimeMillis?.let { prefs[END_TIME_MILLIS] = it }
+                    ?: prefs.remove(END_TIME_MILLIS)
             }
-            DFResult.Success(Unit)
-        } catch (e: IOException) {
-            DFResult.Error(PreferencesError.Storage)
-        }
+        }.asEmptyResult()
     }
 }

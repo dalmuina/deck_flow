@@ -1,9 +1,9 @@
 package com.dalmuina.domain.usecase
 
 import com.dalmuina.domain.TimerRepository
-import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.model.DataError
+import com.dalmuina.domain.model.EmptyResult
 import com.dalmuina.domain.model.PersistedTimerState
-import com.dalmuina.domain.model.PreferencesError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -13,7 +13,7 @@ class SaveTimerStateUseCase(
 ) {
     suspend operator fun invoke(
         state: PersistedTimerState
-    ): DFResult<Unit, PreferencesError> = withContext(dispatcher) {
+    ): EmptyResult<DataError.Preferences> = withContext(dispatcher) {
         repository.saveTimerState(state)
     }
 }

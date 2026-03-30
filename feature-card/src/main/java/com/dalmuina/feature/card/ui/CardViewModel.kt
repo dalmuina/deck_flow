@@ -37,11 +37,17 @@ class CardViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val deckFlow =
         getSelectedDeckUseCase()
-            .flatMapLatest { deckId ->
-                if (deckId == null) {
-                    flowOf(null)
-                } else {
-                    getDeckByIdUseCase(deckId)
+            .flatMapLatest { result ->
+                when (result) {
+                    is DFResult.Error -> flowOf(null)
+                    is DFResult.Success -> {
+                        val deckId = result.data
+                        if (deckId == null) {
+                            flowOf(null)
+                        } else {
+                            getDeckByIdUseCase(deckId)
+                        }
+                    }
                 }
             }
 

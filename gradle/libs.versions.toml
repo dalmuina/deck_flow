@@ -20,10 +20,9 @@ detekt = "1.23.8"
 room = "2.8.4"
 datastore = "1.2.1"
 kotlinxSerialization = "1.10.0"
-appcompat = "1.7.1"
-material = "1.13.0"
 jetbrainsKotlinJvm = "2.3.20"
 vico = "3.0.3"
+ktor = "2.3.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -81,8 +80,10 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 
 #Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+#Ktor
+ktor-client-core = {module = "io.ktor:ktor-client-core", version.ref = "ktor"}
+ktor-client-android = {module = "io.ktor:ktor-client-android", version.ref = "ktor"}
 
 #Vico
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }

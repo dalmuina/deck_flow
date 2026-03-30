@@ -5,10 +5,12 @@ sealed interface DFResult<out D, out E : DFError> {
     data class Error<out E : DFError>(val error: E) : DFResult<Nothing, E>
 }
 
+typealias EmptyResult<E> = DFResult<Unit, E>
+
 inline fun <T,E: DFError,R> DFResult<T, E>.map(map:(T)-> R): DFResult<R,E> {
     return when(this) {
         is DFResult.Error -> DFResult.Error(error)
-        is DFResult.Success -> DFResult.Success(map(data))
+        is DFResult.Success -> DFResult.Success(map(this.data))
     }
 }
 
@@ -30,4 +32,8 @@ inline fun <T, E:DFError> DFResult<T,E>.onError(action:(E)->Unit): DFResult<T,E>
         }
         is DFResult.Success -> this
     }
+}
+
+fun <T, E : DFError> DFResult<T, E>.asEmptyResult(): EmptyResult<E> {
+    return map { }
 }

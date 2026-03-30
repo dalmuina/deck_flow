@@ -6,6 +6,7 @@ import com.dalmuina.core.ui.UiEvent
 import com.dalmuina.core.ui.UiEventDispatcher
 import com.dalmuina.core_ui.error.toUiMessage
 import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.asEmptyResult
 import com.dalmuina.domain.model.onError
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.GetCardByIdUseCase

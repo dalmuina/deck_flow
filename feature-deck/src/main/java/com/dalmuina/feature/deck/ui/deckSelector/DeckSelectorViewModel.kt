@@ -32,13 +32,23 @@ class DeckSelectorViewModel(
         combine(
             getAllDecksUseCase(),
             getSelectedDeckUseCase(),
-        ) { result, selectedId ->
+        ) { decksResult, selectedIdResult ->
 
-            when (result) {
+            when (decksResult) {
+                is DFResult.Error -> {
+                    DeckSelectorState(
+                        loading = false,
+                        deckList = emptyList()
+                    )
+                }
 
                 is DFResult.Success -> {
+                    val decks = decksResult.data.map { it.toDeckUi() }
 
-                    val decks = result.data.map { it.toDeckUi() }
+                    val selectedId = when (selectedIdResult) {
+                        is DFResult.Success -> selectedIdResult.data
+                        is DFResult.Error -> null
+                    }
 
                     val validSelected = selectedId?.takeIf { id ->
                         decks.any { it.id == id }
@@ -48,22 +58,19 @@ class DeckSelectorViewModel(
                         validSelected ?: decks.firstOrNull()?.id?.also { id ->
                             viewModelScope.launch {
                                 setSelectedDeckUseCase(id)
+                                    .onError { error ->
+                                        uiEventDispatcher.dispatch(
+                                            UiEvent.ShowSnackBar(error.toUiMessage())
+                                        )
+                                    }
                             }
                         }
 
-                    decks.forEach { println(it.id) }
                     DeckSelectorState(
                         loading = false,
                         deckList = decks.map { deck ->
                             deck.copy(isSelected = deck.id == finalSelected)
                         }
-                    )
-                }
-
-                is DFResult.Error -> {
-                    DeckSelectorState(
-                        loading = false,
-                        deckList = emptyList()
                     )
                 }
             }
@@ -83,6 +90,11 @@ class DeckSelectorViewModel(
             is DeckSelectorIntent.SelectDeck -> {
                 viewModelScope.launch {
                     setSelectedDeckUseCase(intent.deckId)
+                        .onError { error ->
+                            uiEventDispatcher.dispatch(
+                                UiEvent.ShowSnackBar(error.toUiMessage())
+                            )
+                        }
                 }
             }
         }
@@ -90,10 +102,16 @@ class DeckSelectorViewModel(
 
     private fun deleteDeck(deckId: Int) {
         viewModelScope.launch {
-
             deleteDeckUseCase(deckId)
                 .onSuccess { nextDeck ->
-                    nextDeck?.let { setSelectedDeckUseCase(it) }
+                    nextDeck?.let {
+                        setSelectedDeckUseCase(it)
+                            .onError { error ->
+                                uiEventDispatcher.dispatch(
+                                    UiEvent.ShowSnackBar(error.toUiMessage())
+                                )
+                            }
+                    }
                 }
                 .onError { error ->
                     uiEventDispatcher.dispatch(
