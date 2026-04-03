@@ -22,19 +22,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.dalmuina.core.ui.UiEvent
-import com.dalmuina.core.ui.UiEventDispatcher
+import com.dalmuina.core.presentation.UiEvent
+import com.dalmuina.core.presentation.UiEventDispatcher
 import com.dalmuina.deckflow.R
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
 import com.dalmuina.designsystem.animation.DFAnimations
 import com.dalmuina.designsystem.component.button.DFFloatingButton
 import com.dalmuina.designsystem.component.topbar.DFTopBar
-import com.dalmuina.feature.card.ui.CardRoute
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorDialogNavRoute
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
-import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
-import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorRoute
-import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorRoute
+import com.dalmuina.feature.card.presentation.CardRoute
+import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorDialogNavRoute
+import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorMode
+import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorMode
+import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorRoute
+import com.dalmuina.feature.deck.presentation.deckSelector.DeckSelectorRoute
 import com.dalmuina.feature.stats.ui.StatsRoute
 import org.koin.compose.koinInject
 

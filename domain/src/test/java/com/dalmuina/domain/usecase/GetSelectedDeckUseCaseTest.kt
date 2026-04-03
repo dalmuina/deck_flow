@@ -1,7 +1,7 @@
 package com.dalmuina.domain.usecase
 
 import app.cash.turbine.test
-import com.dalmuina.coretest.rules.MainDispatcherRule
+import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.SelectedDeckRepository
 import io.kotest.matchers.shouldBe
 import io.mockk.every

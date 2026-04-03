@@ -1,7 +1,7 @@
 package com.dalmuina.feature.card.di
 
-import com.dalmuina.feature.card.ui.CardViewModel
-import com.dalmuina.feature.card.ui.TimerViewModel
+import com.dalmuina.feature.card.presentation.CardViewModel
+import com.dalmuina.feature.card.presentation.TimerViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

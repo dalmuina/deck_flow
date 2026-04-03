@@ -1,6 +1,6 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.coretest.rules.MainDispatcherRule
+import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.LocalCardRepository
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError

@@ -2,6 +2,7 @@ package com.dalmuina.data.repository
 
 import com.dalmuina.data.datasource.LocalDeckDataSource
 import com.dalmuina.data.entity.toDomain
+import com.dalmuina.data.helpers.safeDbCall
 import com.dalmuina.domain.LocalDeckRepository
 import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult

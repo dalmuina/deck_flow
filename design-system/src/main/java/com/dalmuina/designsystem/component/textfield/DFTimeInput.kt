@@ -29,7 +29,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import com.dalmuina.core_ui.utils.toTimerText
+import com.dalmuina.core.presentation.helpers.toTimerText
 import com.dalmuina.design_system.R
 import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DeckFlowTheme

@@ -1,10 +1,10 @@
 package com.dalmuina.feature.deck.di
 
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorViewModel
-import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorViewModel
-import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
-import com.dalmuina.feature.deck.ui.deckSelector.DeckSelectorViewModel
+import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorMode
+import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorViewModel
+import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorViewModel
+import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorMode
+import com.dalmuina.feature.deck.presentation.deckSelector.DeckSelectorViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

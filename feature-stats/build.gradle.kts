@@ -32,7 +32,7 @@ extensions.configure<LibraryExtension>  {
 dependencies {
     implementation(project(":design-system"))
     implementation(project(":core"))
-    implementation(project(":core-ui"))
+    implementation(project(":core-presentation"))
     implementation(project(":domain"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

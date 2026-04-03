@@ -3,6 +3,7 @@ package com.dalmuina.data.repository
 import com.dalmuina.data.datasource.LocalCardDataSource
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
+import com.dalmuina.data.helpers.safeDbCall
 import com.dalmuina.domain.LocalCardRepository
 import com.dalmuina.domain.model.DFCardDomain
 import com.dalmuina.domain.model.DFDailyStatsDomain

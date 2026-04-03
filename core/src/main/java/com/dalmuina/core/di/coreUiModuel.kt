@@ -1,7 +1,7 @@
 package com.dalmuina.core.di
 
-import com.dalmuina.core.ui.UiEventDispatcher
-import com.dalmuina.core.ui.UiEventDispatcherImpl
+import com.dalmuina.core.presentation.UiEventDispatcher
+import com.dalmuina.core.presentation.UiEventDispatcherImpl
 import org.koin.dsl.module
 import java.time.Clock
 

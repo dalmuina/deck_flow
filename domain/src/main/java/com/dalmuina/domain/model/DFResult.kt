@@ -24,7 +24,7 @@ inline fun <T,E:DFError> DFResult<T,E>.onSuccess(action:(T)->Unit): DFResult<T,E
     }
 }
 
-inline fun <T, E:DFError> DFResult<T,E>.onError(action:(E)->Unit): DFResult<T,E>{
+inline fun <T, E:DFError> DFResult<T,E>.onFailure(action:(E)->Unit): DFResult<T,E>{
     return when(this) {
         is DFResult.Error -> {
             action(error)

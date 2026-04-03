@@ -1,11 +1,10 @@
 package com.dalmuina.data.datasource
 
-import com.dalmuina.core.utils.startOfDayMillis
+import com.dalmuina.core.helpers.startOfDayMillis
 import com.dalmuina.data.dao.DFCardDao
 import com.dalmuina.data.entity.DFCardEntity
 import com.dalmuina.data.entity.DFCardHistoryEntity
 import com.dalmuina.data.entity.DFCardProgressEntity
-import com.dalmuina.data.entity.DFCardWithProgress
 import com.dalmuina.data.entity.DFDailyStatsEntity
 import kotlinx.coroutines.flow.Flow
 

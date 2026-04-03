@@ -1,12 +1,12 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.core.utils.isToday
+import com.dalmuina.core.helpers.isToday
 import com.dalmuina.domain.LocalDeckRepository
 import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.map
-import com.dalmuina.domain.utils.sortedForSession
+import com.dalmuina.domain.helpers.sortedForSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Clock
