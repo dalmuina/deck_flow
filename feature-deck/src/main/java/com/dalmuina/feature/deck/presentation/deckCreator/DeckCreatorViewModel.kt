@@ -15,7 +15,7 @@ import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.feature.deck.presentation.model.DFCardSlotUi
-import com.dalmuina.feature.deck.presentation.model.toCardUi
+import com.dalmuina.feature.deck.presentation.model.toUi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,7 +70,7 @@ class DeckCreatorViewModel(
 
                 when (result) {
                     is DFResult.Success -> {
-                        result.data.map { it.toCardUi() }
+                        result.data.map { it.toUi() }
                     }
 
                     is DFResult.Error -> emptyList()

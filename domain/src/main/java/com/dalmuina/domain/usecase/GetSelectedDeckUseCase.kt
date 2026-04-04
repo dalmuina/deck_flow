@@ -1,9 +1,9 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.SelectedDeckDataSource
 
 class GetSelectedDeckUseCase(
-    private val repository: SelectedDeckRepository
+    private val repository: SelectedDeckDataSource
 ) {
     operator fun invoke() = repository.selectedDeckId
 }

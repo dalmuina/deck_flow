@@ -14,7 +14,7 @@ data class DFCardSlotUi(
     val order: Int? = null,
 )
 
-fun DFCardDomain.toCardUi(): DFCardSlotUi = DFCardSlotUi(
+fun DFCardDomain.toUi(): DFCardSlotUi = DFCardSlotUi(
     id = id,
     name = name,
     duration = durationMillis.milliseconds,

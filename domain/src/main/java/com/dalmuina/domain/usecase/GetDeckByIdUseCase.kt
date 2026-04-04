@@ -1,7 +1,7 @@
 package com.dalmuina.domain.usecase
 
 import com.dalmuina.core.helpers.isToday
-import com.dalmuina.domain.LocalDeckRepository
+import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import java.time.Clock
 
 class GetDeckByIdUseCase(
-    private val repository: LocalDeckRepository,
+    private val repository: DeckLocalDataSource,
     private val clock: Clock,
 ) {
 

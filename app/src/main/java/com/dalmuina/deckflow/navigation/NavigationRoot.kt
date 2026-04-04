@@ -35,7 +35,7 @@ import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorMode
 import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorMode
 import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.presentation.deckSelector.DeckSelectorRoute
-import com.dalmuina.feature.stats.ui.StatsRoute
+import com.dalmuina.feature.stats.presentation.StatsRoute
 import org.koin.compose.koinInject
 
 @Composable

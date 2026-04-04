@@ -1,4 +1,4 @@
-package com.dalmuina.feature.stats.ui
+package com.dalmuina.feature.stats.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

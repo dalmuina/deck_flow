@@ -6,16 +6,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.dalmuina.data.database.AppDatabase
-import com.dalmuina.data.datasource.LocalCardDataSource
-import com.dalmuina.data.datasource.LocalDeckDataSource
-import com.dalmuina.data.repository.LocalCardRepositoryImpl
-import com.dalmuina.data.repository.LocalDeckRepositoryImpl
-import com.dalmuina.data.repository.SelectedDeckRepositoryImpl
-import com.dalmuina.data.repository.TimerRepositoryImpl
-import com.dalmuina.domain.LocalCardRepository
-import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.SelectedDeckRepository
-import com.dalmuina.domain.TimerRepository
+import com.dalmuina.data.datasource.RoomCardDatasource
+import com.dalmuina.data.datasource.RoomDeckDataSource
+import com.dalmuina.data.datasource.DataStoreDeckDataSource
+import com.dalmuina.data.datasource.DataStoreTimerDataSource
+import com.dalmuina.domain.CardLocalDataSource
+import com.dalmuina.domain.DeckLocalDataSource
+import com.dalmuina.domain.SelectedDeckDataSource
+import com.dalmuina.domain.TimerDataSource
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import kotlin.jvm.java
@@ -31,35 +29,17 @@ val dataModule = module {
     }
 
     single { get<AppDatabase>().cardDao() }
-
     single { get<AppDatabase>().deckDao() }
 
-    single { LocalCardDataSource(get()) }
+    single<CardLocalDataSource> { RoomCardDatasource(get()) }
+    single<DeckLocalDataSource> { RoomDeckDataSource(get()) }
 
-    single<LocalCardRepository> {
-        LocalCardRepositoryImpl(get())
-    }
-
-    single { LocalDeckDataSource(get()) }
-
-    single<LocalDeckRepository> {
-        LocalDeckRepositoryImpl(get())
-    }
-
-    //DATASTORE
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create(
-            produceFile = {
-                androidContext().preferencesDataStoreFile("settings")
-            }
+            produceFile = { androidContext().preferencesDataStoreFile("settings") }
         )
     }
 
-    single<SelectedDeckRepository> {
-        SelectedDeckRepositoryImpl(get())
-    }
-
-    single<TimerRepository> {
-        TimerRepositoryImpl(get())
-    }
+    single<SelectedDeckDataSource> { DataStoreDeckDataSource(get()) }
+    single<TimerDataSource> { DataStoreTimerDataSource(get()) }
 }

@@ -11,7 +11,7 @@ data class DFDeckUi (
     val isSelected: Boolean,
 )
 
-fun DFDeckDomain.toDeckUi(): DFDeckUi {
+fun DFDeckDomain.toUi(): DFDeckUi {
     return DFDeckUi(
         id = id,
         name = name,

@@ -3,7 +3,7 @@ package com.dalmuina.domain.usecase
 import app.cash.turbine.test
 import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.domain.LocalCardRepository
+import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import io.kotest.matchers.shouldBe
@@ -21,7 +21,7 @@ class GetAllCardsUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: LocalCardRepository = mockk()
+    private val repository: CardLocalDataSource = mockk()
 
     @Test
     fun `invoke should emit cards when repository returns success`() = runTest {

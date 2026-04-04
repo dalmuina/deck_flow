@@ -1,9 +1,10 @@
-package com.dalmuina.data.repository
+package com.dalmuina.data.datasource
 
-import com.dalmuina.data.datasource.LocalDeckDataSource
+import com.dalmuina.data.dao.DFDeckDao
+import com.dalmuina.data.entity.DFDeckEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.helpers.safeDbCall
-import com.dalmuina.domain.LocalDeckRepository
+import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
@@ -15,51 +16,47 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
 
-class LocalDeckRepositoryImpl(
-    private val dataSource: LocalDeckDataSource,
-) : LocalDeckRepository {
+class RoomDeckDataSource(
+    private val dao: DFDeckDao,
+) : DeckLocalDataSource {
 
     override suspend fun createDeck(
         name: String,
         cardIds: List<Int>
-    ): EmptyResult<DataError.Local> {
-        return safeDbCall {
-            dataSource.createDeck(name, cardIds)
+    ): EmptyResult<DataError.Local> =
+        safeDbCall {
+            dao.insertDeckWithCards(
+                deck = DFDeckEntity(name = name),
+                cardIds = cardIds
+            )
         }.asEmptyResult()
-    }
 
     override suspend fun updateDeckName(
         deckId: Int,
         name: String
-    ): EmptyResult<DataError.Local> {
-        return safeDbCall {
-            dataSource.updateDeckName(deckId, name)
+    ): EmptyResult<DataError.Local> =
+        safeDbCall {
+            dao.updateDeckName(deckId, name)
         }.asEmptyResult()
-    }
 
-    override fun getAllDecksWithCards(): Flow<DFResult<List<DFDeckDomain>, DataError.Local>> {
-        return dataSource
-            .getAllDecksWithCards()
+    override fun getAllDecksWithCards(): Flow<DFResult<List<DFDeckDomain>, DataError.Local>> =
+        dao.getAllDecksWithCards()
             .map { entities ->
-                DFResult.Success(
-                    entities.map { it.toDomain() }
-                ) as DFResult<List<DFDeckDomain>, DataError.Local>
+                DFResult.Success(entities.map { it.toDomain() })
+                        as DFResult<List<DFDeckDomain>, DataError.Local>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
-    }
 
     override fun getDeckWithCardsById(
         deckId: Int
-    ): Flow<DFResult<DFDeckDomain, DataError.Local>> {
-
-        return combine(
-            dataSource.getDeck(deckId),
-            dataSource.getCardsForDeck(deckId)
+    ): Flow<DFResult<DFDeckDomain, DataError.Local>> =
+        combine(
+            dao.getDeckById(deckId),
+            dao.getCardsForDeck(deckId)
         ) { deck, cards ->
-
             DFResult.Success(
                 DFDeckDomain(
                     id = deck.id,
@@ -67,25 +64,21 @@ class LocalDeckRepositoryImpl(
                     cards = cards.map { it.toDomain() }
                 )
             ) as DFResult<DFDeckDomain, DataError.Local>
-
         }.catch { e ->
             if (e is CancellationException) throw e
             emit(DFResult.Error(DataError.Local.Unknown(e)))
         }
-    }
 
-    override suspend fun deleteDeck(deckId: Int): EmptyResult<DataError.Local> {
-        return safeDbCall {
-            dataSource.deleteDeck(deckId)
+    override suspend fun deleteDeck(deckId: Int): EmptyResult<DataError.Local> =
+        safeDbCall {
+            dao.deleteDeck(deckId)
         }.asEmptyResult()
-    }
 
     override suspend fun setDeckCards(
         deckId: Int,
         orderedIds: List<Int>
-    ): EmptyResult<DataError.Local> {
-        return safeDbCall {
-            dataSource.setDeckCards(deckId, orderedIds)
+    ): EmptyResult<DataError.Local> =
+        safeDbCall {
+            dao.replaceDeckCards(deckId, orderedIds)
         }.asEmptyResult()
-    }
 }

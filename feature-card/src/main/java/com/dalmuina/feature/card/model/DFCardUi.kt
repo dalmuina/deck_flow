@@ -1,9 +1,11 @@
 package com.dalmuina.feature.card.model
 
+import androidx.compose.runtime.Immutable
 import com.dalmuina.domain.model.DFCardDomain
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+@Immutable
 data class DFCardUi(
     val id: Int,
     val name: String,
@@ -12,19 +14,7 @@ data class DFCardUi(
     val isPostponed: Boolean,
 )
 
-fun Duration.toTimerText(): String {
-    val totalMinutes = inWholeMinutes
-    val hours = totalMinutes / 60
-    val minutes = totalMinutes % 60
-
-    return if (hours > 0) {
-        "%02dh:%02dm".format(hours, minutes)
-    } else {
-        "%02dm".format(minutes)
-    }
-}
-
-fun DFCardDomain.toCardUi(): DFCardUi = DFCardUi(
+fun DFCardDomain.toUi(): DFCardUi = DFCardUi(
     id = id,
     name = name,
     duration = durationMillis.milliseconds,

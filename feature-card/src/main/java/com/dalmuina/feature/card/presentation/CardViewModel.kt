@@ -9,7 +9,7 @@ import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
 import com.dalmuina.feature.card.model.DFCardUi
 import com.dalmuina.feature.card.model.SwipeDirection
-import com.dalmuina.feature.card.model.toCardUi
+import com.dalmuina.feature.card.model.toUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -57,7 +57,7 @@ class CardViewModel(
 
                 if (result is DFResult.Success) {
                     val deckId = result.data.id
-                    val dbCards = result.data.cards.map { it.toCardUi() }
+                    val dbCards = result.data.cards.map { it.toUi() }
 
                     val hasStructureChanged =
                         sessionCards.value.map { it.id } != dbCards.map { it.id }

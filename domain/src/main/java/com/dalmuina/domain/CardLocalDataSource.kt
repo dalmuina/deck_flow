@@ -7,7 +7,7 @@ import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.flow.Flow
 
-interface LocalCardRepository {
+interface CardLocalDataSource {
     suspend fun saveCard(card: DFCardDomain): DFResult<Int, DataError.Local>
     suspend fun updateCard(card: DFCardDomain): DFResult<Int, DataError.Local>
     suspend fun completeCard(cardId: Int, spentMillis: Long): DFResult<Int, DataError.Local>

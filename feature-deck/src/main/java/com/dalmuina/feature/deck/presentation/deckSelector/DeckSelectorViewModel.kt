@@ -12,7 +12,7 @@ import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
-import com.dalmuina.feature.deck.presentation.model.toDeckUi
+import com.dalmuina.feature.deck.presentation.model.toUi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -43,7 +43,7 @@ class DeckSelectorViewModel(
                 }
 
                 is DFResult.Success -> {
-                    val decks = decksResult.data.map { it.toDeckUi() }
+                    val decks = decksResult.data.map { it.toUi() }
 
                     val selectedId = when (selectedIdResult) {
                         is DFResult.Success -> selectedIdResult.data

@@ -1,7 +1,7 @@
 package com.dalmuina.domain.usecase
 
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.PreferencesError
 import io.kotest.matchers.shouldBe
@@ -20,7 +20,7 @@ class SetSelectedDeckUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: SelectedDeckRepository = mockk()
+    private val repository: SelectedDeckDataSource = mockk()
 
     @Test
     fun `invoke should return success when repository sets selected deck successfully`() = runTest {

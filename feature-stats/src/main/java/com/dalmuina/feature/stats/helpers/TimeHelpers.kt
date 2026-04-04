@@ -1,4 +1,4 @@
-package com.dalmuina.feature.stats.utils
+package com.dalmuina.feature.stats.helpers
 
 import java.util.Calendar
 

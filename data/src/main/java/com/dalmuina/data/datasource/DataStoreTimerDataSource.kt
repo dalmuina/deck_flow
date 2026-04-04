@@ -1,4 +1,4 @@
-package com.dalmuina.data.repository
+package com.dalmuina.data.datasource
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.dalmuina.data.helpers.safePreferencesCall
-import com.dalmuina.domain.TimerRepository
+import com.dalmuina.domain.TimerDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
@@ -16,11 +16,9 @@ import com.dalmuina.domain.model.asEmptyResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-
-
-class TimerRepositoryImpl(
+class DataStoreTimerDataSource(
     private val dataStore: DataStore<Preferences>,
-) : TimerRepository {
+) : TimerDataSource {
 
     companion object {
         private val TOTAL_MILLIS = longPreferencesKey("timer_total_millis")

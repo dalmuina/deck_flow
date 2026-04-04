@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.core.test.data.DeckDomainTestData
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.domain.LocalDeckRepository
+import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataBaseError
 import com.dalmuina.domain.helpers.sortedForSession
@@ -25,7 +25,7 @@ class GetDeckByIdUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: LocalDeckRepository = mockk()
+    private val repository: DeckLocalDataSource = mockk()
     private val clock: Clock = mockk()
 
     @Test

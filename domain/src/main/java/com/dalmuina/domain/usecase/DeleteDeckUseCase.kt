@@ -1,7 +1,7 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.DeckLocalDataSource
+import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class DeleteDeckUseCase(
-    private val repository: LocalDeckRepository,
-    private val selectedDeckRepository: SelectedDeckRepository,
+    private val repository: DeckLocalDataSource,
+    private val selectedDeckRepository: SelectedDeckDataSource,
     private val dispatcher: CoroutineDispatcher
 ) {
 

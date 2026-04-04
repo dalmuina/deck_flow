@@ -1,13 +1,13 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.domain.LocalCardRepository
+import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.DFDailyStatsDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import kotlinx.coroutines.flow.Flow
 
 class GetCardStatsUseCase(
-    private val repository: LocalCardRepository,
+    private val repository: CardLocalDataSource,
 ) {
     operator fun invoke(
         cardId: Int,

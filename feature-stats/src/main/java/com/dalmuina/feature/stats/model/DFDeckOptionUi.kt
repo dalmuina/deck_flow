@@ -10,7 +10,7 @@ data class DFDeckOptionUi(
     override val name: String
 ): DFSelectableOption
 
-fun DFDeckDomain.toDFDeckOptionUi(): DFDeckOptionUi =
+fun DFDeckDomain.toUi(): DFDeckOptionUi =
     DFDeckOptionUi(
         id = id,
         name = name,

@@ -1,9 +1,9 @@
 package com.dalmuina.feature.deck.presentation.cardCreator
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlin.time.Duration
 
-@Immutable
+@Stable
 data class CardCreatorState(
     val loading: Boolean = false,
     val processing: Boolean = false,

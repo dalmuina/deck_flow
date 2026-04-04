@@ -1,10 +1,13 @@
-package com.dalmuina.data.repository
+package com.dalmuina.data.datasource
 
-import com.dalmuina.data.datasource.LocalCardDataSource
+import com.dalmuina.core.helpers.startOfDayMillis
+import com.dalmuina.data.dao.DFCardDao
+import com.dalmuina.data.entity.DFCardHistoryEntity
+import com.dalmuina.data.entity.DFCardProgressEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
 import com.dalmuina.data.helpers.safeDbCall
-import com.dalmuina.domain.LocalCardRepository
+import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.DFCardDomain
 import com.dalmuina.domain.model.DFDailyStatsDomain
 import com.dalmuina.domain.model.DFResult
@@ -15,46 +18,52 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
 
-class LocalCardRepositoryImpl(
-    private val dataSource: LocalCardDataSource,
-) : LocalCardRepository {
-    override suspend fun saveCard(card: DFCardDomain): DFResult<Int, DataError.Local> {
-        return safeDbCall {
-            dataSource.saveCard(card.toEntity()).toInt()
-        }
-    }
+class RoomCardDatasource(
+    private val dao: DFCardDao,
+) : CardLocalDataSource {
 
-    override suspend fun updateCard(card: DFCardDomain): DFResult<Int, DataError.Local> {
-        return safeDbCall {
-            dataSource.updateCard(card.toEntity())
+    override suspend fun saveCard(card: DFCardDomain): DFResult<Int, DataError.Local> =
+        safeDbCall {
+            dao.insert(card.toEntity()).toInt()
+        }
+
+    override suspend fun updateCard(card: DFCardDomain): DFResult<Int, DataError.Local> =
+        safeDbCall {
+            dao.update(card.toEntity())
             card.id
         }
-    }
 
     override suspend fun completeCard(
         cardId: Int,
         spentMillis: Long
     ): DFResult<Int, DataError.Local> {
         val now = System.currentTimeMillis()
-
         return safeDbCall {
-            dataSource.completeCard(cardId, now, spentMillis)
+            dao.insertProgress(DFCardProgressEntity(cardId = cardId))
+            dao.markCompleted(cardId, now)
+            dao.insertCompletedStat(
+                DFCardHistoryEntity(
+                    cardId = cardId,
+                    spentMillis = spentMillis,
+                    completedAt = now,
+                    dayStart = now.startOfDayMillis()
+                )
+            )
             cardId
         }
     }
 
     override suspend fun postponeCard(cardId: Int): DFResult<Int, DataError.Local> {
         val now = System.currentTimeMillis()
-
         return safeDbCall {
-            dataSource.postponeCard(cardId, now)
+            dao.insertProgress(DFCardProgressEntity(cardId = cardId))
+            dao.markPostponed(cardId, now)
             cardId
         }
     }
 
-    override fun getAllCards(): Flow<DFResult<List<DFCardDomain>, DataError.Local>> {
-        return dataSource
-            .getAllCards()
+    override fun getAllCards(): Flow<DFResult<List<DFCardDomain>, DataError.Local>> =
+        dao.getAllCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
                         as DFResult<List<DFCardDomain>, DataError.Local>
@@ -63,27 +72,23 @@ class LocalCardRepositoryImpl(
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
-    }
 
-    override suspend fun getCardById(cardId: Int): DFResult<DFCardDomain, DataError.Local> {
-        return safeDbCall {
-            dataSource.getCardByID(cardId).toDomain()
+    override suspend fun getCardById(cardId: Int): DFResult<DFCardDomain, DataError.Local> =
+        safeDbCall {
+            dao.getCardById(cardId).toDomain()
         }
-    }
 
-    override suspend fun deleteCard(cardId: Int): EmptyResult<DataError.Local> {
-        return safeDbCall {
-            dataSource.deleteCard(cardId)
+    override suspend fun deleteCard(cardId: Int): EmptyResult<DataError.Local> =
+        safeDbCall {
+            dao.deleteCard(cardId)
         }
-    }
 
     override fun getDailyStatsForCard(
         cardId: Int,
         fromDay: Long,
         toDay: Long
     ): Flow<DFResult<List<DFDailyStatsDomain>, DataError.Local>> =
-        dataSource
-            .getDailyStatsForCard(cardId, fromDay, toDay)
+        dao.getDailyStatsForCard(cardId, fromDay, toDay)
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
                         as DFResult<List<DFDailyStatsDomain>, DataError.Local>
@@ -93,3 +98,4 @@ class LocalCardRepositoryImpl(
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
 }
+

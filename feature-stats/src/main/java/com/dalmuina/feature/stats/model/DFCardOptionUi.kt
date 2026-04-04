@@ -10,7 +10,7 @@ data class DFCardOptionUi(
     override val name: String
 ): DFSelectableOption
 
-fun DFCardDomain.toDFCardOptionUi(): DFCardOptionUi =
+fun DFCardDomain.toUi(): DFCardOptionUi =
     DFCardOptionUi(
         id = id,
         name = name,

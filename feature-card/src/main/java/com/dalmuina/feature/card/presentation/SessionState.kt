@@ -1,9 +1,9 @@
 package com.dalmuina.feature.card.presentation
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.dalmuina.feature.card.model.DFCardUi
 
-@Immutable
+@Stable
 data class SessionState(
     val loading: Boolean = false,
     val name: String = "",

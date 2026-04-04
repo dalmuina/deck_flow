@@ -1,14 +1,12 @@
-package com.dalmuina.feature.stats.ui
+package com.dalmuina.feature.stats.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetCardStatsUseCase
-import com.dalmuina.feature.stats.model.toDFCardOptionUi
-import com.dalmuina.feature.stats.model.toDFDeckOptionUi
 import com.dalmuina.feature.stats.model.toUi
-import com.dalmuina.feature.stats.utils.getLast7DaysRange
+import com.dalmuina.feature.stats.helpers.getLast7DaysRange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +18,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import java.util.Calendar
 
 class StatsViewModel(
     private val getAllDecksUseCase: GetAllDecksUseCase,
@@ -48,14 +45,14 @@ class StatsViewModel(
             when (result) {
                 is DFResult.Success -> {
                     val decks = result.data
-                    val deckOptions = decks.map { it.toDFDeckOptionUi() }
+                    val deckOptions = decks.map { it.toUi() }
 
                     val effectiveDeckId = selectedDeckId ?: decks.firstOrNull()?.id
                     val selectedDeck = decks.firstOrNull { it.id == effectiveDeckId }
 
                     val cardOptions = selectedDeck
                         ?.cards
-                        ?.map { it.toDFCardOptionUi() }
+                        ?.map { it.toUi() }
                         .orEmpty()
 
                     val effectiveCardId = cardOptions

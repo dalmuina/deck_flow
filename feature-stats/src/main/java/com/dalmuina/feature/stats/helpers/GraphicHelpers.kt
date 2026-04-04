@@ -1,4 +1,4 @@
-package com.dalmuina.feature.stats.utils
+package com.dalmuina.feature.stats.helpers
 
 import com.dalmuina.feature.stats.model.DFDailyStatsUi
 import com.dalmuina.feature.stats.model.StatsBarPoint

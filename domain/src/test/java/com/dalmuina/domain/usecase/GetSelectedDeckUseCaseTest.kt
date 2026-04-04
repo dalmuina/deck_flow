@@ -2,7 +2,7 @@ package com.dalmuina.domain.usecase
 
 import app.cash.turbine.test
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.SelectedDeckDataSource
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +18,7 @@ class GetSelectedDeckUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: SelectedDeckRepository = mockk()
+    private val repository: SelectedDeckDataSource = mockk()
 
     @Test
     fun `invoke should emit selected deck id when repository returns value`() = runTest {

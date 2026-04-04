@@ -1,4 +1,4 @@
-package com.dalmuina.feature.stats.ui
+package com.dalmuina.feature.stats.presentation
 
 import androidx.compose.runtime.Immutable
 import com.dalmuina.feature.stats.model.DFDailyStatsUi

@@ -5,7 +5,7 @@ import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.flow.Flow
 
-interface SelectedDeckRepository {
+interface SelectedDeckDataSource {
 
     val selectedDeckId: Flow<DFResult<Int?, DataError.Preferences>>
 

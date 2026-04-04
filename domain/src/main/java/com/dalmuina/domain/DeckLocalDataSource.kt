@@ -6,7 +6,7 @@ import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.flow.Flow
 
-interface LocalDeckRepository {
+interface DeckLocalDataSource {
 
     suspend fun createDeck(name: String, cardIds: List<Int>): EmptyResult<DataError.Local>
 

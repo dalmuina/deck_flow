@@ -1,4 +1,4 @@
-package com.dalmuina.data.repository
+package com.dalmuina.data.datasource
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import com.dalmuina.data.helpers.safePreferencesCall
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
@@ -15,9 +15,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
-class SelectedDeckRepositoryImpl(
+class DataStoreDeckDataSource(
     private val dataStore: DataStore<Preferences>
-) : SelectedDeckRepository {
+) : SelectedDeckDataSource {
 
     private val SELECTED_DECK = intPreferencesKey("selected_deck")
 
