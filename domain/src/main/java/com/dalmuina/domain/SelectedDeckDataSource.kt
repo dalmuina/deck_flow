@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SelectedDeckDataSource {
 
-    val selectedDeckId: Flow<DFResult<Int?, DataError.Preferences>>
+    val selectedDeckId: Flow<DFResult<Int?, DataError>>
 
-    suspend fun setSelectedDeck(id: Int): EmptyResult<DataError.Preferences>
+    suspend fun setSelectedDeck(id: Int): EmptyResult<DataError>
 }

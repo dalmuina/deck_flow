@@ -46,7 +46,7 @@ class RoomCardDatasource(
                     cardId = cardId,
                     spentMillis = spentMillis,
                     completedAt = now,
-                    dayStart = now.startOfDayMillis()
+                    dayStart = now.startOfDayMillis(),
                 )
             )
             cardId

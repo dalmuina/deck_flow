@@ -3,7 +3,7 @@ package com.dalmuina.domain.usecase
 import com.dalmuina.domain.SelectedDeckDataSource
 
 class GetSelectedDeckUseCase(
-    private val repository: SelectedDeckDataSource
+    private val dataSource: SelectedDeckDataSource
 ) {
-    operator fun invoke() = repository.selectedDeckId
+    operator fun invoke() = dataSource.selectedDeckId
 }

@@ -13,7 +13,7 @@ class SaveTimerStateUseCase(
 ) {
     suspend operator fun invoke(
         state: PersistedTimerState
-    ): EmptyResult<DataError.Preferences> = withContext(dispatcher) {
+    ): EmptyResult<DataError> = withContext(dispatcher) {
         repository.saveTimerState(state)
     }
 }

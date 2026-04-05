@@ -21,7 +21,7 @@ class DataStoreDeckDataSource(
 
     private val SELECTED_DECK = intPreferencesKey("selected_deck")
 
-    override val selectedDeckId: Flow<DFResult<Int?, DataError.Preferences>> =
+    override val selectedDeckId: Flow<DFResult<Int?, DataError>> =
         dataStore.data
             .catch { emit(emptyPreferences()) }
             .map { prefs ->
@@ -30,7 +30,7 @@ class DataStoreDeckDataSource(
                 )
             }
 
-    override suspend fun setSelectedDeck(id: Int): EmptyResult<DataError.Preferences> {
+    override suspend fun setSelectedDeck(id: Int): EmptyResult<DataError> {
         return safePreferencesCall {
             dataStore.edit { prefs ->
                 prefs[SELECTED_DECK] = id

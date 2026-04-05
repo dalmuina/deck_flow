@@ -3,7 +3,7 @@ package com.dalmuina.domain.usecase
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.PreferencesError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -51,7 +51,7 @@ class SetSelectedDeckUseCaseTest {
 
         val deckId = 3
         val throwable = Throwable("write failed")
-        val expected = DFResult.Error(PreferencesError.Unknown(throwable))
+        val expected = DFResult.Error(DataError.Preferences.Unknown(throwable))
 
         coEvery { repository.setSelectedDeck(deckId) } returns expected
 

@@ -6,7 +6,7 @@ import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DFDeckDomain
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -43,7 +43,7 @@ class GetAllDecksUseCaseTest {
     fun `invoke should emit values from repository in order`() = runTest {
         val first = DFResult.Success(DeckDomainTestData.decks(1))
         val second = DFResult.Success(DeckDomainTestData.decks(1, 2))
-        val third = DFResult.Error<DataBaseError>(DataBaseError.ConstraintViolation)
+        val third = DFResult.Error<DataError.Local>(DataError.Local.ConstraintViolation)
 
         every { repository.getAllDecksWithCards() } returns flowOf(first, second, third)
 

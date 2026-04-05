@@ -27,9 +27,9 @@ class DataStoreTimerDataSource(
         private val END_TIME_MILLIS = longPreferencesKey("timer_end_time_millis")
     }
 
-    override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError.Preferences>> {
+    override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>> {
         return dataStore.data
-            .map<Preferences, DFResult<PersistedTimerState, DataError.Preferences>> { prefs ->
+            .map<Preferences, DFResult<PersistedTimerState, DataError>> { prefs ->
                 DFResult.Success(
                     PersistedTimerState(
                         totalMillis = prefs[TOTAL_MILLIS] ?: 0L,
@@ -50,7 +50,7 @@ class DataStoreTimerDataSource(
 
     override suspend fun saveTimerState(
         state: PersistedTimerState
-    ): EmptyResult<DataError.Preferences> {
+    ): EmptyResult<DataError> {
         return safePreferencesCall {
             dataStore.edit { prefs ->
                 prefs[TOTAL_MILLIS] = state.totalMillis

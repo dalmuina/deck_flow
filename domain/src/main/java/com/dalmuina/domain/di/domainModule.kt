@@ -91,7 +91,7 @@ val domainModule = module {
 
     factory {
         GetSelectedDeckUseCase(
-            repository = get(),
+            dataSource = get(),
         )
     }
 

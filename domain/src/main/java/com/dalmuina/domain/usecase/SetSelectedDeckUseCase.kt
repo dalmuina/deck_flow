@@ -10,7 +10,7 @@ class SetSelectedDeckUseCase(
     private val repository: SelectedDeckDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(id: Int): EmptyResult<DataError.Preferences> =
+    suspend operator fun invoke(id: Int): EmptyResult<DataError> =
         withContext(dispatcher) {
             repository.setSelectedDeck(id)
         }

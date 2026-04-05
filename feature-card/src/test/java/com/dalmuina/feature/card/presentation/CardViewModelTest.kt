@@ -6,6 +6,7 @@ import com.dalmuina.core.test.data.DeckDomainTestData
 import com.dalmuina.core.test.helpers.awaitLoaded
 import com.dalmuina.core.test.helpers.success
 import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
@@ -56,7 +57,7 @@ class CardViewModelTest {
     @Test
     fun `when viewModel starts then emits loading`() = runTest {
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(null)
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
 
         viewModel = robot.build()
 
@@ -73,7 +74,7 @@ class CardViewModelTest {
     @Test
     fun `when no deck selected then emits empty state`() = runTest {
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(null)
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
 
         viewModel = robot.build()
 
@@ -101,7 +102,7 @@ class CardViewModelTest {
             )
         )
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(1)
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
 
         every { robot.getDeckByIdUseCase(1) } returns flowOf(
             success(deck)
@@ -133,7 +134,7 @@ class CardViewModelTest {
             )
         )
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(1)
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
 
         every { robot.getDeckByIdUseCase(1) } returns flowOf(
             success(deck)
@@ -164,7 +165,7 @@ class CardViewModelTest {
             cards = emptyList()
         )
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(1)
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
 
         every { robot.getDeckByIdUseCase(1) } returns flowOf(
             success(deck)

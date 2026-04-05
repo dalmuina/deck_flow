@@ -3,7 +3,7 @@ package com.dalmuina.domain.usecase
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -52,7 +52,7 @@ class CreateDeckUseCaseTest {
 
         val name = "Morning routine"
         val cardIds = listOf(1, 2, 3)
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         coEvery { repository.createDeck(name, cardIds) } returns expected
 

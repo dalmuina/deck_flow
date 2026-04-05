@@ -7,6 +7,6 @@ import com.dalmuina.domain.model.PersistedTimerState
 import kotlinx.coroutines.flow.Flow
 
 interface TimerDataSource {
-    fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError.Preferences>>
-    suspend fun saveTimerState(state: PersistedTimerState): EmptyResult<DataError.Preferences>
+    fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>>
+    suspend fun saveTimerState(state: PersistedTimerState): EmptyResult<DataError>
 }

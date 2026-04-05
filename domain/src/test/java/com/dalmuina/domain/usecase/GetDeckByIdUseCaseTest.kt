@@ -5,9 +5,9 @@ import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.core.test.data.DeckDomainTestData
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.DeckLocalDataSource
-import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
 import com.dalmuina.domain.helpers.sortedForSession
+import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -31,7 +31,7 @@ class GetDeckByIdUseCaseTest {
     @Test
     fun `invoke should emit error when repository returns error`() = runTest {
         val deckId = 1
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         every { repository.getDeckWithCardsById(deckId) } returns flowOf(expected)
 

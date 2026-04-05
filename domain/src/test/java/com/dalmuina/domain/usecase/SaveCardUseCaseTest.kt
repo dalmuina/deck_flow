@@ -4,7 +4,7 @@ import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -51,7 +51,7 @@ class SaveCardUseCaseTest {
         )
 
         val card = CardDomainTestData.card(id = 1)
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         coEvery { repository.saveCard(card) } returns expected
 

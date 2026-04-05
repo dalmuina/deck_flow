@@ -27,6 +27,6 @@ fun DataError.toUiText(): Int {
         DataError.Network.ServerError -> R.string.error_server_error
         DataError.Network.ServiceUnavailable -> R.string.error_service_unavailable
         DataError.Network.Serialization -> R.string.error_serialization
-        is DataError.Network.Unknown -> R.string.error_unknown
+        else -> R.string.error_unknown
     }
 }
