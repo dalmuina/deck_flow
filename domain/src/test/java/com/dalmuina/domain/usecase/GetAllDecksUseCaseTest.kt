@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.dalmuina.core.test.data.DeckDomainTestData
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.DeckLocalDataSource
-import com.dalmuina.domain.model.DFDeckDomain
+import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
@@ -27,7 +27,7 @@ class GetAllDecksUseCaseTest {
     @Test
     fun `invoke should emit decks when repository returns success`() = runTest {
         val decks = DeckDomainTestData.decks(1, 2, 3)
-        val expected = DFResult.Success<List<DFDeckDomain>>(decks)
+        val expected = DFResult.Success<List<DeckDomain>>(decks)
 
         every { repository.getAllDecksWithCards() } returns flowOf(expected)
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : DFSelectableOption> DropdownSelector(
+fun <T : DFSelectableOption> DFDropdownSelector(
     label: String,
     options: List<T>,
     selectedId: Int?,

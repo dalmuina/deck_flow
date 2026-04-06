@@ -2,22 +2,22 @@ package com.dalmuina.data.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.CardDomain
 
-data class DFCardWithProgress(
+data class CardWithProgress(
 
     @Embedded
-    val card: DFCardEntity,
+    val card: CardEntity,
 
     @Relation(
         parentColumn = "id",
         entityColumn = "cardId"
     )
-    val progress: DFCardProgressEntity?
+    val progress: CardProgressEntity?
 )
 
-fun DFCardWithProgress.toDomain(): DFCardDomain {
-    return DFCardDomain(
+fun CardWithProgress.toDomain(): CardDomain {
+    return CardDomain(
         id = card.id,
         name = card.name,
         durationMillis = card.duration,

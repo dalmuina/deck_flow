@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DFSwipeToDelete(
+fun SwipeToDelete(
     id: Int,
     onDelete: (Int) -> Unit,
     content: @Composable () -> Unit

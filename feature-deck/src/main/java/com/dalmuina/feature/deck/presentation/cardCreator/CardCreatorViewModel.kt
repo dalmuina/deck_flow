@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dalmuina.core.presentation.UiEvent
 import com.dalmuina.core.presentation.UiEventDispatcher
 import com.dalmuina.core.presentation.mappers.toUiText
-import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.CardDomain
 import com.dalmuina.domain.model.onFailure
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
@@ -139,9 +139,9 @@ class CardCreatorViewModel(
         }
     }
 
-    private fun buildCard(): DFCardDomain {
+    private fun buildCard(): CardDomain {
         val state = _uiState.value
-        return DFCardDomain(
+        return CardDomain(
             id = mode.cardId ?: 0,
             name = state.name,
             durationMillis = state.duration.inWholeMilliseconds,

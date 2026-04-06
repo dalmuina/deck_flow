@@ -2,16 +2,16 @@ package com.dalmuina.feature.stats.model
 
 import androidx.compose.runtime.Immutable
 import com.dalmuina.designsystem.component.select.DFSelectableOption
-import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.DeckDomain
 
 @Immutable
-data class DFCardOptionUi(
+data class DeckOptionUi(
     override val id: Int,
     override val name: String
 ): DFSelectableOption
 
-fun DFCardDomain.toUi(): DFCardOptionUi =
-    DFCardOptionUi(
+fun DeckDomain.toUi(): DeckOptionUi =
+    DeckOptionUi(
         id = id,
         name = name,
     )

@@ -1,6 +1,6 @@
 package com.dalmuina.domain.model
 
-data class DFCardDomain(
+data class CardDomain(
     val id: Int = 0,
     val name: String,
     val durationMillis: Long,

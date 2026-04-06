@@ -1,6 +1,6 @@
 package com.dalmuina.domain
 
-import com.dalmuina.domain.model.DFDeckDomain
+import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
@@ -12,9 +12,9 @@ interface DeckLocalDataSource {
 
     suspend fun updateDeckName(deckId: Int, name: String): EmptyResult<DataError.Local>
 
-    fun getAllDecksWithCards(): Flow<DFResult<List<DFDeckDomain>, DataError.Local>>
+    fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError.Local>>
 
-    fun getDeckWithCardsById(deckId: Int): Flow<DFResult<DFDeckDomain, DataError.Local>>
+    fun getDeckWithCardsById(deckId: Int): Flow<DFResult<DeckDomain, DataError.Local>>
 
     suspend fun deleteDeck(deckId: Int): EmptyResult<DataError.Local>
 

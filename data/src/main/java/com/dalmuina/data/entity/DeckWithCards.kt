@@ -3,28 +3,28 @@ package com.dalmuina.data.entity
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.dalmuina.domain.model.DFDeckDomain
+import com.dalmuina.domain.model.DeckDomain
 
-data class DFDeckWithCards(
+data class DeckWithCards(
 
     @Embedded
-    val deck: DFDeckEntity,
+    val deck: DeckEntity,
 
     @Relation(
-        entity = DFCardEntity::class,
+        entity = CardEntity::class,
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = DFDeckCardCrossEntity::class,
+            value = DeckCardCrossEntity::class,
             parentColumn = "deckId",
             entityColumn = "cardId"
         )
     )
-    val cards: List<DFCardWithProgress>
+    val cards: List<CardWithProgress>
 )
 
-fun DFDeckWithCards.toDomain(): DFDeckDomain {
-    return DFDeckDomain(
+fun DeckWithCards.toDomain(): DeckDomain {
+    return DeckDomain(
         id = deck.id,
         name = deck.name,
         cards = cards

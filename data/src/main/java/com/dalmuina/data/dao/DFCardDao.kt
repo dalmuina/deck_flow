@@ -6,24 +6,23 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.dalmuina.data.entity.DFCardEntity
-import com.dalmuina.data.entity.DFCardHistoryEntity
-import com.dalmuina.data.entity.DFCardProgressEntity
-import com.dalmuina.data.entity.DFCardWithProgress
-import com.dalmuina.data.entity.DFDailyStatsEntity
+import com.dalmuina.data.entity.CardEntity
+import com.dalmuina.data.entity.CardHistoryEntity
+import com.dalmuina.data.entity.CardProgressEntity
+import com.dalmuina.data.entity.DailyStatsEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DFCardDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(card: DFCardEntity): Long
+    suspend fun insert(card: CardEntity): Long
 
     @Update
-    suspend fun update(card: DFCardEntity): Int
+    suspend fun update(card: CardEntity): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertProgress(progress: DFCardProgressEntity)
+    suspend fun insertProgress(progress: CardProgressEntity)
 
     @Query(
         """
@@ -44,7 +43,7 @@ interface DFCardDao {
     suspend fun markPostponed(cardId: Int, time: Long)
 
     @Insert
-    suspend fun insertCompletedStat(stat: DFCardHistoryEntity): Long
+    suspend fun insertCompletedStat(stat: CardHistoryEntity): Long
 
     @Transaction
     @Query(
@@ -52,7 +51,7 @@ interface DFCardDao {
         SELECT * FROM cards
     """
     )
-    fun getAllCards(): Flow<List<DFCardEntity>>
+    fun getAllCards(): Flow<List<CardEntity>>
 
     @Transaction
     @Query(
@@ -60,7 +59,7 @@ interface DFCardDao {
         SELECT * FROM cards WHERE id = :idCard
     """
     )
-    suspend fun getCardById(idCard: Int): DFCardEntity
+    suspend fun getCardById(idCard: Int): CardEntity
 
     @Query(
         """
@@ -88,7 +87,7 @@ interface DFCardDao {
         deckId: Int,
         fromDay: Long,
         toDay: Long
-    ): Flow<List<DFDailyStatsEntity>>
+    ): Flow<List<DailyStatsEntity>>
 
     @Query(
         """
@@ -107,6 +106,6 @@ interface DFCardDao {
         cardId: Int,
         fromDay: Long,
         toDay: Long
-    ): Flow<List<DFDailyStatsEntity>>
+    ): Flow<List<DailyStatsEntity>>
 
 }

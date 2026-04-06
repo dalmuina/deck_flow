@@ -1,8 +1,8 @@
 package com.dalmuina.data.entity
 
-import com.dalmuina.domain.model.DFCardDomain
+import com.dalmuina.domain.model.CardDomain
 
-data class DFCardInDeckEntity(
+data class CardInDeckEntity(
     val id: Int,
     val name: String,
     val duration: Long,
@@ -11,8 +11,8 @@ data class DFCardInDeckEntity(
     val order: Int
 )
 
-fun DFCardInDeckEntity.toDomain(): DFCardDomain {
-    return DFCardDomain(
+fun CardInDeckEntity.toDomain(): CardDomain {
+    return CardDomain(
         id = id,
         name = name,
         durationMillis = duration,

@@ -19,11 +19,11 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun DFSwipeCard(
+fun SwipeCard(
     modifier: Modifier = Modifier,
     onSwiped: (SwipeDirection) -> Unit,
     onDragProgress: (Float) -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()

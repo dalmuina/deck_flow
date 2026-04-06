@@ -1,11 +1,11 @@
 package com.dalmuina.feature.stats.helpers
 
-import com.dalmuina.feature.stats.model.DFDailyStatsUi
+import com.dalmuina.feature.stats.model.DailyStatsUi
 import com.dalmuina.feature.stats.model.StatsBarPoint
 import java.time.Instant
 import java.time.ZoneId
 
-fun List<DFDailyStatsUi>.toBarPoints(): List<StatsBarPoint> =
+fun List<DailyStatsUi>.toBarPoints(): List<StatsBarPoint> =
     map { stat ->
         StatsBarPoint(
             label = formatDayLabel(stat.dayStart),

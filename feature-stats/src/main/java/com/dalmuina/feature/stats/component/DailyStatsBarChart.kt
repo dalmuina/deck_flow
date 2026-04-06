@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dalmuina.feature.stats.model.DFDailyStatsUi
+import com.dalmuina.feature.stats.model.DailyStatsUi
 import com.dalmuina.feature.stats.helpers.toBarPoints
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
@@ -23,7 +23,7 @@ import com.patrykandpatrick.vico.compose.common.data.ExtraStore
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DailyStatsBarChart(
-    stats: List<DFDailyStatsUi>,
+    stats: List<DailyStatsUi>,
     modifier: Modifier = Modifier,
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }

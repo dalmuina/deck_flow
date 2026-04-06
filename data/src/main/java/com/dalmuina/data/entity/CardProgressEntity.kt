@@ -8,14 +8,14 @@ import androidx.room.PrimaryKey
     tableName = "card_progress",
     foreignKeys = [
         ForeignKey(
-            entity = DFCardEntity::class,
+            entity = CardEntity::class,
             parentColumns = ["id"],
             childColumns = ["cardId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class DFCardProgressEntity(
+data class CardProgressEntity(
     @PrimaryKey
     val cardId: Int,
     val completedAt: Long? = null,

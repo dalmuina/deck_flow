@@ -1,11 +1,11 @@
 package com.dalmuina.data.datasource
 
 import com.dalmuina.data.dao.DFDeckDao
-import com.dalmuina.data.entity.DFDeckEntity
+import com.dalmuina.data.entity.DeckEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.helpers.safeDbCall
 import com.dalmuina.domain.DeckLocalDataSource
-import com.dalmuina.domain.model.DFDeckDomain
+import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
@@ -26,7 +26,7 @@ class RoomDeckDataSource(
     ): EmptyResult<DataError.Local> =
         safeDbCall {
             dao.insertDeckWithCards(
-                deck = DFDeckEntity(name = name),
+                deck = DeckEntity(name = name),
                 cardIds = cardIds
             )
         }.asEmptyResult()
@@ -39,11 +39,11 @@ class RoomDeckDataSource(
             dao.updateDeckName(deckId, name)
         }.asEmptyResult()
 
-    override fun getAllDecksWithCards(): Flow<DFResult<List<DFDeckDomain>, DataError.Local>> =
+    override fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError.Local>> =
         dao.getAllDecksWithCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<DFDeckDomain>, DataError.Local>
+                        as DFResult<List<DeckDomain>, DataError.Local>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
@@ -52,18 +52,18 @@ class RoomDeckDataSource(
 
     override fun getDeckWithCardsById(
         deckId: Int
-    ): Flow<DFResult<DFDeckDomain, DataError.Local>> =
+    ): Flow<DFResult<DeckDomain, DataError.Local>> =
         combine(
             dao.getDeckById(deckId),
             dao.getCardsForDeck(deckId)
         ) { deck, cards ->
             DFResult.Success(
-                DFDeckDomain(
+                DeckDomain(
                     id = deck.id,
                     name = deck.name,
                     cards = cards.map { it.toDomain() }
                 )
-            ) as DFResult<DFDeckDomain, DataError.Local>
+            ) as DFResult<DeckDomain, DataError.Local>
         }.catch { e ->
             if (e is CancellationException) throw e
             emit(DFResult.Error(DataError.Local.Unknown(e)))

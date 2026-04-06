@@ -19,15 +19,15 @@ import com.dalmuina.designsystem.preview.DFPreview
 import com.dalmuina.designsystem.theme.DFTheme
 import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Spacing
-import com.dalmuina.feature.deck.presentation.model.DFCardSlotUi
+import com.dalmuina.feature.deck.presentation.model.CardSlotUi
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun DFCardSlot(
+fun CardSlot(
     modifier: Modifier = Modifier,
-    card: DFCardSlotUi,
+    card: CardSlotUi,
     onEditCard: (Int) -> Unit,
     onCheckedChanged: (Int) -> Unit
 ) {
@@ -78,10 +78,10 @@ fun DFCardSlot(
 
 @DFPreview
 @Composable
-fun DFCardSlotPreview() {
+fun CardSlotPreview() {
     DeckFlowTheme {
-        DFCardSlot(
-            card = DFCardSlotUi(
+        CardSlot(
+            card = CardSlotUi(
                 id = 0,
                 name = "Test",
                 duration = 0L.hours + 3L.minutes + 25L.seconds,

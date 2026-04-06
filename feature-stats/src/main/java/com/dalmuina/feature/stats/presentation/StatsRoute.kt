@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.designsystem.component.infoState.DFCircularLoading
-import com.dalmuina.designsystem.component.select.DropdownSelector
+import com.dalmuina.designsystem.component.select.DFDropdownSelector
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.stats.component.DailyStatsBarChart
 import org.koin.androidx.compose.koinViewModel
@@ -47,7 +47,7 @@ fun StatsScreen(
             .fillMaxSize()
             .padding(Spacing.l)
     ) {
-        DropdownSelector(
+        DFDropdownSelector(
             label = "Deck",
             options = state.deckOptions,
             selectedId = state.selectedDeckId,
@@ -56,7 +56,7 @@ fun StatsScreen(
 
         Spacer(Modifier.height(Spacing.l))
 
-        DropdownSelector(
+        DFDropdownSelector(
             label = "Card",
             options = state.cardOptions,
             selectedId = state.selectedCardId,

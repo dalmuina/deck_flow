@@ -23,7 +23,7 @@ import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.card.presentation.TimerState
 
 @Composable
-fun DFCountdownTimer(
+fun CountdownTimer(
     state: TimerState,
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
@@ -77,9 +77,9 @@ fun DFCountdownTimer(
 
 @DFPreview
 @Composable
-fun DFCountdownTimerPreview() {
+fun CountdownTimerPreview() {
     DeckFlowTheme {
-        DFCountdownTimer(
+        CountdownTimer(
             state = TimerState(
                 totalMillis = 15000L,
                 remainingMillis = 0L,

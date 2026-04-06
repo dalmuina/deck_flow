@@ -33,11 +33,11 @@ import com.dalmuina.designsystem.theme.Malachite
 import com.dalmuina.designsystem.theme.TiaMaria
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.card.R
-import com.dalmuina.feature.card.model.DFCardUi
+import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.model.SwipeDirection
-import com.dalmuina.feature.card.presentation.components.DFCard
+import com.dalmuina.feature.card.presentation.components.Card
 import com.dalmuina.feature.card.presentation.components.DFCardWithTimer
-import com.dalmuina.feature.card.presentation.components.DFSwipeCard
+import com.dalmuina.feature.card.presentation.components.SwipeCard
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.hours
@@ -89,7 +89,7 @@ fun CardRoute(
 
 @Composable
 fun CardScreen(
-    cards: List<DFCardUi>,
+    cards: List<CardUi>,
     timerState: TimerState,
     onSwiped: (SwipeDirection) -> Unit,
     onPlay: (Boolean) -> Unit,
@@ -134,7 +134,7 @@ fun CardScreen(
             )
 
             if (depth == 0) {
-                DFSwipeCard(
+                SwipeCard(
                     modifier = Modifier
                         .fillMaxSize()
                         .offset(y = offset)
@@ -154,7 +154,7 @@ fun CardScreen(
                     )
                 }
             } else {
-                DFCard(
+                Card(
                     card = card,
                     containerColor = DFTheme.extraColors.cardSlotUnselectedContainer,
                 )
@@ -168,7 +168,7 @@ fun CardScreen(
 fun SwipeCardContent(
     modifier: Modifier = Modifier,
     signedProgress: Float,
-    card: DFCardUi,
+    card: CardUi,
     timerState: TimerState,
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
@@ -243,19 +243,19 @@ fun CardScreenPreview() {
     DeckFlowTheme {
         CardScreen(
             cards = listOf(
-                DFCardUi(
+                CardUi(
                     id = 0,
                     name = "Reading",
                     duration = 3L.minutes,
                     isCompleted = true,
                     isPostponed = false,
-                ), DFCardUi(
+                ), CardUi(
                     id = 1,
                     name = "Writing",
                     duration = 30L.minutes,
                     isCompleted = false,
                     isPostponed = false,
-                ), DFCardUi(
+                ), CardUi(
                     id = 2,
                     name = "Studying",
                     duration = 1L.hours,

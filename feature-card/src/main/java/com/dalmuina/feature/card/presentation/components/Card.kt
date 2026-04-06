@@ -15,12 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.dalmuina.designsystem.tokens.Spacing
-import com.dalmuina.feature.card.model.DFCardUi
+import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.presentation.TimerState
 
 @Composable
-fun DFCard(
-    card: DFCardUi,
+fun Card(
+    card: CardUi,
     containerColor: Color,
 ) {
     DFCardContainer(containerColor = containerColor) {
@@ -30,7 +30,7 @@ fun DFCard(
 
 @Composable
 fun DFCardWithTimer(
-    card: DFCardUi,
+    card: CardUi,
     containerColor: Color,
     timerState: TimerState,
     onPlay: (Boolean) -> Unit,
@@ -43,7 +43,7 @@ fun DFCardWithTimer(
 
         Spacer(modifier = Modifier.height(Spacing.m))
 
-        DFCountdownTimer(
+        CountdownTimer(
             state = timerState,
             onPlay = onPlay,
             onReset = onReset,
@@ -75,7 +75,7 @@ fun DFCardContainer(
 }
 
 @Composable
-fun DFCardContent(card: DFCardUi) {
+fun DFCardContent(card: CardUi) {
 
     Text(
         text = card.name,

@@ -2,7 +2,7 @@ package com.dalmuina.domain.usecase
 
 import com.dalmuina.core.helpers.isToday
 import com.dalmuina.domain.DeckLocalDataSource
-import com.dalmuina.domain.model.DFDeckDomain
+import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.map
@@ -16,7 +16,7 @@ class GetDeckByIdUseCase(
     private val clock: Clock,
 ) {
 
-    operator fun invoke(deckId: Int): Flow<DFResult<DFDeckDomain, DataError.Local>> =
+    operator fun invoke(deckId: Int): Flow<DFResult<DeckDomain, DataError.Local>> =
         repository.getDeckWithCardsById(deckId)
             .map { result ->
                 result.map { deck ->
@@ -24,7 +24,7 @@ class GetDeckByIdUseCase(
                 }
             }
 
-    private fun normalizeDeck(deck: DFDeckDomain): DFDeckDomain {
+    private fun normalizeDeck(deck: DeckDomain): DeckDomain {
 
         val now = clock.millis()
 

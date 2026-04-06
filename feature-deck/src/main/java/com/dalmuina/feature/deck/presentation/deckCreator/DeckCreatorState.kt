@@ -1,12 +1,12 @@
 package com.dalmuina.feature.deck.presentation.deckCreator
 
 import androidx.compose.runtime.Stable
-import com.dalmuina.feature.deck.presentation.model.DFCardSlotUi
+import com.dalmuina.feature.deck.presentation.model.CardSlotUi
 
 @Stable
 data class DeckCreatorState(
     val loading: Boolean = false,
     val name: String = "",
-    val deckCard: List<DFCardSlotUi> = emptyList(),
+    val deckCard: List<CardSlotUi> = emptyList(),
     val isEditMode: Boolean = false,
 )

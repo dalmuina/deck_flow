@@ -7,7 +7,7 @@ import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
-import com.dalmuina.feature.card.model.DFCardUi
+import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.model.SwipeDirection
 import com.dalmuina.feature.card.model.toUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +30,7 @@ class CardViewModel(
     private val postponeCardUseCase: PostponeCardUseCase,
 ) : ViewModel() {
 
-    private val sessionCards = MutableStateFlow<List<DFCardUi>>(emptyList())
+    private val sessionCards = MutableStateFlow<List<CardUi>>(emptyList())
     private var currentDeckId: Int? = null
 
 

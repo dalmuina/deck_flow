@@ -28,9 +28,9 @@ import com.dalmuina.designsystem.theme.DeckFlowTheme
 import com.dalmuina.designsystem.tokens.Dimens
 import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.presentation.component.DFCardSlot
-import com.dalmuina.feature.deck.presentation.component.DFSwipeToDelete
-import com.dalmuina.feature.deck.presentation.model.DFCardSlotUi
+import com.dalmuina.feature.deck.presentation.component.CardSlot
+import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
+import com.dalmuina.feature.deck.presentation.model.CardSlotUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
@@ -83,7 +83,7 @@ fun DeckCreatorRoute(
 
 @Composable
 fun DeckCreatorScreen(
-    items: List<DFCardSlotUi>,
+    items: List<CardSlotUi>,
     name: String,
     isEditMode: Boolean,
     onSelectedCard: (Int) -> Unit,
@@ -126,11 +126,11 @@ fun DeckCreatorScreen(
                                 placementSpec = tween(350)
                             )
                         ) {
-                            DFSwipeToDelete(
+                            SwipeToDelete(
                                 id = card.id,
                                 onDelete = onDelete
                             ) {
-                                DFCardSlot(
+                                CardSlot(
                                     card = card,
                                     onEditCard = onEditCard,
                                     onCheckedChanged = { id -> onSelectedCard(id) }
@@ -164,13 +164,13 @@ fun DeckCreatorScreenPreview() {
     DeckFlowTheme {
         DeckCreatorScreen(
             items = listOf(
-                DFCardSlotUi(
+                CardSlotUi(
                     id = 0,
                     name = "Test",
                     duration = 0L.hours + 15L.minutes + 0L.seconds,
                     true,
                 ),
-                DFCardSlotUi(
+                CardSlotUi(
                     id = 1,
                     name = "Test",
                     duration = 2L.hours + 20L.minutes + 0L.seconds,

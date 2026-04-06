@@ -1,17 +1,17 @@
 package com.dalmuina.feature.stats.model
 
 import androidx.compose.runtime.Immutable
-import com.dalmuina.domain.model.DFDailyStatsDomain
+import com.dalmuina.domain.model.DailyStatsDomain
 
 @Immutable
-data class DFDailyStatsUi(
+data class DailyStatsUi(
     val dayStart: Long,
     val totalSpentMillis: Long,
     val completedCount: Int,
 )
 
-fun DFDailyStatsDomain.toUi(): DFDailyStatsUi =
-    DFDailyStatsUi(
+fun DailyStatsDomain.toUi(): DailyStatsUi =
+    DailyStatsUi(
         dayStart = dayStart,
         totalSpentMillis = totalSpentMillis,
         completedCount = completedCount,

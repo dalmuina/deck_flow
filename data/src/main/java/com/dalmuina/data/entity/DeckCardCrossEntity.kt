@@ -13,13 +13,13 @@ import androidx.room.Index
     ],
     foreignKeys = [
         ForeignKey(
-            entity = DFDeckEntity::class,
+            entity = DeckEntity::class,
             parentColumns = ["id"],
             childColumns = ["deckId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = DFCardEntity::class,
+            entity = CardEntity::class,
             parentColumns = ["id"],
             childColumns = ["cardId"],
             onDelete = ForeignKey.CASCADE
@@ -27,7 +27,7 @@ import androidx.room.Index
     ]
 )
 
-data class DFDeckCardCrossEntity(
+data class DeckCardCrossEntity(
     val deckId: Int,
     val cardId: Int,
     val order: Int,

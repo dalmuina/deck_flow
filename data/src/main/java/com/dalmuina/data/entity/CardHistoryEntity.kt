@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
     tableName = "card_history",
     foreignKeys = [
         ForeignKey(
-            entity = DFCardEntity::class,
+            entity = CardEntity::class,
             parentColumns = ["id"],
             childColumns = ["cardId"],
             onDelete = ForeignKey.CASCADE
@@ -20,7 +20,7 @@ import androidx.room.PrimaryKey
         Index("dayStart")
     ]
 )
-data class DFCardHistoryEntity(
+data class CardHistoryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val cardId: Int,

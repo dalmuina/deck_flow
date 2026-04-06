@@ -14,7 +14,7 @@ import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.feature.deck.presentation.model.DFCardSlotUi
+import com.dalmuina.feature.deck.presentation.model.CardSlotUi
 import com.dalmuina.feature.deck.presentation.model.toUi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -109,7 +109,7 @@ class DeckCreatorViewModel(
                     )
                 }
                 .sortedWith(
-                    compareBy<DFCardSlotUi> { !it.isSelected }
+                    compareBy<CardSlotUi> { !it.isSelected }
                         .thenBy { it.order ?: Int.MAX_VALUE }
                 )
 

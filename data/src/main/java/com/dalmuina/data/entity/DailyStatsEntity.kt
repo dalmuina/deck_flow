@@ -1,15 +1,15 @@
 package com.dalmuina.data.entity
 
-import com.dalmuina.domain.model.DFDailyStatsDomain
+import com.dalmuina.domain.model.DailyStatsDomain
 
-data class DFDailyStatsEntity(
+data class DailyStatsEntity(
     val dayStart: Long,
     val totalSpentMillis: Long,
     val completedCount: Int
 )
 
-fun DFDailyStatsEntity.toDomain(): DFDailyStatsDomain =
-    DFDailyStatsDomain(
+fun DailyStatsEntity.toDomain(): DailyStatsDomain =
+    DailyStatsDomain(
         dayStart = dayStart,
         totalSpentMillis = totalSpentMillis,
         completedCount = completedCount,
