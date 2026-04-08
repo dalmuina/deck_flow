@@ -13,7 +13,7 @@ class GetCardStatsUseCase(
         cardId: Int,
         fromDay: Long,
         toDay: Long
-    ): Flow<DFResult<List<DailyStatsDomain>, DataError.Local>> =
+    ): Flow<DFResult<List<DailyStatsDomain>, DataError>> =
         repository.getDailyStatsForCard(cardId, fromDay, toDay)
 
 }

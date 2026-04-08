@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.dalmuina.designsystem.tokens.Spacing
+import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.presentation.TimerState
 

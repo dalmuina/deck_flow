@@ -11,7 +11,7 @@ class GetCardByIdUseCase(
     private val repository: CardLocalDataSource,
     private val dispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(cardId: Int): DFResult<CardDomain, DataError.Local> =
+    suspend operator fun invoke(cardId: Int): DFResult<CardDomain, DataError> =
         withContext(dispatcher) {
             repository.getCardById(cardId)
         }

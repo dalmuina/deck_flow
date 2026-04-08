@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dalmuina.designsystem.component.infoState.DFCircularLoading
-import com.dalmuina.designsystem.component.select.DFDropdownSelector
-import com.dalmuina.designsystem.tokens.Spacing
+import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
+import com.dalmuina.core.design_system.component.select.DFDropdownSelector
+import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.stats.component.DailyStatsBarChart
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,7 +38,7 @@ fun StatsRoute(
 
 @Composable
 fun StatsScreen(
-    state: StatsUiState,
+    state: StatsState,
     onDeckSelected: (Int) -> Unit,
     onCardSelected: (Int) -> Unit,
 ) {

@@ -10,7 +10,7 @@ class DeleteCardUseCase(
     private val repository: CardLocalDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(cardId: Int): EmptyResult<DataError.Local> =
+    suspend operator fun invoke(cardId: Int): EmptyResult<DataError> =
         withContext(dispatcher) {
             repository.deleteCard(cardId)
         }

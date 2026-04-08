@@ -14,11 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.dalmuina.core.design_system.preview.DFPreview
+import com.dalmuina.core.design_system.theme.DFTheme
+import com.dalmuina.core.design_system.theme.DeckFlowTheme
+import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.core.presentation.helpers.toTimerText
-import com.dalmuina.designsystem.preview.DFPreview
-import com.dalmuina.designsystem.theme.DFTheme
-import com.dalmuina.designsystem.theme.DeckFlowTheme
-import com.dalmuina.designsystem.tokens.Spacing
 import com.dalmuina.feature.deck.presentation.model.CardSlotUi
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes

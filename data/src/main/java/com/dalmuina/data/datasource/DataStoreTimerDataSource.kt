@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
-import com.dalmuina.data.helpers.safePreferencesCall
+import com.dalmuina.core.data.helpers.safePreferencesCall
 import com.dalmuina.domain.TimerDataSource
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError

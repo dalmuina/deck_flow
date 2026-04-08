@@ -14,7 +14,7 @@ class UpdateDeckNameUseCase(
     suspend operator fun invoke(
         deckId: Int,
         name: String,
-    ): EmptyResult<DataError.Local> =
+    ): EmptyResult<DataError> =
         withContext(dispatcher) {
             repository.updateDeckName(deckId, name)
         }

@@ -7,6 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
+import com.dalmuina.core.design_system.preview.DFPreview
+import com.dalmuina.core.design_system.theme.DeckFlowTheme
+import com.dalmuina.deckflow.navigation.Route
 import com.dalmuina.deckflow.navigation.TOP_LEVEL_DESTINATIONS
 
 @Composable
@@ -36,5 +39,14 @@ fun DFNavigationBar(
             )
         }
     }
+}
 
+@DFPreview
+@Composable
+fun DFNavigationBarPreview(){
+    DeckFlowTheme {
+        DFNavigationBar(
+            selectedKey = Route.Card
+        ) { }
+    }
 }

@@ -1,7 +1,7 @@
 package com.dalmuina.feature.stats.model
 
 import androidx.compose.runtime.Immutable
-import com.dalmuina.designsystem.component.select.DFSelectableOption
+import com.dalmuina.core.design_system.component.select.DFSelectableOption
 import com.dalmuina.domain.model.CardDomain
 
 @Immutable

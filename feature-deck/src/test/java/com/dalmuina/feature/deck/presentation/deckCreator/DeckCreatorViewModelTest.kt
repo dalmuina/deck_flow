@@ -12,7 +12,7 @@ import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.core.presentation.UiEventDispatcher
+import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import io.kotest.matchers.shouldBe

@@ -117,12 +117,12 @@ class StatsViewModel(
                 StatsData()
             )
 
-    val uiState: StateFlow<StatsUiState> =
+    val uiState: StateFlow<StatsState> =
         combine(
             selectionState,
             statsState
         ) { selection, stats ->
-            StatsUiState(
+            StatsState(
                 loading = selection.loading,
                 deckOptions = selection.deckOptions,
                 selectedDeckId = selection.selectedDeckId,
@@ -134,7 +134,7 @@ class StatsViewModel(
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
-                StatsUiState(loading = true)
+                StatsState(loading = true)
             )
 
     fun onDeckSelected(deckId: Int?) {

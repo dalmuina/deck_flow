@@ -1,11 +1,11 @@
 package com.dalmuina.feature.deck.presentation.cardCreator
 
 import app.cash.turbine.test
+import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.core.test.helpers.failure
 import com.dalmuina.core.test.helpers.success
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.core.presentation.UiEventDispatcher
 import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase

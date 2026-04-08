@@ -10,7 +10,7 @@ class PostponeCardUseCase(
     private val repository: CardLocalDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(cardId: Int): DFResult<Int, DataError.Local> =
+    suspend operator fun invoke(cardId: Int): DFResult<Int, DataError> =
         withContext(dispatcher) {
             repository.postponeCard(cardId)
         }

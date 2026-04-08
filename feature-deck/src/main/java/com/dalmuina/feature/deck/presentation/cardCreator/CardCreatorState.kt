@@ -3,7 +3,6 @@ package com.dalmuina.feature.deck.presentation.cardCreator
 import androidx.compose.runtime.Stable
 import kotlin.time.Duration
 
-@Stable
 data class CardCreatorState(
     val loading: Boolean = false,
     val processing: Boolean = false,

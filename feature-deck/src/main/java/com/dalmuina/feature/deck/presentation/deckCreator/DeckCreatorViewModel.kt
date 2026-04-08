@@ -2,8 +2,8 @@ package com.dalmuina.feature.deck.presentation.deckCreator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.core.presentation.UiEvent
-import com.dalmuina.core.presentation.UiEventDispatcher
+import com.dalmuina.core.presentation.events.UiEvent
+import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.core.presentation.mappers.toUiText
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.onFailure
@@ -51,6 +51,7 @@ class DeckCreatorViewModel(
     }
 
     private val _events = MutableSharedFlow<DeckCreatorEvent>()
+
     val events = _events.asSharedFlow()
 
     private val selectedCards =

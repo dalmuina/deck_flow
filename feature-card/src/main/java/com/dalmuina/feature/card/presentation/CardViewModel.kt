@@ -80,11 +80,11 @@ class CardViewModel(
         }
     }
 
-    val uiState: StateFlow<SessionState> =
+    val uiState: StateFlow<CardState> =
         combine(deckFlow, sessionCards) { result, session ->
             when (result) {
                 is DFResult.Success -> {
-                    SessionState(
+                    CardState(
                         loading = false,
                         name = result.data.name,
                         cards = session.filter { !it.isCompleted },
@@ -92,7 +92,7 @@ class CardViewModel(
                     )
                 }
                 else -> {
-                    SessionState(
+                    CardState(
                         loading = false,
                         isDeckSelected = false,
                     )
@@ -100,12 +100,12 @@ class CardViewModel(
             }
         }
             .onStart {
-                emit(SessionState(loading = true))
+                emit(CardState(loading = true))
             }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
-                SessionState(loading = true)
+                CardState(loading = true)
             )
 
     fun process(intent: CardIntent) {

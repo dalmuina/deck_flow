@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.Flow
 class GetAllDecksUseCase(
     private val repository: DeckLocalDataSource
 ) {
-    operator fun invoke(): Flow<DFResult<List<DeckDomain>, DataError.Local>> =
+    operator fun invoke(): Flow<DFResult<List<DeckDomain>, DataError>> =
         repository.getAllDecksWithCards()
 }

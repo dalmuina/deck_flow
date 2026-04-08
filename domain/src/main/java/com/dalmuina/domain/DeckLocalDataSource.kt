@@ -8,16 +8,16 @@ import kotlinx.coroutines.flow.Flow
 
 interface DeckLocalDataSource {
 
-    suspend fun createDeck(name: String, cardIds: List<Int>): EmptyResult<DataError.Local>
+    suspend fun createDeck(name: String, cardIds: List<Int>): EmptyResult<DataError>
 
-    suspend fun updateDeckName(deckId: Int, name: String): EmptyResult<DataError.Local>
+    suspend fun updateDeckName(deckId: Int, name: String): EmptyResult<DataError>
 
-    fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError.Local>>
+    fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError>>
 
-    fun getDeckWithCardsById(deckId: Int): Flow<DFResult<DeckDomain, DataError.Local>>
+    fun getDeckWithCardsById(deckId: Int): Flow<DFResult<DeckDomain, DataError>>
 
-    suspend fun deleteDeck(deckId: Int): EmptyResult<DataError.Local>
+    suspend fun deleteDeck(deckId: Int): EmptyResult<DataError>
 
-    suspend fun setDeckCards(deckId: Int, orderedIds: List<Int>): EmptyResult<DataError.Local>
+    suspend fun setDeckCards(deckId: Int, orderedIds: List<Int>): EmptyResult<DataError>
 
 }

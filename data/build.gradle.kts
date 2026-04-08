@@ -30,10 +30,7 @@ room {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":core"))
-
-    // Koin
-    implementation(libs.koin.android)
+    implementation(project(":core:data"))
 
     implementation(libs.datastore.preferences)
 

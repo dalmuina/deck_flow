@@ -3,7 +3,7 @@ package com.dalmuina.data.datasource
 import com.dalmuina.data.dao.DFDeckDao
 import com.dalmuina.data.entity.DeckEntity
 import com.dalmuina.data.entity.toDomain
-import com.dalmuina.data.helpers.safeDbCall
+import com.dalmuina.core.data.helpers.safeDbCall
 import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
@@ -23,7 +23,7 @@ class RoomDeckDataSource(
     override suspend fun createDeck(
         name: String,
         cardIds: List<Int>
-    ): EmptyResult<DataError.Local> =
+    ): EmptyResult<DataError> =
         safeDbCall {
             dao.insertDeckWithCards(
                 deck = DeckEntity(name = name),
@@ -34,12 +34,12 @@ class RoomDeckDataSource(
     override suspend fun updateDeckName(
         deckId: Int,
         name: String
-    ): EmptyResult<DataError.Local> =
+    ): EmptyResult<DataError> =
         safeDbCall {
             dao.updateDeckName(deckId, name)
         }.asEmptyResult()
 
-    override fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError.Local>> =
+    override fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError>> =
         dao.getAllDecksWithCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
@@ -52,7 +52,7 @@ class RoomDeckDataSource(
 
     override fun getDeckWithCardsById(
         deckId: Int
-    ): Flow<DFResult<DeckDomain, DataError.Local>> =
+    ): Flow<DFResult<DeckDomain, DataError>> =
         combine(
             dao.getDeckById(deckId),
             dao.getCardsForDeck(deckId)
@@ -63,13 +63,13 @@ class RoomDeckDataSource(
                     name = deck.name,
                     cards = cards.map { it.toDomain() }
                 )
-            ) as DFResult<DeckDomain, DataError.Local>
+            ) as DFResult<DeckDomain, DataError>
         }.catch { e ->
             if (e is CancellationException) throw e
             emit(DFResult.Error(DataError.Local.Unknown(e)))
         }
 
-    override suspend fun deleteDeck(deckId: Int): EmptyResult<DataError.Local> =
+    override suspend fun deleteDeck(deckId: Int): EmptyResult<DataError> =
         safeDbCall {
             dao.deleteDeck(deckId)
         }.asEmptyResult()
@@ -77,7 +77,7 @@ class RoomDeckDataSource(
     override suspend fun setDeckCards(
         deckId: Int,
         orderedIds: List<Int>
-    ): EmptyResult<DataError.Local> =
+    ): EmptyResult<DataError> =
         safeDbCall {
             dao.replaceDeckCards(deckId, orderedIds)
         }.asEmptyResult()

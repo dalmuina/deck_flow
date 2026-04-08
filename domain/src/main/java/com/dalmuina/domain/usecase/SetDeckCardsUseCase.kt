@@ -10,7 +10,7 @@ class SetDeckCardsUseCase(
     private val repository: DeckLocalDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(deckId: Int, orderedIds: List<Int>): EmptyResult<DataError.Local> =
+    suspend operator fun invoke(deckId: Int, orderedIds: List<Int>): EmptyResult<DataError> =
         withContext(dispatcher) {
             repository.setDeckCards(deckId, orderedIds)
         }

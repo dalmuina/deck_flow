@@ -17,9 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.dalmuina.designsystem.preview.DFPreview
-import com.dalmuina.designsystem.theme.DeckFlowTheme
-import com.dalmuina.designsystem.tokens.Spacing
+import com.dalmuina.core.design_system.preview.DFPreview
+import com.dalmuina.core.design_system.theme.DeckFlowTheme
+import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.presentation.TimerState
 
 @Composable

@@ -13,7 +13,7 @@ class CreateDeckUseCase(
     suspend operator fun invoke(
         name: String,
         cardIds: List<Int>,
-    ): EmptyResult<DataError.Local> =
+    ): EmptyResult<DataError> =
         withContext(dispatcher) {
             repository.createDeck(name, cardIds)
         }

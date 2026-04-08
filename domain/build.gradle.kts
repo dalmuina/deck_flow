@@ -15,25 +15,20 @@ extensions.configure<LibraryExtension> {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
 }
 
 dependencies {
+    implementation(project(":core:domain"))
+    testImplementation(project(":core:test"))
+
     implementation(libs.androidx.core.ktx)
-
-    implementation(libs.koin.android)
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-    implementation(project(":core"))
 
     testImplementation(libs.junit)
     testImplementation (libs.kotlinx.coroutines.test)
     testImplementation (libs.mockk)
     testImplementation (libs.kotest.assertions)
     testImplementation (libs.turbine)
-    testImplementation(project(":core-test"))
 }

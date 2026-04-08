@@ -11,7 +11,7 @@ class UpdateCardUseCase(
     private val repository: CardLocalDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(card: CardDomain): DFResult<Int, DataError.Local> =
+    suspend operator fun invoke(card: CardDomain): DFResult<Int, DataError> =
         withContext(dispatcher) {
             repository.updateCard(card)
         }

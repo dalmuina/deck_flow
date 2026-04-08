@@ -2,14 +2,13 @@ package com.dalmuina.feature.deck.presentation.deckSelector
 
 import app.cash.turbine.test
 import com.dalmuina.core.test.data.DeckDomainTestData
-import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.core.test.helpers.awaitLoaded
 import com.dalmuina.core.test.helpers.failure
 import com.dalmuina.core.test.helpers.success
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.core.presentation.UiEventDispatcher
+import com.dalmuina.core.presentation.events.UiEventDispatcher
+import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
@@ -129,7 +128,7 @@ class DeckSelectorViewModelTest {
     @Test
     fun `when delete fails then dispatch snackbar`() = runTest {
 
-        coEvery { robot.deleteDeckUseCase(1) } returns failure(DataError.Local.Unknown(RuntimeException("Unknown database error")))
+        coEvery { robot.deleteDeckUseCase(1) } returns failure(ErrorTestData.unknown)
 
         viewModel = robot.build()
         viewModel.process(DeckSelectorIntent.DeleteDeck(1))

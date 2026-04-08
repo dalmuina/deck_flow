@@ -1,12 +1,12 @@
 package com.dalmuina.data.datasource
 
-import com.dalmuina.core.helpers.startOfDayMillis
+import com.dalmuina.core.data.helpers.startOfDayMillis
 import com.dalmuina.data.dao.DFCardDao
 import com.dalmuina.data.entity.CardHistoryEntity
 import com.dalmuina.data.entity.CardProgressEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
-import com.dalmuina.data.helpers.safeDbCall
+import com.dalmuina.core.data.helpers.safeDbCall
 import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.CardDomain
 import com.dalmuina.domain.model.DailyStatsDomain
@@ -22,12 +22,12 @@ class RoomCardDatasource(
     private val dao: DFCardDao,
 ) : CardLocalDataSource {
 
-    override suspend fun saveCard(card: CardDomain): DFResult<Int, DataError.Local> =
+    override suspend fun saveCard(card: CardDomain): DFResult<Int, DataError> =
         safeDbCall {
             dao.insert(card.toEntity()).toInt()
         }
 
-    override suspend fun updateCard(card: CardDomain): DFResult<Int, DataError.Local> =
+    override suspend fun updateCard(card: CardDomain): DFResult<Int, DataError> =
         safeDbCall {
             dao.update(card.toEntity())
             card.id
@@ -36,7 +36,7 @@ class RoomCardDatasource(
     override suspend fun completeCard(
         cardId: Int,
         spentMillis: Long
-    ): DFResult<Int, DataError.Local> {
+    ): DFResult<Int, DataError> {
         val now = System.currentTimeMillis()
         return safeDbCall {
             dao.insertProgress(CardProgressEntity(cardId = cardId))
@@ -53,7 +53,7 @@ class RoomCardDatasource(
         }
     }
 
-    override suspend fun postponeCard(cardId: Int): DFResult<Int, DataError.Local> {
+    override suspend fun postponeCard(cardId: Int): DFResult<Int, DataError> {
         val now = System.currentTimeMillis()
         return safeDbCall {
             dao.insertProgress(CardProgressEntity(cardId = cardId))
@@ -62,7 +62,7 @@ class RoomCardDatasource(
         }
     }
 
-    override fun getAllCards(): Flow<DFResult<List<CardDomain>, DataError.Local>> =
+    override fun getAllCards(): Flow<DFResult<List<CardDomain>, DataError>> =
         dao.getAllCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
@@ -73,12 +73,12 @@ class RoomCardDatasource(
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
 
-    override suspend fun getCardById(cardId: Int): DFResult<CardDomain, DataError.Local> =
+    override suspend fun getCardById(cardId: Int): DFResult<CardDomain, DataError> =
         safeDbCall {
             dao.getCardById(cardId).toDomain()
         }
 
-    override suspend fun deleteCard(cardId: Int): EmptyResult<DataError.Local> =
+    override suspend fun deleteCard(cardId: Int): EmptyResult<DataError> =
         safeDbCall {
             dao.deleteCard(cardId)
         }
@@ -87,7 +87,7 @@ class RoomCardDatasource(
         cardId: Int,
         fromDay: Long,
         toDay: Long
-    ): Flow<DFResult<List<DailyStatsDomain>, DataError.Local>> =
+    ): Flow<DFResult<List<DailyStatsDomain>, DataError>> =
         dao.getDailyStatsForCard(cardId, fromDay, toDay)
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
