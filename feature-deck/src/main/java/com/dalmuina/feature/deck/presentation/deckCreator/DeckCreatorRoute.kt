@@ -30,7 +30,7 @@ import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.presentation.component.CardSlot
 import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
-import com.dalmuina.feature.deck.presentation.model.CardSlotUi
+import com.dalmuina.feature.deck.model.CardSlotUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours

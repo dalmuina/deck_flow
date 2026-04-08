@@ -66,7 +66,7 @@ class RoomCardDatasource(
         dao.getAllCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<CardDomain>, DataError.Local>
+                        as DFResult<List<CardDomain>, DataError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
@@ -91,7 +91,7 @@ class RoomCardDatasource(
         dao.getDailyStatsForCard(cardId, fromDay, toDay)
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<DailyStatsDomain>, DataError.Local>
+                        as DFResult<List<DailyStatsDomain>, DataError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e

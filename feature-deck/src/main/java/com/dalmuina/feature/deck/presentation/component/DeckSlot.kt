@@ -23,7 +23,7 @@ import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Dimens
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.presentation.model.DeckUi
+import com.dalmuina.feature.deck.model.DeckUi
 
 @Composable
 fun DeckSlot(

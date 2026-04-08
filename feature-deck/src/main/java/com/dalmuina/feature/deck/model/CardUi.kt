@@ -1,4 +1,4 @@
-package com.dalmuina.feature.deck.presentation.model
+package com.dalmuina.feature.deck.model
 
 import androidx.compose.runtime.Immutable
 import com.dalmuina.domain.model.CardDomain

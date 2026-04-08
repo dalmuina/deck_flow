@@ -14,8 +14,8 @@ import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.feature.deck.presentation.model.CardSlotUi
-import com.dalmuina.feature.deck.presentation.model.toUi
+import com.dalmuina.feature.deck.model.CardSlotUi
+import com.dalmuina.feature.deck.model.toUi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

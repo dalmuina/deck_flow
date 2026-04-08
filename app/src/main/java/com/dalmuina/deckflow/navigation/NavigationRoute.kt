@@ -39,7 +39,7 @@ import com.dalmuina.feature.stats.presentation.StatsRoute
 import org.koin.compose.koinInject
 
 @Composable
-fun NavigationRoot(
+fun NavigationRoute(
     modifier: Modifier = Modifier,
     uiEventDispatcher: UiEventDispatcher = koinInject()
 ) {

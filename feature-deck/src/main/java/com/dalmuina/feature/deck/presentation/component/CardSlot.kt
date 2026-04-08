@@ -19,7 +19,7 @@ import com.dalmuina.core.design_system.theme.DFTheme
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.core.presentation.helpers.toTimerText
-import com.dalmuina.feature.deck.presentation.model.CardSlotUi
+import com.dalmuina.feature.deck.model.CardSlotUi
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds

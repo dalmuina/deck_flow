@@ -1,7 +1,7 @@
 package com.dalmuina.feature.deck.presentation.deckSelector
 
 import androidx.compose.runtime.Stable
-import com.dalmuina.feature.deck.presentation.model.DeckUi
+import com.dalmuina.feature.deck.model.DeckUi
 
 @Stable
 data class DeckSelectorState(

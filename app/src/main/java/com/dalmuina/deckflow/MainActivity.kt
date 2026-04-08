@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.deckflow.navigation.NavigationRoot
+import com.dalmuina.deckflow.navigation.NavigationRoute
 
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DeckFlowTheme {
-                NavigationRoot()
+                NavigationRoute()
             }
         }
     }

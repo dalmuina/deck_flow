@@ -23,7 +23,7 @@ import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.presentation.component.DeckSlot
 import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
-import com.dalmuina.feature.deck.presentation.model.DeckUi
+import com.dalmuina.feature.deck.model.DeckUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

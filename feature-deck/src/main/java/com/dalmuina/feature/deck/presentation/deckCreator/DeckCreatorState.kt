@@ -1,7 +1,7 @@
 package com.dalmuina.feature.deck.presentation.deckCreator
 
 import androidx.compose.runtime.Stable
-import com.dalmuina.feature.deck.presentation.model.CardSlotUi
+import com.dalmuina.feature.deck.model.CardSlotUi
 
 @Stable
 data class DeckCreatorState(

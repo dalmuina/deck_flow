@@ -12,7 +12,7 @@ import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
-import com.dalmuina.feature.deck.presentation.model.toUi
+import com.dalmuina.feature.deck.model.toUi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine

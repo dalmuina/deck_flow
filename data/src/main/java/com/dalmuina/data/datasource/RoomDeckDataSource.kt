@@ -43,7 +43,7 @@ class RoomDeckDataSource(
         dao.getAllDecksWithCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<DeckDomain>, DataError.Local>
+                        as DFResult<List<DeckDomain>, DataError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e
