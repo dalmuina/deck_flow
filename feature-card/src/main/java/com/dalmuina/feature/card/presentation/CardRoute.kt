@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +51,14 @@ fun CardRoute(
 ) {
     val state by cardViewModel.uiState.collectAsStateWithLifecycle()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
+    val currentCardId = state.cards.firstOrNull()?.id
     val duration = state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: 0L
+
+    LaunchedEffect(currentCardId) {
+        if (duration > 0L) {
+            timerViewModel.process(TimerIntent.Reset(duration))
+        }
+    }
 
     when {
         state.loading -> {
@@ -70,7 +78,6 @@ fun CardRoute(
                 cards = state.cards,
                 timerState = timerState,
                 onSwiped = { direction ->
-                    timerViewModel.process(TimerIntent.Reset(duration))
                     cardViewModel.process(CardIntent.SwipeTopCard(direction, (timerState.totalMillis-timerState.remainingMillis)))
                 },
                 onPlay = { isPLaying ->
