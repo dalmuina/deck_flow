@@ -43,6 +43,7 @@ extensions.configure<ApplicationExtension>  {
     buildFeatures {
         compose = true
     }
+
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -56,37 +57,34 @@ tasks.withType<KotlinCompile>().configureEach {
 
 
 dependencies {
-
+    implementation(project(":di"))
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":core"))
-    implementation(project(":design-system"))
-    implementation(project(":feature-card"))
+    implementation(project(":core:presentation"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:design-system"))
+    implementation(project(":core:test"))
     implementation(project(":feature-deck"))
+    implementation(project(":feature-card"))
     implementation(project(":feature-stats"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.viewmodel)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Koin para ViewModels dentro de features
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
 

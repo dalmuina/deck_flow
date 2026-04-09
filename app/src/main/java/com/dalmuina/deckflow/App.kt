@@ -1,12 +1,12 @@
 package com.dalmuina.deckflow
 
 import android.app.Application
-import com.dalmuina.data.di.dataModule
-import com.dalmuina.core.di.coreUiModule
-import com.dalmuina.domain.di.domainModule
-import com.dalmuina.feature.card.di.featureCardModule
-import com.dalmuina.feature.deck.di.featureDeckModule
-import com.dalmuina.feature.stats.di.featureStatsModule
+import com.dalmuina.di.coreUiModule
+import com.dalmuina.di.dataModule
+import com.dalmuina.di.domainModule
+import com.dalmuina.di.featureCardModule
+import com.dalmuina.di.featureDeckModule
+import com.dalmuina.di.featureStatsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 

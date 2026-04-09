@@ -1,9 +1,9 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.PreferencesError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +20,7 @@ class SetSelectedDeckUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: SelectedDeckRepository = mockk()
+    private val repository: SelectedDeckDataSource = mockk()
 
     @Test
     fun `invoke should return success when repository sets selected deck successfully`() = runTest {
@@ -51,7 +51,7 @@ class SetSelectedDeckUseCaseTest {
 
         val deckId = 3
         val throwable = Throwable("write failed")
-        val expected = DFResult.Error(PreferencesError.Unknown(throwable))
+        val expected = DFResult.Error(DataError.Preferences.Unknown(throwable))
 
         coEvery { repository.setSelectedDeck(deckId) } returns expected
 

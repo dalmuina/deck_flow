@@ -1,8 +1,9 @@
 package com.dalmuina.domain.usecase
 
 import app.cash.turbine.test
-import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.SelectedDeckDataSource
+import com.dalmuina.domain.model.DFResult
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -18,32 +19,36 @@ class GetSelectedDeckUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: SelectedDeckRepository = mockk()
+    private val repository: SelectedDeckDataSource = mockk()
 
     @Test
     fun `invoke should emit selected deck id when repository returns value`() = runTest {
         val expected = 3
 
-        every { repository.selectedDeckId } returns flowOf(expected)
+        every { repository.selectedDeckId } returns flowOf(DFResult.Success(expected))
 
         val useCase = GetSelectedDeckUseCase(repository)
 
         useCase().test {
-            awaitItem() shouldBe expected
+            awaitItem() shouldBe DFResult.Success(expected)
             awaitComplete()
         }
     }
 
     @Test
     fun `invoke should emit values from repository in order`() = runTest {
-        every { repository.selectedDeckId } returns flowOf(1, 2, 3)
+        every { repository.selectedDeckId } returns flowOf(
+            DFResult.Success(1),
+            DFResult.Success(2),
+            DFResult.Success(3)
+        )
 
         val useCase = GetSelectedDeckUseCase(repository)
 
         useCase().test {
-            awaitItem() shouldBe 1
-            awaitItem() shouldBe 2
-            awaitItem() shouldBe 3
+            awaitItem() shouldBe DFResult.Success(1)
+            awaitItem() shouldBe DFResult.Success(2)
+            awaitItem() shouldBe DFResult.Success(3)
             awaitComplete()
         }
     }

@@ -1,11 +1,11 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.coretest.data.DeckDomainTestData
-import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.core.test.data.DeckDomainTestData
+import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.DeckLocalDataSource
+import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,8 +24,8 @@ class DeleteDeckUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: LocalDeckRepository = mockk()
-    private val selectedDeckRepository: SelectedDeckRepository = mockk()
+    private val repository: DeckLocalDataSource = mockk()
+    private val selectedDeckRepository: SelectedDeckDataSource = mockk()
 
     @Test
     fun `invoke should return error when getting decks fails`() = runTest {
@@ -37,7 +37,7 @@ class DeleteDeckUseCaseTest {
         )
 
         val deckId = 2
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         every { repository.getAllDecksWithCards() } returns flowOf(expected)
 
@@ -64,7 +64,7 @@ class DeleteDeckUseCaseTest {
         )
 
         every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(1)
+        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(1))
         coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
         val result = useCase(deckId)
@@ -90,7 +90,7 @@ class DeleteDeckUseCaseTest {
         )
 
         every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(2)
+        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(2))
         coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
         val result = useCase(deckId)
@@ -116,7 +116,7 @@ class DeleteDeckUseCaseTest {
         )
 
         every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(3)
+        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(3))
         coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
         val result = useCase(deckId)
@@ -142,7 +142,7 @@ class DeleteDeckUseCaseTest {
         )
 
         every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(99)
+        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(99))
         coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
         val result = useCase(deckId)
@@ -166,10 +166,10 @@ class DeleteDeckUseCaseTest {
             DeckDomainTestData.deck(id = 2),
             DeckDomainTestData.deck(id = 3)
         )
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(2)
+        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(2))
         coEvery { repository.deleteDeck(deckId) } returns expected
 
         val result = useCase(deckId)

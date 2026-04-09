@@ -5,6 +5,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -15,12 +16,15 @@ dependencyResolutionManagement {
 
 rootProject.name = "DeckFlow"
 include(":app")
-include(":core")
-include(":design-system")
 include(":data")
+include(":domain")
 include(":feature-card")
 include(":feature-deck")
-include(":domain")
-include(":core-test")
-include(":core-ui")
 include(":feature-stats")
+include(":core")
+include(":core:data")
+include(":core:presentation")
+include(":core:domain")
+include(":core:design-system")
+include(":core:test")
+include(":di")

@@ -1,47 +1,51 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.SelectedDeckRepository
+import com.dalmuina.domain.DeckLocalDataSource
+import com.dalmuina.domain.SelectedDeckDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
-import com.dalmuina.domain.model.map
+import com.dalmuina.domain.model.DataError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class DeleteDeckUseCase(
-    private val repository: LocalDeckRepository,
-    private val selectedDeckRepository: SelectedDeckRepository,
+    private val repository: DeckLocalDataSource,
+    private val selectedDeckRepository: SelectedDeckDataSource,
     private val dispatcher: CoroutineDispatcher
 ) {
 
-    suspend operator fun invoke(deckId: Int): DFResult<Int?, DataBaseError> =
+    suspend operator fun invoke(deckId: Int): DFResult<Int?, DataError> =
         withContext(dispatcher) {
 
             when (val decksResult = repository.getAllDecksWithCards().first()) {
-
                 is DFResult.Error -> {
                     DFResult.Error(decksResult.error)
                 }
 
                 is DFResult.Success -> {
-
                     val decks = decksResult.data
 
-                    val selectedId = selectedDeckRepository.selectedDeckId.first()
+                    when (val selectedIdResult = selectedDeckRepository.selectedDeckId.first()) {
+                        is DFResult.Error -> {
+                            DFResult.Error(selectedIdResult.error)
+                        }
 
-                    val nextDeck =
-                        if (selectedId == deckId)
-                            calculateNextDeck(deckId, decks.map { it.id })
-                        else null
+                        is DFResult.Success -> {
+                            val selectedId = selectedIdResult.data
 
-                    when (val deleteResult = repository.deleteDeck(deckId)) {
+                            val nextDeck =
+                                if (selectedId == deckId)
+                                    calculateNextDeck(deckId, decks.map { it.id })
+                                else null
 
-                        is DFResult.Error ->
-                            DFResult.Error(deleteResult.error)
+                            when (val deleteResult = repository.deleteDeck(deckId)) {
+                                is DFResult.Error ->
+                                    DFResult.Error(deleteResult.error)
 
-                        is DFResult.Success ->
-                            DFResult.Success(nextDeck)
+                                is DFResult.Success ->
+                                    DFResult.Success(nextDeck)
+                            }
+                        }
                     }
                 }
             }
@@ -51,7 +55,6 @@ class DeleteDeckUseCase(
         deletedId: Int,
         decks: List<Int>
     ): Int? {
-
         val index = decks.indexOf(deletedId)
 
         if (index == -1) return null

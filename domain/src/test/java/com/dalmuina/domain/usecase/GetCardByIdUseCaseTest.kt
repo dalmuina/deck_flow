@@ -1,10 +1,10 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.coretest.data.CardDomainTestData
-import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.LocalCardRepository
+import com.dalmuina.core.test.data.CardDomainTestData
+import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,7 +21,7 @@ class GetCardByIdUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: LocalCardRepository = mockk()
+    private val repository: CardLocalDataSource = mockk()
 
     @Test
     fun `invoke should return card when repository returns success`() = runTest {
@@ -52,7 +52,7 @@ class GetCardByIdUseCaseTest {
         )
 
         val cardId = 1
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         coEvery { repository.getCardById(cardId) } returns expected
 

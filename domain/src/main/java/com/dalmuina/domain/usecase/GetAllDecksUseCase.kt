@@ -1,14 +1,14 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.domain.LocalDeckRepository
-import com.dalmuina.domain.model.DFDeckDomain
+import com.dalmuina.domain.DeckLocalDataSource
+import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import kotlinx.coroutines.flow.Flow
 
 class GetAllDecksUseCase(
-    private val repository: LocalDeckRepository
+    private val repository: DeckLocalDataSource
 ) {
-    operator fun invoke(): Flow<DFResult<List<DFDeckDomain>, DataBaseError>> =
+    operator fun invoke(): Flow<DFResult<List<DeckDomain>, DataError>> =
         repository.getAllDecksWithCards()
 }

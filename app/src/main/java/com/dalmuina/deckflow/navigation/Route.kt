@@ -1,8 +1,8 @@
 package com.dalmuina.deckflow.navigation
 
 import androidx.navigation3.runtime.NavKey
-import com.dalmuina.feature.deck.ui.cardCreator.CardCreatorMode
-import com.dalmuina.feature.deck.ui.deckCreator.DeckCreatorMode
+import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorMode
+import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorMode
 import kotlinx.serialization.Serializable
 
 @Serializable

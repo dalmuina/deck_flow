@@ -1,9 +1,9 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.LocalCardRepository
+import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +20,7 @@ class CompleteCardUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: LocalCardRepository = mockk()
+    private val repository: CardLocalDataSource = mockk()
 
     @Test
     fun `invoke should return success when repository completes card successfully`() = runTest {
@@ -52,7 +52,7 @@ class CompleteCardUseCaseTest {
 
         val cardId = 1
         val spentMillis = 15000L
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         coEvery { repository.completeCard(cardId,spentMillis) } returns expected
 

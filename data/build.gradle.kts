@@ -30,14 +30,21 @@ room {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":core"))
-
-    // Koin
-    implementation(libs.koin.android)
+    implementation(project(":core:data"))
+    testImplementation(project(":core:test"))
 
     implementation(libs.datastore.preferences)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.turbine)
 }

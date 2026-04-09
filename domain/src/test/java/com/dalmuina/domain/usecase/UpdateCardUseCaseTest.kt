@@ -1,9 +1,9 @@
 package com.dalmuina.domain.usecase
 
-import com.dalmuina.coretest.rules.MainDispatcherRule
-import com.dalmuina.domain.LocalDeckRepository
+import com.dalmuina.core.test.rules.MainDispatcherRule
+import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DFResult
-import com.dalmuina.domain.model.DataBaseError
+import com.dalmuina.domain.model.DataError
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +20,7 @@ class UpdateCardUseCaseTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val repository: LocalDeckRepository = mockk()
+    private val repository: DeckLocalDataSource = mockk()
 
     @Test
     fun `invoke should return success when repository updates deck name successfully`() = runTest {
@@ -52,7 +52,7 @@ class UpdateCardUseCaseTest {
 
         val deckId = 1
         val name = "New name"
-        val expected = DFResult.Error(DataBaseError.ConstraintViolation)
+        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
         coEvery { repository.updateDeckName(deckId, name) } returns expected
 
