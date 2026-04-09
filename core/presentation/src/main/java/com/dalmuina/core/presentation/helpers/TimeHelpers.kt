@@ -1,6 +1,7 @@
-package com.dalmuina.feature.stats.helpers
+package com.dalmuina.core.presentation.helpers
 
 import java.util.Calendar
+import kotlin.time.Duration
 
 fun getLast7DaysRange(): Pair<Long, Long> {
     val calendar = Calendar.getInstance().apply {
@@ -17,4 +18,16 @@ fun getLast7DaysRange(): Pair<Long, Long> {
     val fromDay = calendar.timeInMillis
 
     return fromDay to toDay
+}
+
+fun Duration.toTimerText(): String {
+    val totalMinutes = inWholeMinutes
+    val hours = totalMinutes / 60
+    val minutes = totalMinutes % 60
+
+    return if (hours > 0) {
+        "%02dh:%02dm".format(hours, minutes)
+    } else {
+        "%02dm".format(minutes)
+    }
 }

@@ -31,6 +31,7 @@ room {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":core:data"))
+    testImplementation(project(":core:test"))
 
     implementation(libs.datastore.preferences)
 
@@ -41,7 +42,6 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
 
-    testImplementation(project(":core:test"))
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)

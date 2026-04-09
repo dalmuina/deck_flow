@@ -1,5 +1,6 @@
 package com.dalmuina.domain.usecase
 
+import com.dalmuina.core.domain.helpers.getMillis
 import com.dalmuina.core.domain.helpers.isToday
 import com.dalmuina.domain.DeckLocalDataSource
 import com.dalmuina.domain.model.DeckDomain
@@ -26,7 +27,7 @@ class GetDeckByIdUseCase(
 
     private fun normalizeDeck(deck: DeckDomain): DeckDomain {
 
-        val now = clock.millis()
+        val now = clock.getMillis()
 
         val normalizedCards = deck.cards.map { card ->
 

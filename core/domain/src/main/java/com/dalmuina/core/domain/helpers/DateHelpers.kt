@@ -1,5 +1,6 @@
 package com.dalmuina.core.domain.helpers
 
+import java.time.Clock
 import java.util.Calendar
 
 fun isToday(timestamp: Long, now: Long): Boolean {
@@ -9,3 +10,5 @@ fun isToday(timestamp: Long, now: Long): Boolean {
     return nowCal.get(Calendar.YEAR) == tsCal.get(Calendar.YEAR) &&
             nowCal.get(Calendar.DAY_OF_YEAR) == tsCal.get(Calendar.DAY_OF_YEAR)
 }
+
+fun Clock.getMillis() = this.millis()

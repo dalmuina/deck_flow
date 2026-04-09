@@ -2,11 +2,11 @@ package com.dalmuina.feature.stats.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dalmuina.core.presentation.helpers.getLast7DaysRange
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetCardStatsUseCase
 import com.dalmuina.feature.stats.model.toUi
-import com.dalmuina.feature.stats.helpers.getLast7DaysRange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
