@@ -14,7 +14,7 @@ import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.feature.deck.model.CardSlotUi
+import com.dalmuina.feature.deck.model.CardUi
 import com.dalmuina.feature.deck.model.toUi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 
 class DeckCreatorViewModel(
     private val mode: DeckCreatorMode,
-    private val getAllCardsUseCase: GetAllCardsUseCase,
+    getAllCardsUseCase: GetAllCardsUseCase,
     private val createDeckUseCase: CreateDeckUseCase,
     private val updateDeckNameUseCase: UpdateDeckNameUseCase,
     private val getDeckByIdUseCase: GetDeckByIdUseCase,
@@ -57,6 +57,7 @@ class DeckCreatorViewModel(
     private val selectedCards =
         MutableStateFlow<List<SelectedCard>>(emptyList())
     private val deckName = MutableStateFlow(DEFAULT_DECK_NAME)
+    private val cardPendingDelete = MutableStateFlow<CardUi?>(null)
 
     init {
         mode.deckId?.let { deckId ->
@@ -95,8 +96,9 @@ class DeckCreatorViewModel(
         combine(
             cardsUiFlow,
             selectedCards,
-            deckName
-        ) { cards, selected, name ->
+            deckName,
+            cardPendingDelete
+        ) { cards, selected, name, pendingDelete ->
 
             val orderMap = selected.associate { it.id to it.order }
 
@@ -110,7 +112,7 @@ class DeckCreatorViewModel(
                     )
                 }
                 .sortedWith(
-                    compareBy<CardSlotUi> { !it.isSelected }
+                    compareBy<CardUi> { !it.isSelected }
                         .thenBy { it.order ?: Int.MAX_VALUE }
                 )
 
@@ -118,7 +120,8 @@ class DeckCreatorViewModel(
                 loading = false,
                 deckCard = deckCards,
                 name = name,
-                isEditMode = mode is DeckCreatorMode.Edit
+                isEditMode = mode is DeckCreatorMode.Edit,
+                cardPendingDelete = pendingDelete
             )
         }
             .onStart {
@@ -166,7 +169,9 @@ class DeckCreatorViewModel(
                 deckName.value = intent.value
             }
 
-            is DeckCreatorIntent.DeleteCard -> deleteCard(intent.id)
+            is DeckCreatorIntent.RequestDeleteCard -> requestDeleteCard(intent.id)
+            DeckCreatorIntent.ConfirmDeleteCard -> confirmDeleteCard()
+            DeckCreatorIntent.DismissDeleteDialog -> cardPendingDelete.value = null
 
             is DeckCreatorIntent.Reorder -> reorder(intent.from, intent.to)
         }
@@ -241,7 +246,14 @@ class DeckCreatorViewModel(
         }
     }
 
-    private fun deleteCard(id: Int) {
+    private fun requestDeleteCard(id: Int) {
+        val card = uiState.value.deckCard.firstOrNull { it.id == id } ?: return
+        cardPendingDelete.value = card
+    }
+
+    private fun confirmDeleteCard() {
+        val id = cardPendingDelete.value?.id ?: return
+        cardPendingDelete.value = null
         viewModelScope.launch {
             deleteCardUseCase(id)
                 .onSuccess { }

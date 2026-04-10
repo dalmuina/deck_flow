@@ -34,7 +34,7 @@ fun DFFloatingButton(
         Spacer(modifier = Modifier.width(Spacing.m))
         FloatingActionButton(
             elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = Dimens.defaultElevation
+                defaultElevation = Dimens.mediumElevation
             ),
             onClick = onClick
         ) {

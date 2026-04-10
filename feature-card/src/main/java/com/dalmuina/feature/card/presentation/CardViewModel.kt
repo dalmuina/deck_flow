@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CardViewModel(
-    private val getSelectedDeckUseCase: GetSelectedDeckUseCase,
+    getSelectedDeckUseCase: GetSelectedDeckUseCase,
     private val getDeckByIdUseCase: GetDeckByIdUseCase,
     private val completeCardUseCase: CompleteCardUseCase,
     private val postponeCardUseCase: PostponeCardUseCase,

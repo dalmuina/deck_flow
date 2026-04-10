@@ -15,7 +15,7 @@ fun DFElevatedButton(
 
     ElevatedButton(
         elevation = ButtonDefaults.elevatedButtonElevation(
-            defaultElevation = Dimens.defaultElevation
+            defaultElevation = Dimens.mediumElevation
         ),
         onClick = onClick,
     ) {

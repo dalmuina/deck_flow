@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.button.DFElevatedButton
+import com.dalmuina.core.design_system.component.dialog.DFConfirmDialog
 import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.component.textfield.DFOutlinedTextField
@@ -30,7 +31,7 @@ import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.presentation.component.CardSlot
 import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
-import com.dalmuina.feature.deck.model.CardSlotUi
+import com.dalmuina.feature.deck.model.CardUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
@@ -75,15 +76,24 @@ fun DeckCreatorRoute(
                 onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
                 onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
                 onEditCard = onEditCard,
-                onDelete = { id -> viewModel.process(DeckCreatorIntent.DeleteCard(id)) }
+                onDelete = { id -> viewModel.process(DeckCreatorIntent.RequestDeleteCard(id)) }
             )
         }
+    }
+
+    state.cardPendingDelete?.let { card ->
+        DFConfirmDialog(
+            title = stringResource(R.string.delete_card_dialog_title),
+            message = stringResource(R.string.delete_dialog_message,card.name),
+            onConfirm = { viewModel.process(DeckCreatorIntent.ConfirmDeleteCard) },
+            onDismiss = { viewModel.process(DeckCreatorIntent.DismissDeleteDialog) }
+        )
     }
 }
 
 @Composable
 fun DeckCreatorScreen(
-    items: List<CardSlotUi>,
+    items: List<CardUi>,
     name: String,
     isEditMode: Boolean,
     onSelectedCard: (Int) -> Unit,
@@ -103,7 +113,7 @@ fun DeckCreatorScreen(
         {
             DFOutlinedTextField(
                 name = name,
-                label = { Text(text = "Deck name") },
+                label = { Text(text = stringResource(R.string.deck_input_name_label)) },
                 onNameChanged = onNameChanged
             )
             val isEmpty = items.isEmpty()
@@ -164,13 +174,13 @@ fun DeckCreatorScreenPreview() {
     DeckFlowTheme {
         DeckCreatorScreen(
             items = listOf(
-                CardSlotUi(
+                CardUi(
                     id = 0,
                     name = "Test",
                     duration = 0L.hours + 15L.minutes + 0L.seconds,
                     true,
                 ),
-                CardSlotUi(
+                CardUi(
                     id = 1,
                     name = "Test",
                     duration = 2L.hours + 20L.minutes + 0L.seconds,

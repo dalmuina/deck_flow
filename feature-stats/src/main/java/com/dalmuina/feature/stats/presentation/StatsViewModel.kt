@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
 class StatsViewModel(
-    private val getAllDecksUseCase: GetAllDecksUseCase,
+    getAllDecksUseCase: GetAllDecksUseCase,
     private val getCardStatsUseCase: GetCardStatsUseCase,
 ) : ViewModel() {
 

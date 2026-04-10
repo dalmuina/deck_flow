@@ -6,7 +6,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @Immutable
-data class CardSlotUi(
+data class CardUi(
     val id: Int=0,
     val name: String,
     val duration: Duration,
@@ -14,7 +14,7 @@ data class CardSlotUi(
     val order: Int? = null,
 )
 
-fun CardDomain.toUi(): CardSlotUi = CardSlotUi(
+fun CardDomain.toUi(): CardUi = CardUi(
     id = id,
     name = name,
     duration = durationMillis.milliseconds,

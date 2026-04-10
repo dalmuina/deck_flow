@@ -19,7 +19,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -114,7 +116,8 @@ class DeckSelectorViewModelTest {
 
             awaitLoaded()
 
-            viewModel.process(DeckSelectorIntent.DeleteDeck(2))
+            viewModel.process(DeckSelectorIntent.RequestDeleteDeck(2))
+            viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck)
 
             advanceUntilIdle()
 
@@ -128,12 +131,23 @@ class DeckSelectorViewModelTest {
     @Test
     fun `when delete fails then dispatch snackbar`() = runTest {
 
+        val decks = DeckDomainTestData.decks(1)
+
+        every { robot.getAllDecksUseCase() } returns flowOf(success(decks))
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
         coEvery { robot.deleteDeckUseCase(1) } returns failure(ErrorTestData.unknown)
 
         viewModel = robot.build()
-        viewModel.process(DeckSelectorIntent.DeleteDeck(1))
+
+        val job = launch { viewModel.uiState.collect() }
+        advanceUntilIdle()
+
+        viewModel.process(DeckSelectorIntent.RequestDeleteDeck(1))
+        viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck)
 
         advanceUntilIdle()
+
+        job.cancel()
 
         coVerify {
             robot.uiEventDispatcher.dispatch(any())

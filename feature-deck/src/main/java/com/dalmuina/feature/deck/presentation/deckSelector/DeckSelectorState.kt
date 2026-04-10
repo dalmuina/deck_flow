@@ -7,4 +7,5 @@ import com.dalmuina.feature.deck.model.DeckUi
 data class DeckSelectorState(
     val loading: Boolean = false,
     val deckList: List<DeckUi> = emptyList(),
+    val deckPendingDelete: DeckUi? = null,
 )
