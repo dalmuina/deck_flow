@@ -21,7 +21,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -155,13 +157,22 @@ class DeckCreatorViewModelTest {
     @Test
     fun `when delete card fails then dispatch snackbar`() = runTest {
 
+        every { robot.getAllCardsUseCase() } returns flowOf(
+            success(CardDomainTestData.cards(1))
+        )
         coEvery { robot.deleteCardUseCase(1) } returns failure(ErrorTestData.unknown)
 
         viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel.process(DeckCreatorIntent.DeleteCard(1))
+        val job = launch { viewModel.uiState.collect() }
+        advanceUntilIdle()
+
+        viewModel.process(DeckCreatorIntent.RequestDeleteCard(1))
+        viewModel.process(DeckCreatorIntent.ConfirmDeleteCard)
 
         advanceUntilIdle()
+
+        job.cancel()
 
         coVerify {
             robot.uiEventDispatcher.dispatch(any())

@@ -1,5 +1,6 @@
 <resources>
     <string name="no_deck_created">No Deck Created</string>
+    <string name="deck_input_name_label">Deck name</string>
     <string name="energy_deck">%1$s Energy Deck</string>
     <string name="cards_count">%1$d cards</string>
     <string name="energy_low">Low</string>
@@ -11,7 +12,11 @@
     <string name="label_card">Activity</string>
     <string name="no_card_created">No Card Created</string>
     <string name="default_deck_default">New Deck</string>
-    <string name="button_ok">OK</string>
-    <string name="button_cancel">Cancel</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancel</string>
+
+    <string name="delete_card_dialog_title">Delete Card</string>
+    <string name="delete_deck_dialog_title">Delete Deck</string>
+    <string name="delete_dialog_message">Are you sure you want to delete %1$s?</string>
 
 </resources>

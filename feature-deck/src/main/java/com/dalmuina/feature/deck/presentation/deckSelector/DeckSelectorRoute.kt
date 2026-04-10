@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dalmuina.core.design_system.component.dialog.DFConfirmDialog
 import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
@@ -41,10 +42,19 @@ fun DeckSelectorRoute(
             DeckSelectorScreen(
                 items = state.deckList,
                 onEditDeck = onEditDeck,
-                onDelete = { deckId -> viewModel.process(DeckSelectorIntent.DeleteDeck(deckId)) },
-                onDeckSelected = { deckId -> viewModel.process(DeckSelectorIntent.SelectDeck(deckId)) },
+                onDelete = { id -> viewModel.process(DeckSelectorIntent.RequestDeleteDeck(id)) },
+                onDeckSelected = { id -> viewModel.process(DeckSelectorIntent.SelectDeck(id)) },
             )
         }
+    }
+
+    state.deckPendingDelete?.let { deck ->
+        DFConfirmDialog(
+            title = stringResource(R.string.delete_deck_dialog_title),
+            message = stringResource(R.string.delete_dialog_message,deck.name),
+            onConfirm = { viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck) },
+            onDismiss = { viewModel.process(DeckSelectorIntent.DismissDeleteDialog) }
+        )
     }
 }
 

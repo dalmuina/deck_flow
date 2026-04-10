@@ -4,5 +4,6 @@
     <string name="error_constraint">A card with this name already exists</string>
     <string name="error_unknown">Unexpected error</string>
     <string name="minutes_time_label">"Time in minutes"</string>
-
+    <string name="cancel_button">Cancel</string>
+    <string name="delete_button">Delete</string>
 </resources>

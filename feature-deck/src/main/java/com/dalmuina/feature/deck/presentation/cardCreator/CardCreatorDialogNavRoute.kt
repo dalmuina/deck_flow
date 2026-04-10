@@ -179,13 +179,13 @@ fun CardCreatorContent(
         ) {
             DFButton(text = {
                 Text(
-                    text = stringResource(R.string.button_cancel)
+                    text = stringResource(R.string.cancel_button)
                 )
             }, onClick = onCancel)
             Spacer(modifier = Modifier.width(Spacing.l))
             DFButton(
                 isLoading = processing,
-                text = { Text(text = stringResource(R.string.button_ok)) },
+                text = { Text(text = stringResource(R.string.ok_button)) },
                 isEnable = activity.isNotEmpty() && duration.inWholeMinutes > 0,
                 onClick = onSaved
             )

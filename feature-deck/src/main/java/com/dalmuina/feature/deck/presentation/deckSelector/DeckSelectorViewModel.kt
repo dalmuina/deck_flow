@@ -12,7 +12,9 @@ import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
+import com.dalmuina.feature.deck.model.DeckUi
 import com.dalmuina.feature.deck.model.toUi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -21,18 +23,25 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class DeckSelectorViewModel(
-    private val getAllDecksUseCase: GetAllDecksUseCase,
+    getAllDecksUseCase: GetAllDecksUseCase,
     private val deleteDeckUseCase: DeleteDeckUseCase,
-    private val getSelectedDeckUseCase: GetSelectedDeckUseCase,
+    getSelectedDeckUseCase: GetSelectedDeckUseCase,
     private val setSelectedDeckUseCase: SetSelectedDeckUseCase,
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
+
+    companion object {
+        private const val STOP_SUBSCRIPTION = 5_000L
+    }
+
+    private val deckPendingDelete = MutableStateFlow<DeckUi?>(null)
 
     val uiState: StateFlow<DeckSelectorState> =
         combine(
             getAllDecksUseCase(),
             getSelectedDeckUseCase(),
-        ) { decksResult, selectedIdResult ->
+            deckPendingDelete,
+        ) { decksResult, selectedIdResult, pendingDelete ->
 
             when (decksResult) {
                 is DFResult.Error -> {
@@ -70,7 +79,8 @@ class DeckSelectorViewModel(
                         loading = false,
                         deckList = decks.map { deck ->
                             deck.copy(isSelected = deck.id == finalSelected)
-                        }
+                        },
+                        deckPendingDelete = pendingDelete
                     )
                 }
             }
@@ -80,13 +90,12 @@ class DeckSelectorViewModel(
             }
             .stateIn(
                 viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
+                SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
                 DeckSelectorState(loading = true)
             )
 
     fun process(intent: DeckSelectorIntent) {
         when (intent) {
-            is DeckSelectorIntent.DeleteDeck -> deleteDeck(intent.deckId)
             is DeckSelectorIntent.SelectDeck -> {
                 viewModelScope.launch {
                     setSelectedDeckUseCase(intent.deckId)
@@ -97,12 +106,22 @@ class DeckSelectorViewModel(
                         }
                 }
             }
+            is DeckSelectorIntent.RequestDeleteDeck -> requestDeleteDeck(intent.id)
+            DeckSelectorIntent.ConfirmDeleteDeck -> confirmDeleteDeck()
+            DeckSelectorIntent.DismissDeleteDialog -> deckPendingDelete.value = null
         }
     }
 
-    private fun deleteDeck(deckId: Int) {
+    private fun requestDeleteDeck(id: Int) {
+        val deck = uiState.value.deckList.firstOrNull { it.id == id } ?: return
+        deckPendingDelete.value = deck
+    }
+
+    private fun confirmDeleteDeck() {
+        val id = deckPendingDelete.value?.id ?: return
+        deckPendingDelete.value = null
         viewModelScope.launch {
-            deleteDeckUseCase(deckId)
+            deleteDeckUseCase(id)
                 .onSuccess { nextDeck ->
                     nextDeck?.let {
                         setSelectedDeckUseCase(it)

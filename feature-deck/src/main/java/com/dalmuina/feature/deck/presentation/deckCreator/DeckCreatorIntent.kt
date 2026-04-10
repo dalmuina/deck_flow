@@ -5,6 +5,8 @@ sealed interface DeckCreatorIntent {
     data class CardCreated(val id: Int) : DeckCreatorIntent
     data object SaveDeck: DeckCreatorIntent
     data class NameChanged(val value: String) : DeckCreatorIntent
-    data class DeleteCard(val id: Int): DeckCreatorIntent
+    data class RequestDeleteCard(val id: Int) : DeckCreatorIntent
+    data object ConfirmDeleteCard : DeckCreatorIntent
+    data object DismissDeleteDialog : DeckCreatorIntent
     data class Reorder(val from: Int, val to: Int) : DeckCreatorIntent
 }
