@@ -10,13 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.dalmuina.core.design_system.component.button.DFActionButtonPrimary
+import com.dalmuina.core.design_system.component.button.DFActionButtonSecondary
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
@@ -45,31 +45,32 @@ fun CountdownTimer(
     ) {
         Text(
             text = "%02d:%02d".format(minutes, seconds),
-            style = MaterialTheme.typography.displayMedium
+            style = MaterialTheme.typography.displayLarge
         )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = {
-                onPlay(false)
-                onReset()
-            }) {
-                Icon(imageVector = Icons.Default.Replay, contentDescription = "")
+            DFActionButtonPrimary(
+                icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                contentDescription = "",
+            ) {
+                if (isPlaying) onPlay(true)
+                else onPlay(false)
             }
+
             Spacer(
                 modifier = Modifier
                     .width(Spacing.l)
             )
-            IconButton(onClick = {
-                if (isPlaying) onPlay(true)
-                else onPlay(false)
-            }) {
-                Icon(
-                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = ""
-                )
+            DFActionButtonSecondary (
+                icon = Icons.Default.Replay,
+                contentDescription = "",
+            ) {
+                onPlay(false)
+                onReset()
             }
         }
     }

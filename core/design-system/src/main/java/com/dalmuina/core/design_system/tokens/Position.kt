@@ -23,5 +23,14 @@ object Spacing {
     val xl = 32.dp
 
     /** Extra extra large spacing (64.dp) */
-    val xxl = 64.dp
+    val xxl = 72.dp
+}
+
+object Elevation {
+    /** Extra small elevation (2.dp) */
+    val xs = 2.dp
+    /** Small elevation (3.dp) */
+    val s = 3.dp
+    /** Medium elevation (6.dp) */
+    val m = 6.dp
 }

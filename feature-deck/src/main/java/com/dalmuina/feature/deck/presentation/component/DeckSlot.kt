@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,9 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dalmuina.core.design_system.preview.DFPreview
-import com.dalmuina.core.design_system.theme.DFTheme
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimens
+import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.model.DeckUi
@@ -33,14 +33,14 @@ fun DeckSlot(
 ) {
     val containerColor =
         if (deck.isSelected) {
-            DFTheme.extraColors.cardSlotSelectedContainer
+            MaterialTheme.colorScheme.primary
         } else {
-            DFTheme.extraColors.cardSlotUnselectedContainer
+            MaterialTheme.colorScheme.surface
         }
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Dimens.deckHeight),
+            .height(140.dp),
         onClick = { onEdit() },
         elevation = CardDefaults.cardElevation(
             defaultElevation = if (deck.isSelected) 6.dp else 0.dp
@@ -68,6 +68,14 @@ fun DeckSlot(
                 )
                 Checkbox(
                     checked = deck.isSelected,
+                    colors =  CheckboxDefaults.colors (
+                        checkedColor = MaterialTheme.colorScheme.onSecondary,
+                        uncheckedColor = MaterialTheme.colorScheme.outline,
+                        checkmarkColor = MaterialTheme.colorScheme.secondary,
+                        disabledCheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
+                        disabledUncheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
+                        disabledIndeterminateColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
+                    ),
                     onCheckedChange = { onDeckSelected(deck.id) }
                 )
             }
@@ -75,7 +83,6 @@ fun DeckSlot(
             Text(
                 text = stringResource(R.string.cards_count, deck.cardCount),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -83,14 +90,31 @@ fun DeckSlot(
 
 @DFPreview
 @Composable
-fun DeckSlotPreview() {
+fun DeckSlotNotSelectedPreview() {
     DeckFlowTheme {
         DeckSlot(
             deck = DeckUi(
                 id = 0,
-                name = "asd",
+                name = "Rutina",
                 cardCount = 4,
                 isSelected = false,
+            ),
+            onEdit = {},
+            onDeckSelected = {},
+        )
+    }
+}
+
+@DFPreview
+@Composable
+fun DeckSlotSelectedPreview() {
+    DeckFlowTheme {
+        DeckSlot(
+            deck = DeckUi(
+                id = 0,
+                name = "Rutina",
+                cardCount = 4,
+                isSelected = true,
             ),
             onEdit = {},
             onDeckSelected = {},

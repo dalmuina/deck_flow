@@ -4,7 +4,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.dalmuina.core.design_system.tokens.Dimens
+import com.dalmuina.core.design_system.tokens.Elevation
 
 @Composable
 fun DFElevatedButton(
@@ -15,7 +15,7 @@ fun DFElevatedButton(
 
     ElevatedButton(
         elevation = ButtonDefaults.elevatedButtonElevation(
-            defaultElevation = Dimens.mediumElevation
+            defaultElevation = Elevation.m
         ),
         onClick = onClick,
     ) {
