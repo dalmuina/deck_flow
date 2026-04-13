@@ -19,12 +19,11 @@ import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
+import com.dalmuina.feature.deck.model.DeckUi
 import com.dalmuina.feature.deck.presentation.component.DeckSlot
 import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
-import com.dalmuina.feature.deck.model.DeckUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -34,7 +33,7 @@ fun DeckSelectorRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AnimatedContent(targetState = state.loading) {loading->
+    AnimatedContent(targetState = state.loading) { loading ->
 
         if (loading) {
             DFCircularLoading()
@@ -51,7 +50,7 @@ fun DeckSelectorRoute(
     state.deckPendingDelete?.let { deck ->
         DFConfirmDialog(
             title = stringResource(R.string.delete_deck_dialog_title),
-            message = stringResource(R.string.delete_dialog_message,deck.name),
+            message = stringResource(R.string.delete_dialog_message, deck.name),
             onConfirm = { viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck) },
             onDismiss = { viewModel.process(DeckSelectorIntent.DismissDeleteDialog) }
         )

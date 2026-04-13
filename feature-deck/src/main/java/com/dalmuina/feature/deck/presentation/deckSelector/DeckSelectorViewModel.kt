@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-
 class DeckSelectorViewModel(
     getAllDecksUseCase: GetAllDecksUseCase,
     private val deleteDeckUseCase: DeleteDeckUseCase,
@@ -106,6 +105,7 @@ class DeckSelectorViewModel(
                         }
                 }
             }
+
             is DeckSelectorIntent.RequestDeleteDeck -> requestDeleteDeck(intent.id)
             DeckSelectorIntent.ConfirmDeleteDeck -> confirmDeleteDeck()
             DeckSelectorIntent.DismissDeleteDialog -> deckPendingDelete.value = null

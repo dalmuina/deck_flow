@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +29,6 @@ import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.component.textfield.DFOutlinedTextField
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.presentation.component.CardSlot
@@ -34,6 +36,8 @@ import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
 import com.dalmuina.feature.deck.model.CardUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -59,12 +63,12 @@ fun DeckCreatorRoute(
     }
 
     LaunchedEffect(createdCardId) {
-        createdCardId?.let {cardId->
+        createdCardId?.let { cardId ->
             viewModel.process(DeckCreatorIntent.CardCreated(cardId))
             onCreatedCardConsumed()
         }
     }
-    AnimatedContent(targetState = state.loading) {loading->
+    AnimatedContent(targetState = state.loading) { loading ->
         if (loading) {
             DFCircularLoading()
         } else {
@@ -76,7 +80,8 @@ fun DeckCreatorRoute(
                 onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
                 onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
                 onEditCard = onEditCard,
-                onDelete = { id -> viewModel.process(DeckCreatorIntent.RequestDeleteCard(id)) }
+                onDelete = { id -> viewModel.process(DeckCreatorIntent.RequestDeleteCard(id)) },
+                onReorder = { from, to -> viewModel.process(DeckCreatorIntent.Reorder(from, to)) }
             )
         }
     }
@@ -84,7 +89,7 @@ fun DeckCreatorRoute(
     state.cardPendingDelete?.let { card ->
         DFConfirmDialog(
             title = stringResource(R.string.delete_card_dialog_title),
-            message = stringResource(R.string.delete_dialog_message,card.name),
+            message = stringResource(R.string.delete_dialog_message, card.name),
             onConfirm = { viewModel.process(DeckCreatorIntent.ConfirmDeleteCard) },
             onDismiss = { viewModel.process(DeckCreatorIntent.DismissDeleteDialog) }
         )
@@ -101,6 +106,7 @@ fun DeckCreatorScreen(
     onNameChanged: (String) -> Unit,
     onEditCard: (Int) -> Unit,
     onDelete: (Int) -> Unit,
+    onReorder: (from: Int, to: Int) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -109,18 +115,26 @@ fun DeckCreatorScreen(
         Column(
             modifier = Modifier
                 .padding(Spacing.l)
-        )
-        {
+        ) {
             DFOutlinedTextField(
                 name = name,
                 label = { Text(text = stringResource(R.string.deck_input_name_label)) },
                 onNameChanged = onNameChanged
             )
+            Spacer(modifier = Modifier.height(Spacing.l))
             val isEmpty = items.isEmpty()
             if (isEmpty) {
                 EmptyState(stringResource(R.string.no_card_created))
             } else {
+                val selectedCount = items.count { it.isSelected }
+                val lazyListState = rememberLazyListState()
+                val reorderState = rememberReorderableLazyListState(lazyListState) { from, to ->
+                    val clampedTo = to.index.coerceIn(0, selectedCount - 1)
+                    onReorder(from.index, clampedTo)
+                }
+
                 LazyColumn(
+                    state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(Spacing.m),
                     contentPadding = PaddingValues(
                         top = Spacing.l,
@@ -131,20 +145,23 @@ fun DeckCreatorScreen(
                         items = items,
                         key = { it.id }
                     ) { card ->
-                        Box(
-                            modifier = Modifier.animateItem(
-                                placementSpec = tween(350)
-                            )
-                        ) {
-                            SwipeToDelete(
-                                id = card.id,
-                                onDelete = onDelete
-                            ) {
-                                CardSlot(
-                                    card = card,
-                                    onEditCard = onEditCard,
-                                    onCheckedChanged = { id -> onSelectedCard(id) }
+                        ReorderableItem(reorderState, key = card.id) {
+                            Box(
+                                modifier = Modifier.animateItem(
+                                    placementSpec = tween(350)
                                 )
+                            ) {
+                                SwipeToDelete(
+                                    id = card.id,
+                                    onDelete = onDelete
+                                ) {
+                                    CardSlot(
+                                        card = card,
+                                        dragHandleModifier = if (card.isSelected) Modifier.draggableHandle() else Modifier,
+                                        onEditCard = onEditCard,
+                                        onCheckedChanged = { id -> onSelectedCard(id) }
+                                    )
+                                }
                             }
                         }
                     }
@@ -189,12 +206,12 @@ fun DeckCreatorScreenPreview() {
             ),
             name = "name",
             isEditMode = false,
-            onSelectedCard = {
-            },
+            onSelectedCard = {},
             onSaveDeck = {},
             onNameChanged = {},
             onEditCard = {},
             onDelete = {},
+            onReorder = { _, _ -> },
         )
     }
 }
