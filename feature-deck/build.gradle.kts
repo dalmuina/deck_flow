@@ -55,4 +55,7 @@ dependencies {
     //Koin
     implementation(libs.koin.compose)
 
+    //Reorderable
+    implementation(libs.reorderable)
+
 }

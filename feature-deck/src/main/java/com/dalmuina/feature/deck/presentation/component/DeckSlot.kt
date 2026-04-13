@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,9 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.dalmuina.core.design_system.component.checkbox.DFCheckBox
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.model.DeckUi
@@ -66,18 +64,13 @@ fun DeckSlot(
                     text = deck.name,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Checkbox(
+                DFCheckBox(
+                    modifier = Modifier
+                        .padding(Spacing.l),
                     checked = deck.isSelected,
-                    colors =  CheckboxDefaults.colors (
-                        checkedColor = MaterialTheme.colorScheme.onSecondary,
-                        uncheckedColor = MaterialTheme.colorScheme.outline,
-                        checkmarkColor = MaterialTheme.colorScheme.secondary,
-                        disabledCheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                        disabledUncheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                        disabledIndeterminateColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                    ),
-                    onCheckedChange = { onDeckSelected(deck.id) }
-                )
+                ) {
+                    onDeckSelected(deck.id)
+                }
             }
 
             Text(

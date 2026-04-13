@@ -6,18 +6,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.dalmuina.core.design_system.component.checkbox.DFCheckBox
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Elevation
@@ -32,6 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 fun CardSlot(
     modifier: Modifier = Modifier,
     card: CardUi,
+    dragHandleModifier: Modifier = Modifier,
     onEditCard: (Int) -> Unit,
     onCheckedChanged: (Int) -> Unit
 ) {
@@ -57,6 +60,14 @@ fun CardSlot(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            if (card.isSelected) {
+                Icon(
+                    modifier = dragHandleModifier.padding(start = Spacing.m),
+                    imageVector = Icons.Default.DragHandle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -70,20 +81,13 @@ fun CardSlot(
                     text = card.duration.toTimerText()
                 )
             }
-            Checkbox(
+            DFCheckBox(
                 modifier = Modifier
                     .padding(Spacing.l),
                 checked = card.isSelected,
-                colors =  CheckboxDefaults.colors (
-                    checkedColor = MaterialTheme.colorScheme.onSecondary,
-                    uncheckedColor = MaterialTheme.colorScheme.outline,
-                    checkmarkColor = MaterialTheme.colorScheme.secondary,
-                    disabledCheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                    disabledUncheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                    disabledIndeterminateColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-                ),
-                onCheckedChange = { onCheckedChanged(card.id) }
-            )
+            ) {
+                onCheckedChanged(card.id)
+            }
         }
     }
 }

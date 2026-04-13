@@ -50,7 +50,7 @@ class DeckCreatorViewModelRobot {
             getDeckByIdUseCase = getDeckByIdUseCase,
             deleteCardUseCase = deleteCardUseCase,
             setDeckCardsUseCase = setDeckCardsUseCase,
-            uiEventDispatcher = uiEventDispatcher
+            uiEventDispatcher = uiEventDispatcher,
         )
 }
 
@@ -151,6 +151,47 @@ class DeckCreatorViewModelTest {
 
         coVerify {
             robot.setDeckCardsUseCase(10,listOf(1))
+        }
+    }
+
+    @Test
+fun `when reorder then selected cards order is updated`() = runTest {
+        val cards = CardDomainTestData.cards(1, 2, 3)
+        every { robot.getAllCardsUseCase() } returns flowOf(success(cards))
+
+        viewModel = robot.build(DeckCreatorMode.Create)
+
+        viewModel.process(DeckCreatorIntent.SelectedCard(1))
+        viewModel.process(DeckCreatorIntent.SelectedCard(2))
+        viewModel.process(DeckCreatorIntent.SelectedCard(3))
+        viewModel.process(DeckCreatorIntent.Reorder(from = 0, to = 2))
+
+        viewModel.uiState.test {
+            val state = awaitLoaded()
+            val selected = state.deckCard.filter { it.isSelected }
+            selected[0].id shouldBe 2
+            selected[1].id shouldBe 3
+            selected[2].id shouldBe 1
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when reorder in edit mode then setDeckCardsUseCase called with new order`() = runTest {
+        val cards = CardDomainTestData.cards(1, 2, 3)
+        every { robot.getAllCardsUseCase() } returns flowOf(success(cards))
+
+        viewModel = robot.build(DeckCreatorMode.Edit(10))
+
+        viewModel.process(DeckCreatorIntent.SelectedCard(1))
+        viewModel.process(DeckCreatorIntent.SelectedCard(2))
+        viewModel.process(DeckCreatorIntent.SelectedCard(3))
+        viewModel.process(DeckCreatorIntent.Reorder(from = 0, to = 2))
+
+        advanceUntilIdle()
+
+        coVerify {
+            robot.setDeckCardsUseCase(10, listOf(2, 3, 1))
         }
     }
 
