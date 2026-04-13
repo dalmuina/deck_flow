@@ -19,7 +19,7 @@ import com.dalmuina.core.design_system.R
 import com.dalmuina.core.design_system.component.button.DFButton
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimens
+import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
 
 @Composable
@@ -32,7 +32,7 @@ fun DFConfirmDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(Dimens.mediumCorner)
+            shape = RoundedCornerShape(Corner.m)
         ) {
             Column(
                 modifier = Modifier

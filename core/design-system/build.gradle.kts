@@ -27,6 +27,7 @@ extensions.configure<LibraryExtension>  {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":core:presentation"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

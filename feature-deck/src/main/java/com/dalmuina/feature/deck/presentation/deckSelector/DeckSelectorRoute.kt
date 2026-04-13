@@ -19,7 +19,7 @@ import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimens
+import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.presentation.component.DeckSlot
@@ -76,7 +76,7 @@ fun DeckSelectorScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.l),
             contentPadding = PaddingValues(
                 top = Spacing.l,
-                bottom = Dimens.fabSpacing
+                bottom = Spacing.xxl
             )
         ) {
             items(

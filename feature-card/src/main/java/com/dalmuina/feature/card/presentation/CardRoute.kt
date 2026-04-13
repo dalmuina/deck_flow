@@ -1,13 +1,15 @@
 package com.dalmuina.feature.card.presentation
 
-import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -21,23 +23,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.badge.DFSwipeBadge
 import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
 import com.dalmuina.core.design_system.component.infoState.EmptyState
-import com.dalmuina.core.design_system.theme.DFTheme
+import com.dalmuina.core.design_system.preview.DFPreview
+import com.dalmuina.core.design_system.theme.Amber400
+import com.dalmuina.core.design_system.theme.Amber700
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.theme.Malachite
-import com.dalmuina.core.design_system.theme.TiaMaria
+import com.dalmuina.core.design_system.theme.Green500
+import com.dalmuina.core.design_system.theme.Green800
+import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.model.SwipeDirection
-import com.dalmuina.feature.card.presentation.components.Card
-import com.dalmuina.feature.card.presentation.components.DFCardWithTimer
+import com.dalmuina.feature.card.presentation.components.CardWithoutTimer
+import com.dalmuina.feature.card.presentation.components.CardWithTimer
 import com.dalmuina.feature.card.presentation.components.SwipeCard
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.abs
@@ -78,7 +81,12 @@ fun CardRoute(
                 cards = state.cards,
                 timerState = timerState,
                 onSwiped = { direction ->
-                    cardViewModel.process(CardIntent.SwipeTopCard(direction, (timerState.totalMillis-timerState.remainingMillis)))
+                    cardViewModel.process(
+                        CardIntent.SwipeTopCard(
+                            direction,
+                            (timerState.totalMillis - timerState.remainingMillis)
+                        )
+                    )
                 },
                 onPlay = { isPLaying ->
                     if (isPLaying)
@@ -139,32 +147,39 @@ fun CardScreen(
             val offset by animateDpAsState(
                 targetValue = targetOffset, label = "cardOffset"
             )
-
-            if (depth == 0) {
-                SwipeCard(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .offset(y = offset)
-                        .scale(scale),
-                    onSwiped = { direction ->
-                        dragOffsetX = 0f
-                        onSwiped(direction)
-                    },
-                    onDragProgress = { dragOffsetX = it },
-                ) {
-                    SwipeCardContent(
-                        signedProgress = signedProgress,
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly,
+            ){
+                Spacer(modifier = Modifier.height(Dimen.m))
+                if (depth == 0) {
+                    SwipeCard(
+                        modifier = Modifier
+                            .weight(1f)
+                            .offset(y = offset)
+                            .scale(scale),
+                        onSwiped = { direction ->
+                            dragOffsetX = 0f
+                            onSwiped(direction)
+                        },
+                        onDragProgress = { dragOffsetX = it },
+                    ) {
+                        SwipeCardContent(
+                            signedProgress = signedProgress,
+                            card = card,
+                            timerState = timerState,
+                            onPlay = onPlay,
+                            onReset = onReset,
+                        )
+                    }
+                } else {
+                    CardWithoutTimer(
+                        modifier = Modifier.weight(1f),
                         card = card,
-                        timerState = timerState,
-                        onPlay = onPlay,
-                        onReset = onReset,
                     )
                 }
-            } else {
-                Card(
-                    card = card,
-                    containerColor = DFTheme.extraColors.cardSlotUnselectedContainer,
-                )
+                Spacer(modifier = Modifier.height(Dimen.m))
             }
         }
     }
@@ -187,29 +202,13 @@ fun SwipeCardContent(
         modifier = modifier
             .fillMaxSize()
     ) {
-        DFCardWithTimer(
+        CardWithTimer(
             card = card,
-            DFTheme.extraColors.cardSlotSelectedContainer,
+            containerColor = MaterialTheme.colorScheme.surface,
             timerState = timerState,
             onPlay = onPlay,
             onReset = onReset,
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Spacing.l),
-            contentAlignment = Alignment.Center
-        ) {
-            DFSwipeBadge(
-                text = when {
-                    card.isCompleted -> stringResource(R.string.completed_level)
-                    card.isPostponed -> stringResource(R.string.postponed_level)
-                    else -> ""
-                },
-                color = MaterialTheme.colorScheme.secondary,
-                alpha = if (card.isCompleted || card.isPostponed) 1f else 0f
-            )
-        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -218,13 +217,15 @@ fun SwipeCardContent(
         )
         {
             DFSwipeBadge(
-                text = stringResource(R.string.completed_level),
-                color = Malachite,
+                text = stringResource(R.string.completed_level).uppercase(),
+                backgroundColor = Amber400,
+                strokeColor = Amber700,
                 alpha = rightAlphaAnimated
             )
             DFSwipeBadge(
-                text = stringResource(R.string.postponed_level),
-                color = TiaMaria,
+                text = stringResource(R.string.postponed_level).uppercase(),
+                backgroundColor = Green500,
+                strokeColor = Green800,
                 alpha = leftAlphaAnimated
             )
         }
@@ -232,18 +233,7 @@ fun SwipeCardContent(
     }
 }
 
-@Preview(
-    name = "Light",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = Devices.PIXEL_7
-)
-@Preview(
-    name = "Dark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    device = Devices.PIXEL_7
-)
+@DFPreview
 @Composable
 fun CardScreenPreview() {
 

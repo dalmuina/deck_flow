@@ -32,8 +32,10 @@ import androidx.compose.ui.text.style.TextAlign
 import com.dalmuina.core.design_system.R
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimens
+import com.dalmuina.core.design_system.tokens.Dimen
+import com.dalmuina.core.design_system.tokens.IconSize
 import com.dalmuina.core.design_system.tokens.Spacing
+import com.dalmuina.core.presentation.helpers.toTimerText
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -98,7 +100,7 @@ fun DFTimeInput(
                 ) {
                     IconButton(onClick = onMoreTime) {
                         Icon(
-                            modifier = Modifier.size(Dimens.mediumIcons),
+                            modifier = Modifier.size(IconSize.l),
                             imageVector = Icons.Default.ArrowDropUp,
                             contentDescription = "More time"
                         )
@@ -109,7 +111,7 @@ fun DFTimeInput(
                         enabled = value.inWholeMinutes > 0
                     ) {
                         Icon(
-                            modifier = Modifier.size(Dimens.mediumIcons),
+                            modifier = Modifier.size(IconSize.l),
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = "Less time"
                         )
@@ -118,7 +120,7 @@ fun DFTimeInput(
             }
 
             Text(
-                text = "value.toTimerText()",
+                text = value.toTimerText(),
                 modifier = Modifier
                     .fillMaxWidth(),
                 textAlign = TextAlign.Left,

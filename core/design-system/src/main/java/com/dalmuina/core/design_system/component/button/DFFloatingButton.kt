@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import com.dalmuina.core.design_system.component.badge.DFFloatingLabel
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimens
+import com.dalmuina.core.design_system.tokens.Elevation
 import com.dalmuina.core.design_system.tokens.Spacing
 
 @Composable
@@ -34,7 +34,7 @@ fun DFFloatingButton(
         Spacer(modifier = Modifier.width(Spacing.m))
         FloatingActionButton(
             elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = Dimens.mediumElevation
+                defaultElevation = Elevation.m
             ),
             onClick = onClick
         ) {

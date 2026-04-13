@@ -4,6 +4,6 @@
     <string name="no_pending_tasks">"All cards completed 🎉"</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
-    <string name="completed_level">Completed</string>
-    <string name="postponed_level">Postponed</string>
+    <string name="completed_level">Completed ✓</string>
+    <string name="postponed_level">← Postponed</string>
 </resources>
