@@ -22,6 +22,9 @@ class TimerViewModel(
     private val _timerState = MutableStateFlow(TimerState())
     val timerState = _timerState.asStateFlow()
 
+    private val _isLoaded = MutableStateFlow(false)
+    val isLoaded = _isLoaded.asStateFlow()
+
     private var timerJob: Job? = null
     private var endTime: Long? = null
 
@@ -41,9 +44,13 @@ class TimerViewModel(
     private fun restoreTimer() {
         viewModelScope.launch {
             when (val persistedResult = observeTimerStateUseCase().firstOrNull()) {
-                null -> return@launch
+                null -> {
+                    _isLoaded.value = true
+                    return@launch
+                }
 
                 is DFResult.Error -> {
+                    _isLoaded.value = true
                     return@launch
                 }
 
@@ -86,6 +93,7 @@ class TimerViewModel(
                         )
                         endTime = null
                     }
+                    _isLoaded.value = true
                 }
             }
         }

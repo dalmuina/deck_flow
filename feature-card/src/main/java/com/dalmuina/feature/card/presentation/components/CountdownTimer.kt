@@ -21,6 +21,7 @@ import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.presentation.TimerState
+import com.dalmuina.feature.card.presentation.toTimerText
 
 @Composable
 fun CountdownTimer(
@@ -30,13 +31,10 @@ fun CountdownTimer(
 ) {
 
     val displayMillis =
-        if (state.isRunning || state.remainingMillis > 0)
+        if (state.isRunning || state.remainingMillis < state.totalMillis)
             state.remainingMillis
         else
             state.totalMillis
-
-    val minutes = (displayMillis / 1000) / 60
-    val seconds = (displayMillis / 1000) % 60
 
     val isPlaying = state.isRunning
 
@@ -44,7 +42,7 @@ fun CountdownTimer(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "%02d:%02d".format(minutes, seconds),
+            text = displayMillis.toTimerText(),
             style = MaterialTheme.typography.displayLarge
         )
         Row(
