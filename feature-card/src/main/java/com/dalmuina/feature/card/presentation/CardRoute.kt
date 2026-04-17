@@ -13,17 +13,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import android.Manifest
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.badge.DFSwipeBadge
 import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
@@ -54,12 +66,68 @@ fun CardRoute(
 ) {
     val state by cardViewModel.uiState.collectAsStateWithLifecycle()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
+    val isTimerLoaded by timerViewModel.isLoaded.collectAsStateWithLifecycle()
     val currentCardId = state.cards.firstOrNull()?.id
     val duration = state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: 0L
 
-    LaunchedEffect(currentCardId) {
-        if (duration > 0L) {
-            timerViewModel.process(TimerIntent.Reset(duration))
+    val context = LocalContext.current
+    val activity = context as ComponentActivity
+    val currentTimerState by rememberUpdatedState(timerState)
+    val currentCardName by rememberUpdatedState(state.cards.firstOrNull()?.name ?: "")
+
+    // Permiso de notificación (Android 13+)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val notificationPermissionLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { /* la notificación es informativa; si se deniega, el servicio sigue activo */ }
+        LaunchedEffect(Unit) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    // Observa el lifecycle de la Activity (no del NavBackStackEntry) para detectar background
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> {
+                    if (currentTimerState.isRunning) {
+                        val endTimeMillis = System.currentTimeMillis() + currentTimerState.remainingMillis
+                        ContextCompat.startForegroundService(
+                            context,
+                            TimerForegroundService.startIntent(context, endTimeMillis, currentCardName),
+                        )
+                    }
+                }
+                Lifecycle.Event.ON_START -> {
+                    context.stopService(TimerForegroundService.stopIntent(context))
+                }
+                else -> Unit
+            }
+        }
+        activity.lifecycle.addObserver(observer)
+        onDispose { activity.lifecycle.removeObserver(observer) }
+    }
+
+    val prevCardId = remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(currentCardId, isTimerLoaded) {
+        if (!isTimerLoaded || duration <= 0L) return@LaunchedEffect
+        val shouldReset = if (prevCardId.value == null) {
+            timerState.totalMillis != duration
+        } else {
+            prevCardId.value != currentCardId
+        }
+        if (shouldReset) timerViewModel.process(TimerIntent.Reset(duration))
+        prevCardId.value = currentCardId
+    }
+
+    LaunchedEffect(timerState.remainingMillis, timerState.isRunning) {
+        if (isTimerLoaded && !timerState.isRunning &&
+            timerState.remainingMillis == 0L && timerState.totalMillis > 0L
+        ) {
+            cardViewModel.process(
+                CardIntent.SwipeTopCard(SwipeDirection.RIGHT, timerState.totalMillis)
+            )
         }
     }
 

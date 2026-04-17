@@ -6,4 +6,7 @@
     <string name="button_stop">Stop</string>
     <string name="completed_level">Completed ✓</string>
     <string name="postponed_level">← Postponed</string>
+    <string name="timer_notification_title">En curso: %1$s</string>
+    <string name="timer_notification_text">Tiempo restante: %1$s</string>
+    <string name="timer_notification_channel_name">Temporizador</string>
 </resources>
