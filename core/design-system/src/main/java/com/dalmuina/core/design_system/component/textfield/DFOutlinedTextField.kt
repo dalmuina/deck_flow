@@ -5,7 +5,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -66,9 +65,9 @@ fun DFOutlinedTextField(
             onNameChanged(it.text)
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor   = MaterialTheme.colorScheme.surfaceVariant,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContainerColor  = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,

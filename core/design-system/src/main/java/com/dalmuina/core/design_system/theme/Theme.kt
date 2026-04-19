@@ -26,7 +26,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = Indigo100,       // chips, badges, input backgrounds
     onSurfaceVariant = Color(0xFF5C5C7A),
 
-    outline        = NeutralBorder,   // bordes de cards y inputs
+    outline        = DarkBorder,   // bordes de cards y inputs
     outlineVariant = Color(0xFFE8E8EE),
 )
 
@@ -48,7 +48,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = DarkSurface,     // contenedores secundarios
     onSurfaceVariant = Color(0xFF94A3B8),
 
-    outline        = DarkBorder,
+    outline        = NeutralBorder,
     outlineVariant = Color(0xFF2A2A3E),
 )
 

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +35,7 @@ import com.dalmuina.core.design_system.component.textfield.DFOutlinedTextField
 import com.dalmuina.core.design_system.component.textfield.DFTimeInput
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
+import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import org.koin.androidx.compose.koinViewModel
@@ -105,7 +108,7 @@ fun CardCreatorDialog(
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp)
+            shape = RoundedCornerShape(Corner.m)
         ) {
             Box(
                 modifier = Modifier
