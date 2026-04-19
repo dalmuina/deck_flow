@@ -33,11 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import com.dalmuina.core.design_system.R
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.IconSize
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.core.presentation.helpers.toTimerText
-
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes

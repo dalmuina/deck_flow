@@ -16,6 +16,9 @@ private val LightColorScheme = lightColorScheme(
 
     secondary      = PrimaryLightColor,   // acciones secundarias, FAB alt
     onSecondary    = NeutralWhite,
+    secondaryContainer = SecondaryLightColor,
+    onSecondaryContainer = Indigo200,
+
     tertiary       = TertiaryLightColor,
 
     background     = NeutralSurface,  // fondo de pantalla (el gris f2f2f7)
@@ -23,6 +26,8 @@ private val LightColorScheme = lightColorScheme(
 
     surface        = NeutralCard,     // cards, bottom sheets, dialogs
     onSurface      = Color(0xFF1C1C1E),
+    surfaceContainer = Color(0xFFFAFAFC),
+
     surfaceVariant = Indigo100,       // chips, badges, input backgrounds
     onSurfaceVariant = Color(0xFF5C5C7A),
 
@@ -38,6 +43,7 @@ private val DarkColorScheme = darkColorScheme(
 
     secondary      = SecondaryDarkColor,
     onSecondary    = Color(0xFF1C1C2E),
+
     tertiary       = TertiaryDarkColor,
 
     background     = DarkBackground,  // casi negro
@@ -45,6 +51,8 @@ private val DarkColorScheme = darkColorScheme(
 
     surface        = DarkCard,        // cards oscuras
     onSurface      = OnDarkPrimary,
+    surfaceContainer =  Color(0xFF2A2A3E),
+
     surfaceVariant = DarkSurface,     // contenedores secundarios
     onSurfaceVariant = Color(0xFF94A3B8),
 
