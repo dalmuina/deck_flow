@@ -1,5 +1,10 @@
 package com.dalmuina.feature.card.presentation
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import android.Manifest
-import android.os.Build
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -41,18 +41,18 @@ import com.dalmuina.core.design_system.component.badge.DFSwipeBadge
 import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
-import com.dalmuina.core.design_system.theme.Amber400
-import com.dalmuina.core.design_system.theme.Amber700
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.theme.Green500
-import com.dalmuina.core.design_system.theme.Green800
+import com.dalmuina.core.design_system.theme.SuccessContainer
+import com.dalmuina.core.design_system.theme.Success
+import com.dalmuina.core.design_system.theme.PostponeContainer
+import com.dalmuina.core.design_system.theme.Postpone
 import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.model.SwipeDirection
-import com.dalmuina.feature.card.presentation.components.CardWithoutTimer
 import com.dalmuina.feature.card.presentation.components.CardWithTimer
+import com.dalmuina.feature.card.presentation.components.CardWithoutTimer
 import com.dalmuina.feature.card.presentation.components.SwipeCard
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.abs
@@ -91,16 +91,23 @@ fun CardRoute(
             when (event) {
                 Lifecycle.Event.ON_STOP -> {
                     if (currentTimerState.isRunning) {
-                        val endTimeMillis = System.currentTimeMillis() + currentTimerState.remainingMillis
+                        val endTimeMillis =
+                            System.currentTimeMillis() + currentTimerState.remainingMillis
                         ContextCompat.startForegroundService(
                             context,
-                            TimerForegroundService.startIntent(context, endTimeMillis, currentCardName),
+                            TimerForegroundService.startIntent(
+                                context,
+                                endTimeMillis,
+                                currentCardName
+                            ),
                         )
                     }
                 }
+
                 Lifecycle.Event.ON_START -> {
                     context.stopService(TimerForegroundService.stopIntent(context))
                 }
+
                 else -> Unit
             }
         }
@@ -219,7 +226,7 @@ fun CardScreen(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly,
-            ){
+            ) {
                 Spacer(modifier = Modifier.height(Dimen.m))
                 if (depth == 0) {
                     SwipeCard(
@@ -286,14 +293,14 @@ fun SwipeCardContent(
         {
             DFSwipeBadge(
                 text = stringResource(R.string.completed_level).uppercase(),
-                backgroundColor = Amber400,
-                strokeColor = Amber700,
+                backgroundColor = Postpone,
+                strokeColor = PostponeContainer,
                 alpha = rightAlphaAnimated
             )
             DFSwipeBadge(
                 text = stringResource(R.string.postponed_level).uppercase(),
-                backgroundColor = Green500,
-                strokeColor = Green800,
+                backgroundColor = Success,
+                strokeColor = SuccessContainer,
                 alpha = leftAlphaAnimated
             )
         }

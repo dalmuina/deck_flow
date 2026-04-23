@@ -14,14 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.dalmuina.core.design_system.preview.DFPreview
-import com.dalmuina.core.design_system.theme.Amber400
-import com.dalmuina.core.design_system.theme.Amber700
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.theme.Green500
-import com.dalmuina.core.design_system.theme.Green800
-import com.dalmuina.core.design_system.tokens.Stroke
+import com.dalmuina.core.design_system.theme.SuccessContainer
+import com.dalmuina.core.design_system.theme.Success
+import com.dalmuina.core.design_system.theme.PostponeContainer
+import com.dalmuina.core.design_system.theme.Postpone
 import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
+import com.dalmuina.core.design_system.tokens.Stroke
 
 @Composable
 fun DFSwipeBadge(
@@ -58,8 +58,8 @@ fun DFSwipeBadgeCompletedPreview() {
     DeckFlowTheme {
         DFSwipeBadge(
             text = "← Postponed",
-            backgroundColor = Amber400,
-            strokeColor = Amber700,
+            backgroundColor = Postpone,
+            strokeColor = PostponeContainer,
         )
     }
 }
@@ -70,8 +70,8 @@ fun DFSwipeBadgePostponedPreview() {
     DeckFlowTheme {
         DFSwipeBadge(
             text = "Completed ✓",
-            backgroundColor = Green500,
-            strokeColor = Green800,
+            backgroundColor = Success,
+            strokeColor = SuccessContainer,
         )
     }
 }

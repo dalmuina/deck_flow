@@ -9,55 +9,67 @@ import androidx.compose.ui.graphics.Color
 
 // Theme.kt
 private val LightColorScheme = lightColorScheme(
-    primary        = Indigo500,       // botón primario, acentos activos
-    onPrimary      = NeutralWhite,    // texto/icono sobre primary
-    primaryContainer   = Indigo100,   // botón secundario, chips, fondo badge
-    onPrimaryContainer = Indigo500,   // icono dentro del botón secundario
+    // Primary
+    primary             = PrimaryLight,
+    onPrimary           = OnPrimaryLight,
+    primaryContainer    = PrimaryContainerLight,
+    onPrimaryContainer  = PrimaryLight,
 
-    secondary      = PrimaryLightColor,   // acciones secundarias, FAB alt
-    onSecondary    = NeutralWhite,
-    secondaryContainer = SecondaryLightColor,
-    onSecondaryContainer = Indigo200,
+    // Secondary
+    secondary                = SecondaryLight,
+    onSecondary              = OnPrimaryLight,
+    secondaryContainer       = SecondaryContainerLight,
+    onSecondaryContainer     = OnSecondaryContainerLight,
 
-    tertiary       = TertiaryLightColor,
+    // Tertiary
+    tertiary = TertiaryLight,
 
-    background     = NeutralSurface,  // fondo de pantalla (el gris f2f2f7)
-    onBackground   = Color(0xFF1C1C1E),
+    // Background
+    background   = BackgroundLight,
+    onBackground = OnBackgroundLight,
 
-    surface        = NeutralCard,     // cards, bottom sheets, dialogs
-    onSurface      = Color(0xFF1C1C1E),
-    surfaceContainer = Color(0xFFFAFAFC),
+    // Surface
+    surface          = SurfaceLight,
+    onSurface        = OnBackgroundLight,
+    surfaceVariant   = PrimaryContainerLight,
+    onSurfaceVariant = OnSurfaceVariantLight,
+    surfaceContainer = SurfaceContainerLight,
 
-    surfaceVariant = Indigo100,       // chips, badges, input backgrounds
-    onSurfaceVariant = Color(0xFF5C5C7A),
-
-    outline        = DarkBorder,   // bordes de cards y inputs
-    outlineVariant = Color(0xFFE8E8EE),
+    // Outline
+    outline        = BorderDark,
+    outlineVariant = BorderLight,
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary        = PrimaryDarkColor,    // tu lila existente
-    onPrimary      = Color(0xFF1C1C2E),
-    primaryContainer   = Color(0xFF2A2A4E),
-    onPrimaryContainer = PrimaryDarkColor,
+    // Primary
+    primary             = PrimaryDark,
+    onPrimary           = OnPrimaryDark,
+    primaryContainer    = PrimaryContainerDark,
+    onPrimaryContainer  = PrimaryDark,
 
-    secondary      = SecondaryDarkColor,
-    onSecondary    = Color(0xFF1C1C2E),
+    // Secondary
+    secondary                = SecondaryDark,
+    onSecondary              = OnPrimaryDark,
+    secondaryContainer       = SecondaryContainerDark,
+    onSecondaryContainer     = OnSecondaryContainerDark,
 
-    tertiary       = TertiaryDarkColor,
+    // Tertiary
+    tertiary = TertiaryDark,
 
-    background     = DarkBackground,  // casi negro
-    onBackground   = OnDarkPrimary,
+    // Background
+    background   = BackgroundDark,
+    onBackground = OnBackgroundDark,
 
-    surface        = DarkCard,        // cards oscuras
-    onSurface      = OnDarkPrimary,
-    surfaceContainer =  Color(0xFF2A2A3E),
+    // Surface
+    surface          = SurfaceDark,
+    onSurface        = OnBackgroundDark,
+    surfaceVariant   = SurfaceDark,
+    onSurfaceVariant = OnSurfaceVariantDark,
+    surfaceContainer = SurfaceContainerDark,
 
-    surfaceVariant = DarkSurface,     // contenedores secundarios
-    onSurfaceVariant = Color(0xFF94A3B8),
-
-    outline        = NeutralBorder,
-    outlineVariant = Color(0xFF2A2A3E),
+    // Outline
+    outline        = BorderLight,
+    outlineVariant = BorderDark,
 )
 
 @Composable
