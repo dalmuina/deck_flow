@@ -45,6 +45,7 @@ import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 private val DAY_LABELS = listOf("Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do")
 
@@ -61,7 +62,7 @@ fun HeatmapCalendar(
     modifier: Modifier = Modifier,
 ) {
     val monthLabel = Month.of(month)
-        .getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault())
+        .getDisplayName(java.time.format.TextStyle.FULL, LocalLocale.current.platformLocale)
         .replaceFirstChar { it.uppercase() }
 
     val firstDayOffset = YearMonth.of(year, month).atDay(1).dayOfWeek.let {
