@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +23,8 @@ import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
 
 @Composable
-fun DFConfirmDialog(
+fun DFDialogConfirm(
+    modifier : Modifier = Modifier,
     title: String,
     message: String,
     onConfirm: () -> Unit,
@@ -32,7 +32,7 @@ fun DFConfirmDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             shape = RoundedCornerShape(Corner.m)
         ) {
             Column(
@@ -71,9 +71,9 @@ fun DFConfirmDialog(
 
 @DFPreview
 @Composable
-fun DFConfirmDialogPreview() {
+fun DFDialogConfirmPreview() {
     DeckFlowTheme {
-        DFConfirmDialog(
+        DFDialogConfirm(
             title = "Delete Card",
             message = "Are you sure you want to delete Fitness?",
             onConfirm = {},

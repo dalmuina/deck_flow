@@ -13,7 +13,7 @@ extensions.configure<LibraryExtension>  {
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
 
     }
 
@@ -54,8 +54,4 @@ dependencies {
 
     //Koin
     implementation(libs.koin.compose)
-
-    //Vico
-    implementation(libs.vico.compose)
-    implementation(libs.vico.compose.m3)
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : DFSelectableOption> DFDropdownSelector(
+    modifier: Modifier = Modifier,
     label: String,
     options: List<T>,
     selectedId: Int?,
@@ -31,6 +32,7 @@ fun <T : DFSelectableOption> DFDropdownSelector(
         .orEmpty()
 
     ExposedDropdownMenuBox(
+        modifier = modifier,
         expanded = expanded,
         onExpandedChange = { if (enabled) expanded = !expanded }
     ) {

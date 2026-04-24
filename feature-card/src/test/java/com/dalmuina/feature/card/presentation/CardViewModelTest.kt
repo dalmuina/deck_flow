@@ -12,6 +12,8 @@ import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
 import com.dalmuina.feature.card.model.SwipeDirection
+import com.dalmuina.feature.card.presentation.session.CardIntent
+import com.dalmuina.feature.card.presentation.session.CardViewModel
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk

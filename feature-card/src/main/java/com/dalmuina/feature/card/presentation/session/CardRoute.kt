@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation
+package com.dalmuina.feature.card.presentation.session
 
 import android.Manifest
 import android.os.Build
@@ -37,8 +37,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dalmuina.core.design_system.component.badge.DFSwipeBadge
-import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
+import com.dalmuina.core.design_system.component.badge.DFBadgeSwipe
+import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
@@ -51,9 +51,13 @@ import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.model.SwipeDirection
-import com.dalmuina.feature.card.presentation.components.CardWithTimer
-import com.dalmuina.feature.card.presentation.components.CardWithoutTimer
-import com.dalmuina.feature.card.presentation.components.SwipeCard
+import com.dalmuina.feature.card.component.CardWithTimer
+import com.dalmuina.feature.card.component.CardWithoutTimer
+import com.dalmuina.feature.card.component.SwipeCard
+import com.dalmuina.feature.card.presentation.timer.TimerForegroundService
+import com.dalmuina.feature.card.presentation.timer.TimerIntent
+import com.dalmuina.feature.card.presentation.timer.TimerState
+import com.dalmuina.feature.card.presentation.timer.TimerViewModel
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.hours
@@ -75,7 +79,7 @@ fun CardRoute(
     val currentTimerState by rememberUpdatedState(timerState)
     val currentCardName by rememberUpdatedState(state.cards.firstOrNull()?.name ?: "")
 
-    // Permiso de notificación (Android 13+)
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val notificationPermissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -85,7 +89,6 @@ fun CardRoute(
         }
     }
 
-    // Observa el lifecycle de la Activity (no del NavBackStackEntry) para detectar background
     DisposableEffect(Unit) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
@@ -140,15 +143,15 @@ fun CardRoute(
 
     when {
         state.loading -> {
-            DFCircularLoading()
+            DFLoadingCircular()
         }
 
         !state.isDeckSelected -> {
-            EmptyState(stringResource(R.string.no_deck_created))
+            EmptyState(text = stringResource(R.string.no_deck_created))
         }
 
         state.cards.isEmpty() -> {
-            EmptyState(stringResource(R.string.no_pending_tasks))
+            EmptyState(text = stringResource(R.string.no_pending_tasks))
         }
 
         else -> {
@@ -291,13 +294,13 @@ fun SwipeCardContent(
             horizontalArrangement = Arrangement.SpaceBetween
         )
         {
-            DFSwipeBadge(
+            DFBadgeSwipe(
                 text = stringResource(R.string.completed_level).uppercase(),
                 backgroundColor = Postpone,
                 strokeColor = PostponeContainer,
                 alpha = rightAlphaAnimated
             )
-            DFSwipeBadge(
+            DFBadgeSwipe(
                 text = stringResource(R.string.postponed_level).uppercase(),
                 backgroundColor = Success,
                 strokeColor = SuccessContainer,

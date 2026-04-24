@@ -7,14 +7,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Elevation
 import com.dalmuina.core.design_system.tokens.Spacing
 
 @Composable
-fun DFFloatingLabel(
+fun DFLabel(
     modifier: Modifier = Modifier,
     text: String,
 ) {
@@ -39,9 +38,9 @@ fun DFFloatingLabel(
 
 @DFPreview
 @Composable
-fun DFFloatingLabelPreview(){
+fun DFLabelPreview(){
     DeckFlowTheme {
-        DFFloatingLabel(
+        DFLabel(
             text = "Crear Deck"
         )
     }

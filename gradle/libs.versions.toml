@@ -1,14 +1,14 @@
 [versions]
-agp = "9.1.1"
+agp = "9.2.0"
 desugar_jdk_libs = "2.1.5"
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 coreKtx = "1.18.0"
 junit = "4.13.2"
 androidlifecycle = "2.10.0"
 activityCompose = "1.13.0"
-composeBom = "2026.03.01"
+composeBom = "2026.04.01"
 koin = "4.2.1"
-navigation3 = "1.1.0"
+navigation3 = "1.1.1"
 coroutines = "1.10.2"
 mockk = "1.14.9"
 kotest = "6.1.11"
@@ -16,10 +16,9 @@ turbine = "1.2.1"
 detekt = "1.23.8"
 room = "2.8.4"
 datastore = "1.2.1"
-jetbrainsKotlinJvm = "2.3.20"
-vico = "3.1.0"
-reorderable = "3.0.0"
-ktor = "3.4.2"
+jetbrainsKotlinJvm = "2.3.21"
+reorderable = "3.1.0"
+ktor = "3.4.3"
 ksp = "2.3.6"
 
 [libraries]
@@ -72,10 +71,6 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 #Ktor
 ktor-client-core = {module = "io.ktor:ktor-client-core", version.ref = "ktor"}
 ktor-client-android = {module = "io.ktor:ktor-client-android", version.ref = "ktor"}
-
-#Vico
-vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
-vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 
 #Reorderable
 reorderable = { group = "sh.calvin.reorderable", name = "reorderable-android", version.ref = "reorderable" }

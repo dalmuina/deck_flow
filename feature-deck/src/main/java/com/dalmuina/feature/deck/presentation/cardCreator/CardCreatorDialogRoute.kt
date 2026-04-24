@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.button.DFButton
-import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
-import com.dalmuina.core.design_system.component.textfield.DFOutlinedTextField
-import com.dalmuina.core.design_system.component.textfield.DFTimeInput
+import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
+import com.dalmuina.core.design_system.component.input.DFTextFieldOutlined
+import com.dalmuina.core.design_system.component.input.DFInputTimer
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Corner
@@ -119,7 +117,7 @@ fun CardCreatorDialog(
             ) {
                 AnimatedContent(targetState = loading) { loading ->
                     if (loading) {
-                        DFCircularLoading()
+                        DFLoadingCircular()
                     } else {
                         CardCreatorContent(
                             processing = processing,
@@ -162,14 +160,14 @@ fun CardCreatorContent(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Column {
-            DFOutlinedTextField(
+            DFTextFieldOutlined(
                 name = activity,
                 onNameChanged = onNameChanged,
                 focusRequester = focusRequester,
                 label = { Text(text = stringResource(R.string.label_card)) },
             )
             Spacer(modifier = Modifier.height(Spacing.l))
-            DFTimeInput(
+            DFInputTimer(
                 value =
                     duration,
                 onValueChanged = onTimeChanged, onMoreTime = onMoreTime, onLessTime = onLessTime,

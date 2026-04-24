@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation.components
+package com.dalmuina.feature.card.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,13 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.dalmuina.core.design_system.component.button.DFActionButtonPrimary
-import com.dalmuina.core.design_system.component.button.DFActionButtonSecondary
+import com.dalmuina.core.design_system.component.button.DFButtonIconPrimary
+import com.dalmuina.core.design_system.component.button.DFButtonIconSecondary
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
-import com.dalmuina.feature.card.presentation.TimerState
-import com.dalmuina.feature.card.presentation.toTimerText
+import com.dalmuina.feature.card.presentation.timer.TimerState
+import com.dalmuina.feature.card.presentation.timer.toTimerText
 
 @Composable
 fun CountdownTimer(
@@ -51,7 +51,7 @@ fun CountdownTimer(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            DFActionButtonPrimary(
+            DFButtonIconPrimary(
                 icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = "",
             ) {
@@ -63,7 +63,7 @@ fun CountdownTimer(
                 modifier = Modifier
                     .width(Spacing.l)
             )
-            DFActionButtonSecondary (
+            DFButtonIconSecondary (
                 icon = Icons.Default.Replay,
                 contentDescription = "",
             ) {

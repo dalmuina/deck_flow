@@ -7,13 +7,14 @@ import androidx.compose.ui.Modifier
 import com.dalmuina.core.design_system.tokens.Elevation
 
 @Composable
-fun DFElevatedButton(
+fun DFButtonElevated(
     modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
 
     ElevatedButton(
+        modifier = modifier,
         elevation = ButtonDefaults.elevatedButtonElevation(
             defaultElevation = Elevation.m
         ),

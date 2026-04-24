@@ -11,14 +11,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.dalmuina.core.design_system.component.badge.DFFloatingLabel
+import com.dalmuina.core.design_system.component.badge.DFLabel
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Elevation
 import com.dalmuina.core.design_system.tokens.Spacing
 
 @Composable
-fun DFFloatingButton(
+fun DFButtonFloating(
     modifier: Modifier = Modifier,
     label: String,
     icon: @Composable () -> Unit,
@@ -28,7 +28,7 @@ fun DFFloatingButton(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        DFFloatingLabel(
+        DFLabel(
             text = label,
         )
         Spacer(modifier = Modifier.width(Spacing.m))
@@ -45,9 +45,9 @@ fun DFFloatingButton(
 
 @DFPreview
 @Composable
-fun DFFloatingButtonPreview() {
+fun DFButtonFloatingPreview() {
     DeckFlowTheme {
-        DFFloatingButton(
+        DFButtonFloating(
             label = "Create Card",
             icon = {
                 Icon(

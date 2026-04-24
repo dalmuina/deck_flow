@@ -18,12 +18,13 @@ import com.dalmuina.core.design_system.theme.DeckFlowTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DFTopBar(
+    modifier: Modifier = Modifier,
     title: String,
     showBack: Boolean,
     onBack: () -> Unit
 ) {
     TopAppBar(
-        modifier = Modifier.statusBarsPadding(),
+        modifier = modifier.statusBarsPadding(),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
         ),

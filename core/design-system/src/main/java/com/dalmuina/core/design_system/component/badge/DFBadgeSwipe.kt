@@ -24,7 +24,7 @@ import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.core.design_system.tokens.Stroke
 
 @Composable
-fun DFSwipeBadge(
+fun DFBadgeSwipe(
     modifier: Modifier = Modifier,
     text: String,
     backgroundColor: Color,
@@ -54,9 +54,9 @@ fun DFSwipeBadge(
 
 @DFPreview
 @Composable
-fun DFSwipeBadgeCompletedPreview() {
+fun DFBadgeSwipeCompletedPreview() {
     DeckFlowTheme {
-        DFSwipeBadge(
+        DFBadgeSwipe(
             text = "← Postponed",
             backgroundColor = Postpone,
             strokeColor = PostponeContainer,
@@ -66,9 +66,9 @@ fun DFSwipeBadgeCompletedPreview() {
 
 @DFPreview
 @Composable
-fun DFSwipeBadgePostponedPreview() {
+fun DFBadgeSwipePostponedPreview() {
     DeckFlowTheme {
-        DFSwipeBadge(
+        DFBadgeSwipe(
             text = "Completed ✓",
             backgroundColor = Success,
             strokeColor = SuccessContainer,

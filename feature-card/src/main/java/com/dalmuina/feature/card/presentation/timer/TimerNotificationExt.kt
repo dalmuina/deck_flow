@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation
+package com.dalmuina.feature.card.presentation.timer
 
 import android.app.Notification
 import android.app.NotificationManager

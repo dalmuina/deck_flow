@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation
+package com.dalmuina.feature.card.presentation.timer
 
 sealed interface TimerIntent {
     data class Start(val durationMillis: Long) : TimerIntent

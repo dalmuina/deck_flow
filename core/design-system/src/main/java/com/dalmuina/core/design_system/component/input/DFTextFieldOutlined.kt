@@ -1,4 +1,4 @@
-package com.dalmuina.core.design_system.component.textfield
+package com.dalmuina.core.design_system.component.input
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,7 +24,7 @@ import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 
 @Composable
-fun DFOutlinedTextField(
+fun DFTextFieldOutlined(
     modifier: Modifier = Modifier,
     name: String,
     onNameChanged: (String) -> Unit,
@@ -80,9 +80,9 @@ fun DFOutlinedTextField(
 
 @DFPreview
 @Composable
-fun DFOutlinedTextFieldPreview() {
+fun DFTextFieldOutlinedPreview() {
     DeckFlowTheme {
-        DFOutlinedTextField(
+        DFTextFieldOutlined(
             name = "",
             focusRequester = null,
             onNameChanged = {},

@@ -24,7 +24,7 @@ import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.IconSize
 
 @Composable
-fun DFActionButtonPrimary(
+fun DFButtonIconPrimary(
     modifier : Modifier = Modifier,
     icon: ImageVector,
     contentDescription: String,
@@ -56,9 +56,9 @@ fun DFActionButtonPrimary(
 
 @DFPreview
 @Composable
-fun DFActionButtonPrimaryPreview() {
+fun DFButtonIconPrimaryPreview() {
     DeckFlowTheme {
-        DFActionButtonPrimary(
+        DFButtonIconPrimary(
             icon = Icons.Default.PlayArrow,
             contentDescription = ""
         ) { }

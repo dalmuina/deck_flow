@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation.components
+package com.dalmuina.feature.card.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.model.CardUi
-import com.dalmuina.feature.card.presentation.TimerState
+import com.dalmuina.feature.card.presentation.timer.TimerState
 import kotlin.time.Duration
 
 @Composable

@@ -1,4 +1,4 @@
-package com.dalmuina.core.design_system.component.textfield
+package com.dalmuina.core.design_system.component.input
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,7 +42,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun DFTimeInput(
+fun DFInputTimer(
     modifier: Modifier = Modifier,
     value: Duration,
     onValueChanged: (String) -> Unit,
@@ -136,9 +136,9 @@ fun DFTimeInput(
 
 @DFPreview
 @Composable
-fun DFTimeInputPreview() {
+fun DFInputTimerPreview() {
     DeckFlowTheme {
-        DFTimeInput(
+        DFInputTimer(
             value = 0L.hours + 3L.minutes + 25L.seconds,
             onValueChanged = {},
             onMoreTime = {},

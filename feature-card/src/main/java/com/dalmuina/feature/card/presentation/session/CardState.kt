@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation
+package com.dalmuina.feature.card.presentation.session
 
 import androidx.compose.runtime.Stable
 import com.dalmuina.feature.card.model.CardUi

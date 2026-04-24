@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation
+package com.dalmuina.feature.card.presentation.timer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.dalmuina.feature.card.presentation.components
+package com.dalmuina.feature.card.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
