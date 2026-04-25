@@ -23,13 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.dalmuina.core.design_system.animation.DFAnimations
-import com.dalmuina.core.design_system.component.button.DFFloatingButton
+import com.dalmuina.core.design_system.component.button.DFButtonFloating
 import com.dalmuina.core.design_system.component.topbar.DFTopBar
 import com.dalmuina.core.presentation.events.UiEvent
 import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.deckflow.R
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
-import com.dalmuina.feature.card.presentation.CardRoute
+import com.dalmuina.feature.card.presentation.session.CardRoute
 import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorDialogNavRoute
 import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorMode
 import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorMode
@@ -175,7 +175,7 @@ fun FabArea(
     ) {
         when (state.currentRoute) {
             Route.DeckSelector -> {
-                DFFloatingButton(
+                DFButtonFloating(
                     label = stringResource(R.string.create_deck_action),
                     icon = {
                         Icon(
@@ -189,7 +189,7 @@ fun FabArea(
             }
 
             Route.Card -> {
-                DFFloatingButton(
+                DFButtonFloating(
                     label = stringResource(R.string.select_deck_action),
                     icon = {
                         Icon(
@@ -203,7 +203,7 @@ fun FabArea(
             }
 
             is Route.DeckCreator -> {
-                DFFloatingButton(
+                DFButtonFloating(
                     label = stringResource(R.string.create_card_action),
                     icon = {
                         Icon(

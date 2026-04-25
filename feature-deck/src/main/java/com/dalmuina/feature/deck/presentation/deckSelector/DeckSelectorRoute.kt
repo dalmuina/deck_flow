@@ -14,16 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dalmuina.core.design_system.component.dialog.DFConfirmDialog
-import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
+import com.dalmuina.core.design_system.component.dialog.DFDialogConfirm
+import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.model.DeckUi
-import com.dalmuina.feature.deck.presentation.component.DeckSlot
-import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
+import com.dalmuina.feature.deck.component.DeckSlot
+import com.dalmuina.feature.deck.component.SwipeToDelete
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -36,7 +36,7 @@ fun DeckSelectorRoute(
     AnimatedContent(targetState = state.loading) { loading ->
 
         if (loading) {
-            DFCircularLoading()
+            DFLoadingCircular()
         } else {
             DeckSelectorScreen(
                 items = state.deckList,
@@ -48,7 +48,7 @@ fun DeckSelectorRoute(
     }
 
     state.deckPendingDelete?.let { deck ->
-        DFConfirmDialog(
+        DFDialogConfirm(
             title = stringResource(R.string.delete_deck_dialog_title),
             message = stringResource(R.string.delete_dialog_message, deck.name),
             onConfirm = { viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck) },
@@ -66,7 +66,7 @@ fun DeckSelectorScreen(
 ) {
     val isEmpty = items.isEmpty()
     if (isEmpty) {
-        EmptyState(stringResource(R.string.no_deck_created))
+        EmptyState(text = stringResource(R.string.no_deck_created))
     } else {
         LazyColumn(
             modifier = Modifier

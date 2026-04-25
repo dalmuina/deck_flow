@@ -5,6 +5,8 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.dalmuina.core.design_system.preview.DFPreview
+import com.dalmuina.core.design_system.theme.DeckFlowTheme
 
 @Composable
 fun DFCheckBox(
@@ -25,4 +27,25 @@ fun DFCheckBox(
         ),
         onCheckedChange = { onSelected() }
     )
+}
+
+@DFPreview
+@Composable
+fun DFCheckboxSelectedPreview(){
+    DeckFlowTheme {
+        DFCheckBox(
+            checked = true,
+        ) { }
+    }
+}
+
+
+@DFPreview
+@Composable
+fun DFCheckboxUnselectedPreview(){
+    DeckFlowTheme {
+        DFCheckBox(
+            checked = false,
+        ) { }
+    }
 }

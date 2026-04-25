@@ -9,10 +9,11 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun EmptyState(
-    text: String
+    modifier: Modifier = Modifier,
+    text: String,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Text(text)
     }

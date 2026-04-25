@@ -2,11 +2,17 @@ package com.dalmuina.feature.stats.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dalmuina.core.presentation.helpers.getLast7DaysRange
+import com.dalmuina.core.presentation.helpers.getMonthRange
+import com.dalmuina.core.presentation.helpers.toHeatmapLevel
 import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.model.DailyStatsDomain
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetCardStatsUseCase
+import com.dalmuina.feature.stats.model.MonthHeatmapDayUi
 import com.dalmuina.feature.stats.model.toUi
+import java.time.Instant
+import java.time.YearMonth
+import java.time.ZoneId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,125 +30,146 @@ class StatsViewModel(
     private val getCardStatsUseCase: GetCardStatsUseCase,
 ) : ViewModel() {
 
-    private val selectedDeckId = MutableStateFlow<Int?>(null)
     private val selectedCardId = MutableStateFlow<Int?>(null)
+    private val currentYearMonth = MutableStateFlow(YearMonth.now())
 
     private val decksResultFlow = getAllDecksUseCase()
 
     fun process(intent: StatsIntent) {
         when (intent) {
-            is StatsIntent.SelectCard -> onCardSelected(intent.cardId)
-            is StatsIntent.SelectDeck -> onDeckSelected(intent.deckId)
+            is StatsIntent.SelectActivity -> selectedCardId.value = intent.cardId
+            StatsIntent.PreviousMonth -> currentYearMonth.value = currentYearMonth.value.minusMonths(1)
+            StatsIntent.NextMonth -> currentYearMonth.value = currentYearMonth.value.plusMonths(1)
         }
     }
 
     private val selectionState: StateFlow<SelectionData> =
         combine(
             decksResultFlow,
-            selectedDeckId,
-            selectedCardId
-        ) { result, selectedDeckId, selectedCardId ->
+            selectedCardId,
+        ) { result, selectedCardId ->
             when (result) {
                 is DFResult.Success -> {
-                    val decks = result.data
-                    val deckOptions = decks.map { it.toUi() }
+                    val allCards = result.data.flatMap { it.cards }
+                    val activityOptions = allCards.map { it.toUi() }
 
-                    val effectiveDeckId = selectedDeckId ?: decks.firstOrNull()?.id
-                    val selectedDeck = decks.firstOrNull { it.id == effectiveDeckId }
-
-                    val cardOptions = selectedDeck
-                        ?.cards
-                        ?.map { it.toUi() }
-                        .orEmpty()
-
-                    val effectiveCardId = cardOptions
+                    val effectiveCardId = activityOptions
                         .firstOrNull { it.id == selectedCardId }
                         ?.id
-                        ?: cardOptions.firstOrNull()?.id
+                        ?: activityOptions.firstOrNull()?.id
+
+                    val cardDurationMillis = allCards
+                        .firstOrNull { it.id == effectiveCardId }
+                        ?.durationMillis
+                        ?: 0L
 
                     SelectionData(
                         loading = false,
-                        deckOptions = deckOptions,
-                        selectedDeckId = effectiveDeckId,
-                        cardOptions = cardOptions,
-                        selectedCardId = effectiveCardId
+                        activityOptions = activityOptions,
+                        selectedCardId = effectiveCardId,
+                        selectedCardDurationMillis = cardDurationMillis,
                     )
                 }
 
-                is DFResult.Error -> {
-                    SelectionData(
-                        loading = false,
-                        selectedDeckId = selectedDeckId,
-                        selectedCardId = selectedCardId
-                    )
-                }
+                is DFResult.Error -> SelectionData(
+                    loading = false,
+                    selectedCardId = selectedCardId,
+                )
             }
         }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
-                SelectionData(loading = true)
+                SelectionData(loading = true),
             )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val statsState: StateFlow<StatsData> =
-        selectionState
-            .map { it.selectedCardId }
-            .distinctUntilChanged()
-            .flatMapLatest { cardId ->
-                if (cardId == null) {
-                    flowOf(StatsData())
-                } else {
-                    val (fromDay, toDay) = getLast7DaysRange()
+        combine(
+            selectionState
+                .map { it.selectedCardId to it.selectedCardDurationMillis }
+                .distinctUntilChanged(),
+            currentYearMonth,
+        ) { (cardId, cardDuration), yearMonth ->
+            Triple(cardId, cardDuration, yearMonth)
+        }.flatMapLatest { (cardId, cardDuration, yearMonth) ->
+            if (cardId == null) return@flatMapLatest flowOf(StatsData())
 
-                    getCardStatsUseCase(cardId, fromDay, toDay)
-                        .map { result ->
-                            when (result) {
-                                is DFResult.Success -> StatsData(
-                                    loading = false,
-                                    dailyStats = result.data.map{it.toUi()}
-                                )
+            val (fromDay, toDay) = getMonthRange(yearMonth.year, yearMonth.monthValue)
+            val prevMonth = yearMonth.minusMonths(1)
+            val (prevFrom, prevTo) = getMonthRange(prevMonth.year, prevMonth.monthValue)
+            val hasNextMonth = yearMonth.isBefore(YearMonth.now())
 
-                                is DFResult.Error -> StatsData(
-                                    loading = false,
-                                )
-                            }
-                        }
-                        .onStart { emit(StatsData(loading = true)) }
+            combine(
+                getCardStatsUseCase(cardId, fromDay, toDay),
+                getCardStatsUseCase(cardId, prevFrom, prevTo),
+            ) { currentResult, prevResult ->
+                when (currentResult) {
+                    is DFResult.Success -> StatsData(
+                        loading = false,
+                        year = yearMonth.year,
+                        month = yearMonth.monthValue,
+                        heatmapDays = buildMonthHeatmapDays(
+                            yearMonth.year,
+                            yearMonth.monthValue,
+                            currentResult.data,
+                            cardDuration,
+                        ),
+                        hasPreviousData = prevResult is DFResult.Success && prevResult.data.isNotEmpty(),
+                        hasNextMonth = hasNextMonth,
+                    )
+
+                    is DFResult.Error -> StatsData(loading = false)
                 }
-            }
+            }.onStart { emit(StatsData(loading = true)) }
+        }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
-                StatsData()
+                StatsData(),
             )
 
     val uiState: StateFlow<StatsState> =
-        combine(
-            selectionState,
-            statsState
-        ) { selection, stats ->
+        combine(selectionState, statsState) { selection, stats ->
             StatsState(
                 loading = selection.loading,
-                deckOptions = selection.deckOptions,
-                selectedDeckId = selection.selectedDeckId,
-                cardOptions = selection.cardOptions,
+                activityOptions = selection.activityOptions,
                 selectedCardId = selection.selectedCardId,
-                dailyStats = stats.dailyStats,
+                statsLoading = stats.loading,
+                year = stats.year,
+                month = stats.month,
+                heatmapDays = stats.heatmapDays,
+                hasPreviousData = stats.hasPreviousData,
+                hasNextMonth = stats.hasNextMonth,
             )
         }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
-                StatsState(loading = true)
+                StatsState(loading = true),
             )
 
-    fun onDeckSelected(deckId: Int?) {
-        selectedDeckId.value = deckId
-        selectedCardId.value = null
-    }
-
-    fun onCardSelected(cardId: Int?) {
-        selectedCardId.value = cardId
+    private fun buildMonthHeatmapDays(
+        year: Int,
+        month: Int,
+        stats: List<DailyStatsDomain>,
+        cardDurationMillis: Long,
+    ): List<MonthHeatmapDayUi> {
+        val zone = ZoneId.systemDefault()
+        val ym = YearMonth.of(year, month)
+        val statsMap = stats.associateBy { stat ->
+            Instant.ofEpochMilli(stat.dayStart).atZone(zone).dayOfMonth
+        }
+        return (1..ym.lengthOfMonth()).map { day ->
+            val stat = statsMap[day]
+            val totalSpent = stat?.totalSpentMillis ?: 0L
+            MonthHeatmapDayUi(
+                dayOfMonth = day,
+                dayStart = ym.atDay(day).atStartOfDay(zone).toInstant().toEpochMilli(),
+                totalSpentMillis = totalSpent,
+                completedCount = stat?.completedCount ?: 0,
+                level = totalSpent.toHeatmapLevel(cardDurationMillis),
+            )
+        }
     }
 }

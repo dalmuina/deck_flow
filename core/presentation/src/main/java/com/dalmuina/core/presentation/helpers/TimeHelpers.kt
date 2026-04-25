@@ -1,5 +1,7 @@
 package com.dalmuina.core.presentation.helpers
 
+import java.time.YearMonth
+import java.time.ZoneId
 import java.util.Calendar
 import kotlin.time.Duration
 
@@ -17,6 +19,14 @@ fun getLast7DaysRange(): Pair<Long, Long> {
 
     val fromDay = calendar.timeInMillis
 
+    return fromDay to toDay
+}
+
+fun getMonthRange(year: Int, month: Int): Pair<Long, Long> {
+    val zone = ZoneId.systemDefault()
+    val ym = YearMonth.of(year, month)
+    val fromDay = ym.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
+    val toDay = ym.atEndOfMonth().atStartOfDay(zone).plusDays(1).toInstant().toEpochMilli() - 1
     return fromDay to toDay
 }
 

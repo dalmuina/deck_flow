@@ -7,7 +7,7 @@
 
     <application>
         <service
-            android:name=".presentation.TimerForegroundService"
+            android:name=".presentation.timer.TimerForegroundService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
             <property

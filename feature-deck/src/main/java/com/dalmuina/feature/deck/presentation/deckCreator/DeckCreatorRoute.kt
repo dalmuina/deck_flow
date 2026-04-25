@@ -22,17 +22,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dalmuina.core.design_system.component.button.DFElevatedButton
-import com.dalmuina.core.design_system.component.dialog.DFConfirmDialog
-import com.dalmuina.core.design_system.component.infoState.DFCircularLoading
+import com.dalmuina.core.design_system.component.button.DFButtonElevated
+import com.dalmuina.core.design_system.component.dialog.DFDialogConfirm
+import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
-import com.dalmuina.core.design_system.component.textfield.DFOutlinedTextField
+import com.dalmuina.core.design_system.component.input.DFTextFieldOutlined
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.presentation.component.CardSlot
-import com.dalmuina.feature.deck.presentation.component.SwipeToDelete
+import com.dalmuina.feature.deck.component.CardSlot
+import com.dalmuina.feature.deck.component.SwipeToDelete
 import com.dalmuina.feature.deck.model.CardUi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -70,7 +70,7 @@ fun DeckCreatorRoute(
     }
     AnimatedContent(targetState = state.loading) { loading ->
         if (loading) {
-            DFCircularLoading()
+            DFLoadingCircular()
         } else {
             DeckCreatorScreen(
                 items = state.deckCard,
@@ -87,7 +87,7 @@ fun DeckCreatorRoute(
     }
 
     state.cardPendingDelete?.let { card ->
-        DFConfirmDialog(
+        DFDialogConfirm(
             title = stringResource(R.string.delete_card_dialog_title),
             message = stringResource(R.string.delete_dialog_message, card.name),
             onConfirm = { viewModel.process(DeckCreatorIntent.ConfirmDeleteCard) },
@@ -116,7 +116,7 @@ fun DeckCreatorScreen(
             modifier = Modifier
                 .padding(Spacing.l)
         ) {
-            DFOutlinedTextField(
+            DFTextFieldOutlined(
                 name = name,
                 label = { Text(text = stringResource(R.string.deck_input_name_label)) },
                 onNameChanged = onNameChanged
@@ -124,7 +124,7 @@ fun DeckCreatorScreen(
             Spacer(modifier = Modifier.height(Spacing.l))
             val isEmpty = items.isEmpty()
             if (isEmpty) {
-                EmptyState(stringResource(R.string.no_card_created))
+                EmptyState(text = stringResource(R.string.no_card_created))
             } else {
                 val selectedCount = items.count { it.isSelected }
                 val lazyListState = rememberLazyListState()
@@ -174,7 +174,7 @@ fun DeckCreatorScreen(
                 .padding(all = Spacing.l),
             visible = items.any { it.isSelected && !isEditMode }
         ) {
-            DFElevatedButton(
+            DFButtonElevated(
                 text = {
                     Text(stringResource(R.string.create_deck))
                 }
