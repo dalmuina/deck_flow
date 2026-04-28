@@ -6,6 +6,7 @@ import com.dalmuina.domain.model.DataError
 import kotlin.coroutines.cancellation.CancellationException
 
 suspend inline fun <reified T> safeDbCall(
+    logger: CrashlyticsLogger,
     crossinline call: suspend () -> T
 ): DFResult<T, DataError> {
     return try {
@@ -13,10 +14,10 @@ suspend inline fun <reified T> safeDbCall(
     } catch (e: CancellationException) {
         throw e
     } catch (e: SQLiteConstraintException) {
-        CrashlyticsLogger.logException(e, mapOf("source" to "db", "type" to "constraint"))
+        logger.logException(e, mapOf("source" to "db", "type" to "constraint"))
         DFResult.Error(DataError.Local.ConstraintViolation)
     } catch (e: Exception) {
-        CrashlyticsLogger.logException(e, mapOf("source" to "db"))
+        logger.logException(e, mapOf("source" to "db"))
         DFResult.Error(DataError.Local.Unknown(e))
     }
 }

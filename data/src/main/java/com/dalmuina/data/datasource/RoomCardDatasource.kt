@@ -1,5 +1,6 @@
 package com.dalmuina.data.datasource
 
+import com.dalmuina.core.data.helpers.CrashlyticsLogger
 import com.dalmuina.core.data.helpers.startOfDayMillis
 import com.dalmuina.data.dao.DFCardDao
 import com.dalmuina.data.entity.CardHistoryEntity
@@ -20,15 +21,16 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class RoomCardDatasource(
     private val dao: DFCardDao,
+    private val logger: CrashlyticsLogger,
 ) : CardLocalDataSource {
 
     override suspend fun saveCard(card: CardDomain): DFResult<Int, DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.insert(card.toEntity()).toInt()
         }
 
     override suspend fun updateCard(card: CardDomain): DFResult<Int, DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.update(card.toEntity())
             card.id
         }
@@ -38,7 +40,7 @@ class RoomCardDatasource(
         spentMillis: Long
     ): DFResult<Int, DataError> {
         val now = System.currentTimeMillis()
-        return safeDbCall {
+        return safeDbCall(logger) {
             dao.insertProgress(CardProgressEntity(cardId = cardId))
             dao.markCompleted(cardId, now)
             dao.insertCompletedStat(
@@ -55,7 +57,7 @@ class RoomCardDatasource(
 
     override suspend fun postponeCard(cardId: Int): DFResult<Int, DataError> {
         val now = System.currentTimeMillis()
-        return safeDbCall {
+        return safeDbCall(logger) {
             dao.insertProgress(CardProgressEntity(cardId = cardId))
             dao.markPostponed(cardId, now)
             cardId
@@ -74,12 +76,12 @@ class RoomCardDatasource(
             }
 
     override suspend fun getCardById(cardId: Int): DFResult<CardDomain, DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.getCardById(cardId).toDomain()
         }
 
     override suspend fun deleteCard(cardId: Int): EmptyResult<DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.deleteCard(cardId)
         }
 

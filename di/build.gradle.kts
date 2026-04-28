@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":core"))
     implementation(project(":core:presentation"))
+    implementation(project(":core:data"))
     implementation(project(":feature-deck"))
     implementation(project(":feature-card"))
     implementation(project(":feature-stats"))

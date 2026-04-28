@@ -2,6 +2,7 @@ package com.dalmuina.data.datasource
 
 import android.database.sqlite.SQLiteConstraintException
 import app.cash.turbine.test
+import com.dalmuina.core.test.helpers.FakeCrashlyticsLogger
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.data.dao.DFDeckDao
 import com.dalmuina.data.entity.CardInDeckEntity
@@ -33,11 +34,12 @@ class RoomDeckDataSourceTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val dao: DFDeckDao = mockk()
+    private val logger = FakeCrashlyticsLogger()
     private lateinit var datasource: RoomDeckDataSource
 
     @Before
     fun setUp() {
-        datasource = RoomDeckDataSource(dao)
+        datasource = RoomDeckDataSource(dao,logger)
     }
 
     // region createDeck

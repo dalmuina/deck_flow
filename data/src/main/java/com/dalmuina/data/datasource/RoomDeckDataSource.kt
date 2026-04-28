@@ -1,13 +1,14 @@
 package com.dalmuina.data.datasource
 
+import com.dalmuina.core.data.helpers.CrashlyticsLogger
+import com.dalmuina.core.data.helpers.safeDbCall
 import com.dalmuina.data.dao.DFDeckDao
 import com.dalmuina.data.entity.DeckEntity
 import com.dalmuina.data.entity.toDomain
-import com.dalmuina.core.data.helpers.safeDbCall
 import com.dalmuina.domain.DeckLocalDataSource
-import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.model.DataError
+import com.dalmuina.domain.model.DeckDomain
 import com.dalmuina.domain.model.EmptyResult
 import com.dalmuina.domain.model.asEmptyResult
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +19,14 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class RoomDeckDataSource(
     private val dao: DFDeckDao,
+    private val logger: CrashlyticsLogger,
 ) : DeckLocalDataSource {
 
     override suspend fun createDeck(
         name: String,
         cardIds: List<Int>
     ): EmptyResult<DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.insertDeckWithCards(
                 deck = DeckEntity(name = name),
                 cardIds = cardIds
@@ -35,7 +37,7 @@ class RoomDeckDataSource(
         deckId: Int,
         name: String
     ): EmptyResult<DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.updateDeckName(deckId, name)
         }.asEmptyResult()
 
@@ -70,7 +72,7 @@ class RoomDeckDataSource(
         }
 
     override suspend fun deleteDeck(deckId: Int): EmptyResult<DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.deleteDeck(deckId)
         }.asEmptyResult()
 
@@ -78,7 +80,7 @@ class RoomDeckDataSource(
         deckId: Int,
         orderedIds: List<Int>
     ): EmptyResult<DataError> =
-        safeDbCall {
+        safeDbCall(logger) {
             dao.replaceDeckCards(deckId, orderedIds)
         }.asEmptyResult()
 }

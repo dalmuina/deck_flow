@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
+import com.dalmuina.core.data.helpers.CrashlyticsLogger
 import com.dalmuina.core.data.helpers.safePreferencesCall
 import com.dalmuina.domain.TimerDataSource
 import com.dalmuina.domain.model.DFResult
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 class DataStoreTimerDataSource(
     private val dataStore: DataStore<Preferences>,
+    private val logger: CrashlyticsLogger,
 ) : TimerDataSource {
 
     companion object {
@@ -51,7 +53,7 @@ class DataStoreTimerDataSource(
     override suspend fun saveTimerState(
         state: PersistedTimerState
     ): EmptyResult<DataError> {
-        return safePreferencesCall {
+        return safePreferencesCall(logger) {
             dataStore.edit { prefs ->
                 prefs[TOTAL_MILLIS] = state.totalMillis
                 prefs[REMAINING_MILLIS] = state.remainingMillis
