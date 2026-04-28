@@ -25,4 +25,9 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.ktor.client.core)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+
 }

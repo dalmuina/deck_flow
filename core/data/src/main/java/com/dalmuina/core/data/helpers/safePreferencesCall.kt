@@ -14,8 +14,10 @@ suspend inline fun <T> safePreferencesCall(
     } catch (e: CancellationException) {
         throw e
     } catch (e: IOException) {
+        CrashlyticsLogger.logException(e, mapOf("source" to "datastore"))
         DFResult.Error(DataError.Preferences.Storage)
     } catch (e: Exception) {
+        CrashlyticsLogger.logException(e, mapOf("source" to "datastore"))
         DFResult.Error(DataError.Preferences.Unknown(e))
     }
 }

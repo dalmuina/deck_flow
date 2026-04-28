@@ -7,12 +7,15 @@ import com.dalmuina.di.domainModule
 import com.dalmuina.di.featureCardModule
 import com.dalmuina.di.featureDeckModule
 import com.dalmuina.di.featureStatsModule
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = true
 
         startKoin {
             androidContext(this@App)
