@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 extensions.configure<ApplicationExtension>  {
@@ -42,6 +44,7 @@ extensions.configure<ApplicationExtension>  {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
 }
@@ -89,4 +92,10 @@ dependencies {
     implementation(libs.koin.compose)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    debugImplementation(libs.leakcanary.android)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 }

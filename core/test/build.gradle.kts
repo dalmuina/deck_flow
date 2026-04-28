@@ -20,7 +20,7 @@ extensions.configure<LibraryExtension>  {
 
 dependencies {
     implementation(project(":domain"))
-
+    implementation(project(":core:data"))
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.turbine)
     implementation(libs.mockk)

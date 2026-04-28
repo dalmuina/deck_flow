@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import com.dalmuina.core.data.helpers.CrashlyticsLogger
+import com.dalmuina.core.data.helpers.FirebaseCrashlyticsLogger
 import com.dalmuina.data.database.AppDatabase
 import com.dalmuina.data.datasource.RoomCardDatasource
 import com.dalmuina.data.datasource.RoomDeckDataSource
@@ -31,8 +33,10 @@ val dataModule = module {
     single { get<AppDatabase>().cardDao() }
     single { get<AppDatabase>().deckDao() }
 
-    single<CardLocalDataSource> { RoomCardDatasource(get()) }
-    single<DeckLocalDataSource> { RoomDeckDataSource(get()) }
+    single<CrashlyticsLogger> { FirebaseCrashlyticsLogger() }
+
+    single<CardLocalDataSource> { RoomCardDatasource(get(), get()) }
+    single<DeckLocalDataSource> { RoomDeckDataSource(get(), get()) }
 
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create(
@@ -40,6 +44,6 @@ val dataModule = module {
         )
     }
 
-    single<SelectedDeckDataSource> { DataStoreDeckDataSource(get()) }
-    single<TimerDataSource> { DataStoreTimerDataSource(get()) }
+    single<SelectedDeckDataSource> { DataStoreDeckDataSource(get(),get()) }
+    single<TimerDataSource> { DataStoreTimerDataSource(get(),get()) }
 }
