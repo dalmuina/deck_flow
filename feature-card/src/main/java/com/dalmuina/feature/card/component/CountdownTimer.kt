@@ -30,11 +30,11 @@ fun CountdownTimer(
     onReset: () -> Unit,
 ) {
 
-    val displayMillis =
-        if (state.isRunning || state.remainingMillis < state.totalMillis)
-            state.remainingMillis
-        else
-            state.totalMillis
+    val displayMillis = when {
+        state.isOvertime -> state.elapsedMillis - state.totalMillis
+        state.isRunning || state.remainingMillis < state.totalMillis -> state.remainingMillis
+        else -> state.totalMillis
+    }
 
     val isPlaying = state.isRunning
 

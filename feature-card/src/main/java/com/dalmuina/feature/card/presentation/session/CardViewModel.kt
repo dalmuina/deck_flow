@@ -7,6 +7,7 @@ import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
+import com.dalmuina.feature.card.model.CardCompletionPending
 import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.model.SwipeDirection
 import com.dalmuina.feature.card.model.toUi
@@ -22,6 +23,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 class CardViewModel(
     getSelectedDeckUseCase: GetSelectedDeckUseCase,
@@ -30,7 +34,8 @@ class CardViewModel(
     private val postponeCardUseCase: PostponeCardUseCase,
 ) : ViewModel() {
 
-    private val sessionCards = MutableStateFlow<List<CardUi>>(emptyList())
+    private val _sessionCards = MutableStateFlow<List<CardUi>>(emptyList())
+    private val _completionPending = MutableStateFlow<CardCompletionPending?>(null)
     private var currentDeckId: Int? = null
 
 
@@ -60,17 +65,17 @@ class CardViewModel(
                     val dbCards = result.data.cards.map { it.toUi() }
 
                     val hasStructureChanged =
-                        sessionCards.value.map { it.id } != dbCards.map { it.id }
+                        _sessionCards.value.map { it.id } != dbCards.map { it.id }
 
                     if (currentDeckId != deckId || hasStructureChanged) {
                         currentDeckId = deckId
-                        sessionCards.value = dbCards
+                        _sessionCards.value = dbCards
                         return@collectLatest
                     }
 
                     val dbCardsById = dbCards.associateBy { it.id }
 
-                    sessionCards.update { current ->
+                    _sessionCards.update { current ->
                         current.map { card ->
                             dbCardsById[card.id] ?: card
                         }
@@ -81,7 +86,7 @@ class CardViewModel(
     }
 
     val uiState: StateFlow<CardState> =
-        combine(deckFlow, sessionCards) { result, session ->
+        combine(deckFlow, _sessionCards, _completionPending) { result, session, pending ->
             when (result) {
                 is DFResult.Success -> {
                     CardState(
@@ -89,12 +94,14 @@ class CardViewModel(
                         name = result.data.name,
                         cards = session.filter { !it.isCompleted },
                         isDeckSelected = true,
+                        completionPending = pending,
                     )
                 }
                 else -> {
                     CardState(
                         loading = false,
                         isDeckSelected = false,
+                        completionPending = pending,
                     )
                 }
             }
@@ -110,22 +117,37 @@ class CardViewModel(
 
     fun process(intent: CardIntent) {
         when (intent) {
-            is CardIntent.SwipeTopCard -> swipeTopCard(intent.direction, intent.total)
+            is CardIntent.SwipeTopCard -> swipeTopCard(intent.direction)
+            is CardIntent.RequestCompleteCard -> requestCompleteCard(intent.totalMillis)
+            is CardIntent.ChangeCompletionTime -> _completionPending.update { it?.copy(spentDuration = intent.value.toLongOrNull()?.minutes ?: Duration.ZERO) }
+            is CardIntent.MoreCompletionTime -> _completionPending.update { it?.copy(spentDuration = (it.spentDuration + 1.minutes)) }
+            is CardIntent.LessCompletionTime -> _completionPending.update { it?.copy(spentDuration = (it.spentDuration - 1.minutes).coerceAtLeast(Duration.ZERO)) }
+            is CardIntent.ConfirmCompletion -> confirmCompletion()
+            is CardIntent.DismissCompletion -> _completionPending.value = null
         }
     }
 
-    private fun swipeTopCard(direction: SwipeDirection, spentMillis:Long) {
-        val card = sessionCards.value.firstOrNull() ?: return
+    private fun swipeTopCard(direction: SwipeDirection) {
+        if (direction != SwipeDirection.LEFT) return
+        val card = _sessionCards.value.firstOrNull() ?: return
+        viewModelScope.launch { postponeCardUseCase(card.id) }
+        _sessionCards.update { it.drop(1) }
+    }
 
-        viewModelScope.launch {
-            when (direction) {
-                SwipeDirection.RIGHT -> completeCardUseCase(card.id, spentMillis)
-                SwipeDirection.LEFT -> postponeCardUseCase(card.id)
-            }
-        }
+    private fun requestCompleteCard(totalMillis: Long) {
+        if (_completionPending.value != null) return
+        val card = _sessionCards.value.firstOrNull() ?: return
+        _completionPending.value = CardCompletionPending(
+            cardId = card.id,
+            cardName = card.name,
+            spentDuration = totalMillis.milliseconds.inWholeMinutes.minutes,
+        )
+    }
 
-        sessionCards.update { cards ->
-            cards.drop(1)
-        }
+    private fun confirmCompletion() {
+        val pending = _completionPending.value ?: return
+        _completionPending.value = null
+        viewModelScope.launch { completeCardUseCase(pending.cardId, pending.spentDuration.inWholeMilliseconds) }
+        _sessionCards.update { it.drop(1) }
     }
 }

@@ -126,7 +126,7 @@ class CardViewModelTest {
     }
 
     @Test
-    fun `when completeTopCard then moves first card to end`() = runTest {
+    fun `when complete top card via dialog then first card is removed`() = runTest {
 
         val deck = DeckDomainTestData.deck(
             id = 1,
@@ -148,12 +148,45 @@ class CardViewModelTest {
 
             awaitLoaded()
 
-            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT,15000L))
+            viewModel.process(CardIntent.RequestCompleteCard(15000L))
+            awaitItem() // dialog opens
 
+            viewModel.process(CardIntent.ConfirmCompletion)
             val updated = awaitItem()
 
             updated.cards.first().id shouldBe 2
             updated.cards.last().id shouldBe 2
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `when dismiss completion then completionPending is cleared`() = runTest {
+
+        val deck = DeckDomainTestData.deck(
+            id = 1,
+            cards = listOf(CardDomainTestData.card(1))
+        )
+
+        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
+        every { robot.getDeckByIdUseCase(1) } returns flowOf(success(deck))
+
+        viewModel = robot.build()
+
+        viewModel.uiState.test {
+
+            awaitLoaded()
+
+            viewModel.process(CardIntent.RequestCompleteCard(60000L))
+            val withDialog = awaitItem()
+            withDialog.completionPending shouldBe withDialog.completionPending
+
+            viewModel.process(CardIntent.DismissCompletion)
+            val dismissed = awaitItem()
+
+            dismissed.completionPending shouldBe null
+            dismissed.cards.size shouldBe 1
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -181,7 +214,7 @@ class CardViewModelTest {
 
             val initial = awaitItem()
 
-            viewModel.process(CardIntent.SwipeTopCard(SwipeDirection.RIGHT, 15000L))
+            viewModel.process(CardIntent.RequestCompleteCard(15000L))
 
             expectNoEvents()
 

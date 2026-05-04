@@ -73,17 +73,19 @@ class TimerForegroundService : Service() {
 
             launch {
                 while (true) {
-                    val remaining = (endTimeMillis - System.currentTimeMillis())
-                        .coerceAtLeast(0L)
+                    val now = System.currentTimeMillis()
+                    val remaining = endTimeMillis - now
 
-                    if (remaining == 0L) {
-                        watchJob?.children?.forEach { it.cancel() }
-                        break
+                    val timeText = if (remaining > 0) {
+                        remaining.toTimerText()
+                    } else {
+                        "+${(-remaining).toTimerText()}"
                     }
 
-                    updateTimerNotification(remaining, NOTIFICATION_ID) { buildNotification(it, cardName) }
+                    getSystemService(NotificationManager::class.java)
+                        .notify(NOTIFICATION_ID, buildNotification(timeText, cardName))
 
-                    val nextTick = remaining % 1000
+                    val nextTick = if (remaining > 0) remaining % 1000 else 1000L
                     delay(if (nextTick > 0L) nextTick else 1000L)
                 }
             }

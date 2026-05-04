@@ -66,7 +66,7 @@ import kotlin.time.Duration.Companion.minutes
 @Composable
 fun CardRoute(
     cardViewModel: CardViewModel = koinViewModel(),
-    timerViewModel: TimerViewModel = koinViewModel()
+    timerViewModel: TimerViewModel = koinViewModel(),
 ) {
     val state by cardViewModel.uiState.collectAsStateWithLifecycle()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
@@ -131,16 +131,6 @@ fun CardRoute(
         prevCardId.value = currentCardId
     }
 
-    LaunchedEffect(timerState.remainingMillis, timerState.isRunning) {
-        if (isTimerLoaded && !timerState.isRunning &&
-            timerState.remainingMillis == 0L && timerState.totalMillis > 0L
-        ) {
-            cardViewModel.process(
-                CardIntent.SwipeTopCard(SwipeDirection.RIGHT, timerState.totalMillis)
-            )
-        }
-    }
-
     when {
         state.loading -> {
             DFLoadingCircular()
@@ -159,12 +149,13 @@ fun CardRoute(
                 cards = state.cards,
                 timerState = timerState,
                 onSwiped = { direction ->
-                    cardViewModel.process(
-                        CardIntent.SwipeTopCard(
-                            direction,
-                            (timerState.totalMillis - timerState.remainingMillis)
-                        )
-                    )
+                    when (direction) {
+                        SwipeDirection.RIGHT -> {
+                            val elapsed = if (timerState.elapsedMillis > 0L) timerState.elapsedMillis else duration
+                            cardViewModel.process(CardIntent.RequestCompleteCard(elapsed))
+                        }
+                        SwipeDirection.LEFT -> cardViewModel.process(CardIntent.SwipeTopCard(direction))
+                    }
                 },
                 onPlay = { isPLaying ->
                     if (isPLaying)
@@ -177,6 +168,17 @@ fun CardRoute(
                 },
             )
         }
+    }
+
+    state.completionPending?.let { pending ->
+        CardCompletionDialog(
+            pending = pending,
+            onTimeChanged = { cardViewModel.process(CardIntent.ChangeCompletionTime(it)) },
+            onMoreTime = { cardViewModel.process(CardIntent.MoreCompletionTime) },
+            onLessTime = { cardViewModel.process(CardIntent.LessCompletionTime) },
+            onDismiss = { cardViewModel.process(CardIntent.DismissCompletion) },
+            onConfirm = { cardViewModel.process(CardIntent.ConfirmCompletion) },
+        )
     }
 }
 

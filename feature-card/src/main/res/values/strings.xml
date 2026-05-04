@@ -9,4 +9,7 @@
     <string name="timer_notification_title">En curso: %1$s</string>
     <string name="timer_notification_text">Tiempo restante: %1$s</string>
     <string name="timer_notification_channel_name">Temporizador</string>
+    <string name="completion_dialog_title">¿Cuánto has empleado?</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancelar</string>
 </resources>
