@@ -5,4 +5,5 @@ data class PersistedTimerState(
     val remainingMillis: Long = 0L,
     val isRunning: Boolean = false,
     val endTimeMillis: Long? = null,
+    val elapsedMillis: Long = 0L,
 )

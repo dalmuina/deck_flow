@@ -27,6 +27,7 @@ class DataStoreTimerDataSource(
         private val REMAINING_MILLIS = longPreferencesKey("timer_remaining_millis")
         private val IS_RUNNING = booleanPreferencesKey("timer_is_running")
         private val END_TIME_MILLIS = longPreferencesKey("timer_end_time_millis")
+        private val ELAPSED_MILLIS = longPreferencesKey("timer_elapsed_millis")
     }
 
     override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>> {
@@ -37,7 +38,8 @@ class DataStoreTimerDataSource(
                         totalMillis = prefs[TOTAL_MILLIS] ?: 0L,
                         remainingMillis = prefs[REMAINING_MILLIS] ?: 0L,
                         isRunning = prefs[IS_RUNNING] ?: false,
-                        endTimeMillis = prefs[END_TIME_MILLIS]
+                        endTimeMillis = prefs[END_TIME_MILLIS],
+                        elapsedMillis = prefs[ELAPSED_MILLIS] ?: 0L,
                     )
                 )
             }
@@ -58,6 +60,7 @@ class DataStoreTimerDataSource(
                 prefs[TOTAL_MILLIS] = state.totalMillis
                 prefs[REMAINING_MILLIS] = state.remainingMillis
                 prefs[IS_RUNNING] = state.isRunning
+                prefs[ELAPSED_MILLIS] = state.elapsedMillis
 
                 state.endTimeMillis?.let { prefs[END_TIME_MILLIS] = it }
                     ?: prefs.remove(END_TIME_MILLIS)

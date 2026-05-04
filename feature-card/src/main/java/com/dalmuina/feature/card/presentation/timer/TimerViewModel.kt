@@ -60,36 +60,33 @@ class TimerViewModel(
                     val persistedEndTime = persisted.endTimeMillis
 
                     if (persisted.isRunning && persistedEndTime != null) {
+                        val startTime = persistedEndTime - persisted.totalMillis
+                        val elapsed = (now - startTime).coerceAtLeast(0L)
                         val remaining = (persistedEndTime - now).coerceAtLeast(0L)
+                        val isOvertime = now >= persistedEndTime
 
-                        if (remaining == 0L) {
-                            _timerState.value = TimerState(
-                                totalMillis = persisted.totalMillis,
-                                remainingMillis = 0L,
-                                isRunning = false
-                            )
-                            endTime = null
-
-                            savePersistedState(
-                                totalMillis = persisted.totalMillis,
-                                remainingMillis = 0L,
-                                isRunning = false,
-                                endTimeMillis = null
-                            )
-                        } else {
-                            _timerState.value = TimerState(
-                                totalMillis = persisted.totalMillis,
-                                remainingMillis = remaining,
-                                isRunning = true
-                            )
-                            endTime = persistedEndTime
-                            startTicker()
-                        }
+                        _timerState.value = TimerState(
+                            totalMillis = persisted.totalMillis,
+                            remainingMillis = remaining,
+                            elapsedMillis = elapsed,
+                            isRunning = true,
+                            isOvertime = isOvertime,
+                        )
+                        endTime = persistedEndTime
+                        startTicker()
                     } else {
+                        val savedElapsed = persisted.elapsedMillis
+                        val elapsed = if (savedElapsed > 0L) {
+                            savedElapsed
+                        } else {
+                            (persisted.totalMillis - persisted.remainingMillis).coerceAtLeast(0L)
+                        }
                         _timerState.value = TimerState(
                             totalMillis = persisted.totalMillis,
                             remainingMillis = persisted.remainingMillis,
-                            isRunning = false
+                            elapsedMillis = elapsed,
+                            isRunning = false,
+                            isOvertime = persisted.totalMillis in 1..elapsed,
                         )
                         endTime = null
                     }
@@ -108,7 +105,9 @@ class TimerViewModel(
             copy(
                 totalMillis = durationMillis,
                 remainingMillis = durationMillis,
-                isRunning = true
+                elapsedMillis = 0L,
+                isRunning = true,
+                isOvertime = false,
             )
         }
 
@@ -117,7 +116,8 @@ class TimerViewModel(
                 totalMillis = durationMillis,
                 remainingMillis = durationMillis,
                 isRunning = true,
-                endTimeMillis = endTime
+                endTimeMillis = endTime,
+                elapsedMillis = 0L,
             )
         }
 
@@ -126,25 +126,24 @@ class TimerViewModel(
 
     private fun resume() {
         if (_timerState.value.isRunning) return
-
-        val remaining = _timerState.value.remainingMillis
-        if (remaining <= 0L) return
+        if (_timerState.value.totalMillis == 0L) return
 
         timerJob?.cancel()
 
+        val elapsed = _timerState.value.elapsedMillis
         val now = System.currentTimeMillis()
-        endTime = now + remaining
+        // Works for both countdown (elapsed < total) and overtime (elapsed >= total)
+        endTime = now - elapsed + _timerState.value.totalMillis
 
-        reduce {
-            copy(isRunning = true)
-        }
+        reduce { copy(isRunning = true) }
 
         viewModelScope.launch {
             savePersistedState(
                 totalMillis = _timerState.value.totalMillis,
-                remainingMillis = remaining,
+                remainingMillis = _timerState.value.remainingMillis,
                 isRunning = true,
-                endTimeMillis = endTime
+                endTimeMillis = endTime,
+                elapsedMillis = elapsed,
             )
         }
 
@@ -155,9 +154,13 @@ class TimerViewModel(
         timerJob?.cancel()
         timerJob = null
 
-        val remaining = endTime
-            ?.let { it - System.currentTimeMillis() }
-            ?.coerceAtLeast(0L)
+        val now = System.currentTimeMillis()
+        val currentEndTime = endTime
+        val elapsed = currentEndTime?.let { endT ->
+            (now - (endT - _timerState.value.totalMillis)).coerceAtLeast(0L)
+        } ?: _timerState.value.elapsedMillis
+
+        val remaining = currentEndTime?.let { (it - now).coerceAtLeast(0L) }
             ?: _timerState.value.remainingMillis
 
         endTime = null
@@ -165,7 +168,9 @@ class TimerViewModel(
         reduce {
             copy(
                 remainingMillis = remaining,
-                isRunning = false
+                elapsedMillis = elapsed,
+                isRunning = false,
+                isOvertime = elapsed >= totalMillis,
             )
         }
 
@@ -174,7 +179,8 @@ class TimerViewModel(
                 totalMillis = _timerState.value.totalMillis,
                 remainingMillis = remaining,
                 isRunning = false,
-                endTimeMillis = null
+                endTimeMillis = null,
+                elapsedMillis = elapsed,
             )
         }
     }
@@ -188,7 +194,9 @@ class TimerViewModel(
             copy(
                 totalMillis = durationMillis,
                 remainingMillis = durationMillis,
-                isRunning = false
+                elapsedMillis = 0L,
+                isRunning = false,
+                isOvertime = false,
             )
         }
 
@@ -197,7 +205,8 @@ class TimerViewModel(
                 totalMillis = durationMillis,
                 remainingMillis = durationMillis,
                 isRunning = false,
-                endTimeMillis = null
+                endTimeMillis = null,
+                elapsedMillis = 0L,
             )
         }
     }
@@ -208,30 +217,17 @@ class TimerViewModel(
         timerJob = viewModelScope.launch {
             while (true) {
                 val currentEndTime = endTime ?: break
-                val remaining = (currentEndTime - System.currentTimeMillis()).coerceAtLeast(0L)
-                if (remaining == 0L) {
-                    reduce {
-                        copy(
-                            remainingMillis = 0L,
-                            isRunning = false
-                        )
-                    }
-
-                    endTime = null
-
-                    savePersistedState(
-                        totalMillis = _timerState.value.totalMillis,
-                        remainingMillis = 0L,
-                        isRunning = false,
-                        endTimeMillis = null
-                    )
-                    break
-                }
+                val now = System.currentTimeMillis()
+                val elapsed = (now - (currentEndTime - _timerState.value.totalMillis)).coerceAtLeast(0L)
+                val remaining = (currentEndTime - now).coerceAtLeast(0L)
+                val isOvertime = now >= currentEndTime
 
                 reduce {
                     copy(
                         remainingMillis = remaining,
-                        isRunning = true
+                        elapsedMillis = elapsed,
+                        isRunning = true,
+                        isOvertime = isOvertime,
                     )
                 }
 
@@ -245,13 +241,15 @@ class TimerViewModel(
         remainingMillis: Long,
         isRunning: Boolean,
         endTimeMillis: Long?,
+        elapsedMillis: Long = 0L,
     ) {
         saveTimerStateUseCase(
             PersistedTimerState(
                 totalMillis = totalMillis,
                 remainingMillis = remainingMillis,
                 isRunning = isRunning,
-                endTimeMillis = endTimeMillis
+                endTimeMillis = endTimeMillis,
+                elapsedMillis = elapsedMillis,
             )
         )
     }
