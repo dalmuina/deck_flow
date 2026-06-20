@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -151,44 +154,45 @@ fun CardCreatorContent(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val focusRequester =
-        remember { FocusRequester() }
+    val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
+
     Column(
-        modifier =
-            modifier,
-        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Spacing.l),
     ) {
-        Column {
-            DFTextFieldOutlined(
-                name = activity,
-                onNameChanged = onNameChanged,
-                focusRequester = focusRequester,
-                label = { Text(text = stringResource(R.string.label_card)) },
-            )
-            Spacer(modifier = Modifier.height(Spacing.l))
-            DFInputTimer(
-                value =
-                    duration,
-                onValueChanged = onTimeChanged, onMoreTime = onMoreTime, onLessTime = onLessTime,
-            )
-        }
-        Spacer(modifier = Modifier.height(Spacing.xl))
+        Text(
+            text = stringResource(R.string.create_card),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        DFTextFieldOutlined(
+            name = activity,
+            onNameChanged = onNameChanged,
+            focusRequester = focusRequester,
+            label = { Text(text = stringResource(R.string.label_card)) },
+        )
+        DFInputTimer(
+            value = duration,
+            onValueChanged = onTimeChanged,
+            onMoreTime = onMoreTime,
+            onLessTime = onLessTime,
+        )
         Row(
-            modifier =
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
         ) {
-            DFButton(text = {
-                Text(
-                    text = stringResource(R.string.cancel_button)
-                )
-            }, onClick = onCancel)
+            DFButton(
+                text = { Text(text = stringResource(R.string.cancel_button)) },
+                onClick = onCancel,
+            )
             Spacer(modifier = Modifier.width(Spacing.l))
             DFButton(
                 isLoading = processing,
                 text = { Text(text = stringResource(R.string.ok_button)) },
                 isEnable = activity.isNotEmpty() && duration.inWholeMinutes > 0,
-                onClick = onSaved
+                onClick = onSaved,
             )
         }
     }

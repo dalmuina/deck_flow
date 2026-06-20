@@ -8,7 +8,9 @@
       "Bash(./gradlew :feature-card:compileDebugKotlin :domain:compileDebugKotlin :data:compileDebugKotlin)",
       "Bash(./gradlew :feature-card:testDebugUnitTest --stacktrace)",
       "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin)",
-      "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin --info)"
+      "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin --info)",
+      "Bash(git *)",
+      "Bash(gh auth *)"
     ]
   }
 }

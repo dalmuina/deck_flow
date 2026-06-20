@@ -37,6 +37,7 @@ private val LightColorScheme = lightColorScheme(
 
     // Outline
     outline        = BorderDark,
+
     outlineVariant = BorderLight,
 )
 

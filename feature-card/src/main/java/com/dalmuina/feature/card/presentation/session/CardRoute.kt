@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -42,9 +43,7 @@ import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.theme.SuccessContainer
 import com.dalmuina.core.design_system.theme.Success
-import com.dalmuina.core.design_system.theme.PostponeContainer
 import com.dalmuina.core.design_system.theme.Postpone
 import com.dalmuina.core.design_system.tokens.Dimen
 import com.dalmuina.core.design_system.tokens.Spacing
@@ -190,6 +189,14 @@ fun CardScreen(
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
 ) {
+    val primary = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+
+    fun brushForDepth(depth: Int): Brush = when (depth % 2) {
+        0 -> Brush.verticalGradient(listOf(primary, secondary))
+        else -> Brush.verticalGradient(listOf(secondary, primary))
+    }
+
     Box(
         modifier = Modifier
             .padding(Spacing.l)
@@ -248,6 +255,7 @@ fun CardScreen(
                         SwipeCardContent(
                             signedProgress = signedProgress,
                             card = card,
+                            brush = brushForDepth(depth),
                             timerState = timerState,
                             onPlay = onPlay,
                             onReset = onReset,
@@ -257,6 +265,7 @@ fun CardScreen(
                     CardWithoutTimer(
                         modifier = Modifier.weight(1f),
                         card = card,
+                        brush = brushForDepth(depth),
                     )
                 }
                 Spacer(modifier = Modifier.height(Dimen.m))
@@ -271,6 +280,7 @@ fun SwipeCardContent(
     modifier: Modifier = Modifier,
     signedProgress: Float,
     card: CardUi,
+    brush: Brush,
     timerState: TimerState,
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
@@ -284,30 +294,35 @@ fun SwipeCardContent(
     ) {
         CardWithTimer(
             card = card,
-            containerColor = MaterialTheme.colorScheme.surface,
+            brush = brush,
             timerState = timerState,
             onPlay = onPlay,
             onReset = onReset,
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = Spacing.l),
-            horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
-            DFBadgeSwipe(
-                text = stringResource(R.string.completed_level).uppercase(),
-                backgroundColor = Postpone,
-                strokeColor = PostponeContainer,
-                alpha = rightAlphaAnimated
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Spacer(modifier = Modifier.height(60.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = Spacing.l),
+                horizontalArrangement = Arrangement.SpaceBetween
             )
-            DFBadgeSwipe(
-                text = stringResource(R.string.postponed_level).uppercase(),
-                backgroundColor = Success,
-                strokeColor = SuccessContainer,
-                alpha = leftAlphaAnimated
-            )
+            {
+                DFBadgeSwipe(
+                    text = stringResource(R.string.completed_level).uppercase(),
+                    strokeColor = Postpone,
+                    rotation = -5f,
+                    alpha = rightAlphaAnimated
+                )
+                DFBadgeSwipe(
+                    text = stringResource(R.string.postponed_level).uppercase(),
+                    strokeColor = Success,
+                    rotation = 5f,
+                    alpha = leftAlphaAnimated
+                )
+            }
         }
 
     }
