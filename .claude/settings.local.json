@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :feature-stats:compileDebugKotlin)",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -5 /Users/diego/AndroidStudioProjects/DeckFlow/.claude/skills/{}/SKILL.md')",
+      "Bash(./gradlew :feature-card:compileDebugKotlin)",
+      "Bash(./gradlew :feature-card:compileDebugKotlin :domain:compileDebugKotlin :data:compileDebugKotlin)",
+      "Bash(./gradlew :feature-card:testDebugUnitTest --stacktrace)",
+      "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin)",
+      "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin --info)",
+      "Bash(git *)",
+      "Bash(gh auth *)"
+    ]
+  }
+}

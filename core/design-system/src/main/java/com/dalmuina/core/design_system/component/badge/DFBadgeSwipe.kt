@@ -12,7 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.theme.SuccessContainer
@@ -27,26 +30,29 @@ import com.dalmuina.core.design_system.tokens.Stroke
 fun DFBadgeSwipe(
     modifier: Modifier = Modifier,
     text: String,
-    backgroundColor: Color,
     strokeColor: Color,
     alpha: Float = 1f,
+    rotation: Float = 0f,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+        horizontalArrangement = Arrangement.Center,
         modifier = modifier
-            .clip(RoundedCornerShape(Corner.xs))
+            .rotate(rotation)
+            .clip(RoundedCornerShape(Corner.m))
             .border(
-                width = Stroke.m,
+                width = Stroke.l,
                 color = strokeColor.copy(alpha = alpha),
-                shape = RoundedCornerShape(Corner.xs)
+                shape = RoundedCornerShape(Corner.m)
             )
-            .background(color = backgroundColor.copy(alpha = alpha))
-            .padding(horizontal = Spacing.m, vertical = Spacing.xs)
+            .padding(horizontal = Spacing.l, vertical = Spacing.s)
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = 0.10.sp,
+            ),
             color = Color.White.copy(alpha = alpha),
         )
     }
@@ -58,7 +64,6 @@ fun DFBadgeSwipeCompletedPreview() {
     DeckFlowTheme {
         DFBadgeSwipe(
             text = "← Postponed",
-            backgroundColor = Postpone,
             strokeColor = PostponeContainer,
         )
     }
@@ -70,7 +75,6 @@ fun DFBadgeSwipePostponedPreview() {
     DeckFlowTheme {
         DFBadgeSwipe(
             text = "Completed ✓",
-            backgroundColor = Success,
             strokeColor = SuccessContainer,
         )
     }

@@ -2,8 +2,8 @@ package com.dalmuina.core.design_system.component.input
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.dalmuina.core.design_system.R
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
@@ -49,88 +50,79 @@ fun DFInputTimer(
     onMoreTime: () -> Unit,
     onLessTime: () -> Unit,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    )
-    {
-        val externalText = if (value == Duration.ZERO) "" else value.inWholeMinutes.toString()
+    val externalText = if (value == Duration.ZERO) "" else value.inWholeMinutes.toString()
 
-        var text by rememberSaveable { mutableStateOf(externalText) }
+    var text by rememberSaveable { mutableStateOf(externalText) }
 
-        LaunchedEffect(externalText) {
-            if (text != externalText) {
-                text = externalText
-            }
+    LaunchedEffect(externalText) {
+        if (text != externalText) {
+            text = externalText
         }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xxs)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(bottom = Spacing.s)
-                        .semantics(mergeDescendants = true) {
-                            stateDescription = "${value.inWholeMinutes} minutes"
-                        },
-                    value = text,
-                    onValueChange = { raw ->
-                        val filtered = raw.filter(Char::isDigit)
-                        text = filtered
-                        onValueChanged(filtered)
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    label = { Text(stringResource(R.string.minutes_time_label)) }
-                )
+    }
 
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Spacing.xxs)
+    ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = Spacing.s)
+                .semantics(mergeDescendants = true) {
+                    stateDescription = "${value.inWholeMinutes} minutes"
+                },
+            value = text,
+            onValueChange = { raw ->
+                val filtered = raw.filter(Char::isDigit)
+                text = filtered
+                onValueChanged(filtered)
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            label = { Text(stringResource(R.string.minutes_time_label)) },
+            trailingIcon = {
                 Column(
-                    modifier = Modifier.padding(start = Spacing.s),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    IconButton(onClick = onMoreTime) {
+                    IconButton(
+                        modifier = Modifier.size(32.dp),
+                        onClick = onMoreTime,
+                        ) {
                         Icon(
-                            modifier = Modifier.size(IconSize.l),
+                            modifier = Modifier.size(IconSize.m),
                             imageVector = Icons.Default.ArrowDropUp,
                             contentDescription = "More time"
                         )
                     }
-
                     IconButton(
+                        modifier = Modifier.size(32.dp),
+                        enabled = value.inWholeMinutes > 0,
                         onClick = onLessTime,
-                        enabled = value.inWholeMinutes > 0
                     ) {
                         Icon(
-                            modifier = Modifier.size(IconSize.l),
+                            modifier = Modifier.size(IconSize.m),
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = "Less time"
                         )
                     }
                 }
             }
+        )
 
-            Text(
-                text = value.toTimerText(),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
+        Text(
+            text = value.toTimerText(),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Left,
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 

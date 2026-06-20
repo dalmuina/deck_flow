@@ -31,36 +31,42 @@ fun DFNavigationBar(
     Surface(
         modifier = modifier
             .navigationBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 20.dp, vertical = 12.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(32.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 3.dp,
-        shadowElevation = 8.dp,
+        shadowElevation = 12.dp,
     ) {
         NavigationBar(
             containerColor = Color.Transparent,
             tonalElevation = 0.dp,
-            windowInsets = WindowInsets(0,0,0,0),
+            windowInsets = WindowInsets(0, 0, 0, 0),
         ) {
             TOP_LEVEL_DESTINATIONS.forEach { (topLevelDestination, data) ->
+                val isSelected = selectedKey == topLevelDestination
                 NavigationBarItem(
-                    selected = selectedKey == topLevelDestination,
+                    selected = isSelected,
                     onClick = { onSelectedKey(topLevelDestination) },
                     icon = {
                         Icon(
                             imageVector = data.icon,
-                            contentDescription = data.name
+                            contentDescription = data.name,
                         )
                     },
-                    label = { Text(text = data.name) },
+                    label = {
+                        Text(
+                            text = data.name,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    ),
                 )
             }
         }
@@ -71,8 +77,6 @@ fun DFNavigationBar(
 @Composable
 fun DFNavigationBarPreview() {
     DeckFlowTheme {
-        DFNavigationBar(
-            selectedKey = Route.Card
-        ) { }
+        DFNavigationBar(selectedKey = Route.Card) { }
     }
 }

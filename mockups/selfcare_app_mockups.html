@@ -1,0 +1,797 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  
+  .mockups-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px 0;
+  }
+
+  .screen-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .phone-frame {
+    width: 320px;
+    min-height: 580px;
+    background: #F4F1FF;
+    border-radius: 36px;
+    border: 2px solid #E0DBFF;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 8px 40px rgba(99,75,221,0.10);
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #3C3489;
+  }
+
+  .screen-content {
+    padding: 0 18px 18px;
+  }
+
+  /* ─── GRADIENT BACKGROUNDS ─── */
+  .bg-routine {
+    background: linear-gradient(160deg, #F4F1FF 0%, #EAF0FF 60%, #F0F7FF 100%);
+  }
+  .bg-decks {
+    background: linear-gradient(150deg, #FFF4F0 0%, #F4F1FF 60%, #F0F7FF 100%);
+  }
+  .bg-stats {
+    background: linear-gradient(155deg, #F0FFF8 0%, #F4F1FF 70%, #FFF4F0 100%);
+  }
+
+  /* ─── PAGE TITLE ─── */
+  .page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #26215C;
+    margin-bottom: 4px;
+  }
+  .page-subtitle {
+    font-size: 12px;
+    color: #7F77DD;
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+
+  /* ─── ROUTINE CARD (timer card) ─── */
+  .routine-card {
+    background: linear-gradient(135deg, #6B5CE7 0%, #9B6FE8 50%, #C471ED 100%);
+    border-radius: 22px;
+    padding: 22px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .routine-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.10);
+    border-radius: 50%;
+  }
+  .routine-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+  .card-activity {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .card-timer {
+    font-size: 40px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+    line-height: 1;
+  }
+  .card-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn-play {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    backdrop-filter: blur(4px);
+  }
+  .btn-play svg { width: 18px; height: 18px; fill: white; }
+  .btn-reset {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255,255,255,0.20);
+  }
+  .btn-reset svg { width: 16px; height: 16px; stroke: rgba(255,255,255,0.8); fill: none; stroke-width: 2; }
+
+  /* ─── STREAK BADGE ─── */
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(90deg, #FF9A3C, #FF6B6B);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+  .streak-flame {
+    font-size: 13px;
+  }
+  .no-streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 12px;
+  }
+
+  /* ─── SMALL ROUTINE CARD ─── */
+  .routine-card-sm {
+    background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .routine-card-sm.coral { background: linear-gradient(135deg, #FB923C 0%, #E8527A 100%); }
+  .routine-card-sm.teal { background: linear-gradient(135deg, #34D399 0%, #059669 100%); }
+  .rcard-left {}
+  .rcard-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .rcard-time { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+  .rcard-right { display: flex; align-items: center; gap: 8px; }
+  .check-box {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.22);
+    border: 1.5px solid rgba(255,255,255,0.40);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .check-box.checked { background: rgba(255,255,255,0.90); }
+  .check-box svg { width: 14px; height: 14px; }
+
+  /* ─── DECKS SCREEN ─── */
+  .deck-card-hero {
+    background: linear-gradient(135deg, #6B5CE7 0%, #A855F7 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .deck-card-hero::after {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.09);
+    border-radius: 50%;
+  }
+  .deck-hero-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .deck-hero-count { font-size: 12px; color: rgba(255,255,255,0.70); }
+  .deck-hero-check {
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 9px;
+    border: 1.5px solid rgba(255,255,255,0.40);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .deck-card-sm {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #E8E4FF;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .deck-sm-info {}
+  .deck-sm-name { font-size: 15px; font-weight: 600; color: #26215C; }
+  .deck-sm-count { font-size: 12px; color: #9B99CC; margin-top: 2px; }
+  .deck-sm-check {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    border: 1.5px solid #C9C4F0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* FAB */
+  .fab {
+    position: absolute;
+    bottom: 72px; right: 18px;
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg, #6B5CE7, #A855F7);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(107,92,231,0.35);
+  }
+  .fab svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2.5; }
+  .create-label {
+    position: absolute;
+    bottom: 84px; right: 76px;
+    font-size: 12px; font-weight: 600;
+    color: #6B5CE7;
+    background: #EDE9FF;
+    padding: 5px 10px;
+    border-radius: 10px;
+  }
+
+  /* ─── STATS SCREEN ─── */
+  .stats-activity-field {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #E8E4FF;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .field-label { font-size: 11px; color: #9B6FE8; font-weight: 600; letter-spacing: 0.05em; }
+  .field-value { font-size: 16px; font-weight: 600; color: #26215C; }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .cal-month { font-size: 16px; font-weight: 700; color: #26215C; }
+  .cal-nav { width: 32px; height: 32px; border-radius: 10px; background: #EDE9FF; display: flex; align-items: center; justify-content: center; }
+  .cal-nav svg { width: 14px; height: 14px; stroke: #6B5CE7; fill: none; stroke-width: 2; }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .cal-dow {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #9B99CC;
+    padding: 4px 0;
+    letter-spacing: 0.04em;
+  }
+  .cal-day {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #4A4580;
+    padding: 6px 0;
+    border-radius: 10px;
+  }
+  .cal-day.d1 { background: rgba(107,92,231,0.15); color: #6B5CE7; }
+  .cal-day.d2 { background: rgba(107,92,231,0.35); color: #5248B8; font-weight: 700; }
+  .cal-day.d3 { background: linear-gradient(135deg, #6B5CE7, #A855F7); color: #fff; font-weight: 800; }
+  .cal-day.today { border: 2px solid #6B5CE7; }
+
+  .legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: #9B99CC;
+    font-weight: 500;
+  }
+  .leg-dot { width: 16px; height: 16px; border-radius: 6px; }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 64px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #EDE9FF;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 10px;
+    border-radius: 0 0 34px 34px;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+  }
+  .nav-icon {
+    width: 40px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 12px;
+  }
+  .nav-icon.active {
+    background: linear-gradient(135deg, #6B5CE7, #A855F7);
+  }
+  .nav-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+  .nav-icon.active svg { stroke: #fff; fill: none; }
+  .nav-icon:not(.active) svg { stroke: #B0ADCC; fill: none; }
+  .nav-label { font-size: 10px; font-weight: 600; color: #B0ADCC; }
+  .nav-label.active { color: #6B5CE7; }
+
+  /* ─── CREATE CARD ─── */
+  .create-card-screen {
+    background: rgba(0,0,0,0.35);
+    min-height: 580px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 60px;
+  }
+  .modal-card {
+    background: #fff;
+    margin: 0 14px;
+    border-radius: 24px;
+    padding: 24px 20px 20px;
+    border: 1.5px solid #EDE9FF;
+  }
+  .modal-title { font-size: 16px; font-weight: 700; color: #26215C; margin-bottom: 16px; }
+  .input-group { margin-bottom: 14px; }
+  .input-label { font-size: 11px; font-weight: 700; color: #9B6FE8; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .input-field {
+    background: #F4F1FF;
+    border: 1.5px solid #D8D2FF;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #26215C;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .input-hint { font-size: 12px; color: #9B6FE8; margin-top: 5px; font-weight: 500; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+  .btn-cancel {
+    flex: 1; padding: 13px;
+    background: #F4F1FF;
+    border-radius: 14px;
+    font-size: 14px; font-weight: 700;
+    color: #6B5CE7;
+    text-align: center;
+  }
+  .btn-ok {
+    flex: 1; padding: 13px;
+    background: linear-gradient(135deg, #6B5CE7, #A855F7);
+    border-radius: 14px;
+    font-size: 14px; font-weight: 700;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(107,92,231,0.35);
+  }
+
+  /* Create Deck screen */
+  .create-deck-screen { background: #F4F1FF; min-height: 580px; }
+  .back-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 0 16px;
+  }
+  .back-btn { width: 32px; height: 32px; background: #EDE9FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .back-btn svg { width: 16px; height: 16px; stroke: #6B5CE7; fill: none; stroke-width: 2.5; }
+  .back-title { font-size: 18px; font-weight: 700; color: #26215C; }
+</style>
+
+<div class="mockups-grid">
+
+  <!-- ══ SCREEN 1: ROUTINE (Cards / timer) ══ -->
+  <div>
+    <div class="screen-label">Pantalla Routine — Card con streak</div>
+    <div class="phone-frame bg-routine">
+      <div class="status-bar">
+        <span>16:52</span><span>● ● ●</span>
+      </div>
+      <div class="screen-content">
+        <div class="page-title">Cards</div>
+        <div class="page-subtitle">Tu sesión de hoy</div>
+
+        <!-- CARD CON STREAK ACTIVO -->
+        <div class="routine-card">
+          <div class="streak-badge">
+            <span class="streak-flame">🔥</span>
+            <span>7 días seguidos</span>
+          </div>
+          <div class="card-activity">Actividad</div>
+          <div class="card-title">Glossary</div>
+          <div class="card-timer">45:00</div>
+          <div class="card-controls">
+            <div class="btn-play">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+            <div class="btn-reset">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD SIN STREAK -->
+        <div class="routine-card" style="background: linear-gradient(135deg, #FB923C 0%, #E8527A 100%); margin-bottom:0">
+          <div class="no-streak-badge">
+            <span>Sin racha — ¡empieza hoy!</span>
+          </div>
+          <div class="card-activity">Actividad</div>
+          <div class="card-title">Portuguese</div>
+          <div class="card-timer">20:00</div>
+          <div class="card-controls">
+            <div class="btn-play">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+            <div class="btn-reset">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon active">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          </div>
+          <span class="nav-label active">Routine</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="nav-label">Decks</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <span class="nav-label">Stats</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: DECKS ══ -->
+  <div>
+    <div class="screen-label">Pantalla Decks</div>
+    <div class="phone-frame bg-decks" style="min-height: 600px;">
+      <div class="status-bar">
+        <span>16:52</span><span>● ● ●</span>
+      </div>
+      <div class="screen-content" style="padding-bottom: 80px;">
+        <div class="page-title">Decks</div>
+        <div class="page-subtitle">Gestiona tus mazos</div>
+
+        <div class="deck-card-hero">
+          <div class="deck-hero-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B5CE7" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
+          </div>
+          <div class="deck-hero-name">Rutina</div>
+          <div class="deck-hero-count">6 cards</div>
+        </div>
+
+        <div class="deck-card-sm">
+          <div class="deck-sm-info">
+            <div class="deck-sm-name">Deck name</div>
+            <div class="deck-sm-count">2 cards</div>
+          </div>
+          <div class="deck-sm-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C9C4F0" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="create-label">Create Deck</div>
+      <div class="fab">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          </div>
+          <span class="nav-label">Routine</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon active">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="nav-label active">Decks</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <span class="nav-label">Stats</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: STATS ══ -->
+  <div>
+    <div class="screen-label">Pantalla Stats</div>
+    <div class="phone-frame bg-stats" style="min-height: 640px;">
+      <div class="status-bar" style="color: #1A5C40;">
+        <span>16:53</span><span>● ● ●</span>
+      </div>
+      <div class="screen-content" style="padding-bottom: 80px;">
+        <div class="page-title" style="color: #0F6E56;">Stats</div>
+        <div class="page-subtitle" style="color: #1D9E75;">Tu actividad</div>
+
+        <div class="stats-activity-field" style="border-color: #C5ECD8;">
+          <div class="field-label" style="color: #1D9E75;">Actividad</div>
+          <div class="field-value">Read</div>
+        </div>
+
+        <div class="calendar-header">
+          <div class="cal-nav">
+            <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+          </div>
+          <div class="cal-month">Mayo 2026</div>
+          <div class="cal-nav">
+            <svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg>
+          </div>
+        </div>
+
+        <div class="cal-grid">
+          <div class="cal-dow">Lu</div><div class="cal-dow">Ma</div><div class="cal-dow">Mi</div>
+          <div class="cal-dow">Ju</div><div class="cal-dow">Vi</div><div class="cal-dow">Sa</div><div class="cal-dow">Do</div>
+
+          <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div>
+          <div class="cal-day"></div>
+          <div class="cal-day d1">1</div>
+          <div class="cal-day d2">2</div>
+          <div class="cal-day">3</div>
+
+          <div class="cal-day">4</div>
+          <div class="cal-day d3 today">5</div>
+          <div class="cal-day">6</div>
+          <div class="cal-day">7</div>
+          <div class="cal-day">8</div>
+          <div class="cal-day">9</div>
+          <div class="cal-day">10</div>
+
+          <div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+          <div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div>
+
+          <div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+          <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div>
+
+          <div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div>
+          <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div>
+        </div>
+
+        <div class="legend">
+          <span>Mín</span>
+          <div class="leg-dot" style="background: rgba(29,158,117,0.20);"></div>
+          <div class="leg-dot" style="background: rgba(29,158,117,0.45);"></div>
+          <div class="leg-dot" style="background: rgba(29,158,117,0.70);"></div>
+          <div class="leg-dot" style="background: linear-gradient(135deg,#1D9E75,#059669);"></div>
+          <span>Máx</span>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          </div>
+          <span class="nav-label">Routine</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="nav-label">Decks</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon active" style="background: linear-gradient(135deg, #1D9E75, #059669);">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <span class="nav-label active" style="color: #1D9E75;">Stats</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 4: CREATE CARD MODAL ══ -->
+  <div>
+    <div class="screen-label">Modal — Create Card</div>
+    <div class="phone-frame">
+      <div class="status-bar" style="color: #aaa;">
+        <span>16:53</span><span>● ● ●</span>
+      </div>
+      <div class="create-card-screen">
+        <div class="modal-card">
+          <div class="modal-title">Create Card</div>
+          <div class="input-group">
+            <div class="input-label">Activity</div>
+            <div class="input-field">App <span style="color:#A78BFA; font-size:20px; line-height:1;">|</span></div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Time in minutes</div>
+            <div class="input-field">
+              <span>120</span>
+              <div style="display:flex; flex-direction:column; gap:3px;">
+                <div style="width:22px;height:18px;background:#EDE9FF;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6B5CE7" stroke-width="3"><polyline points="18,15 12,9 6,15"/></svg>
+                </div>
+                <div style="width:22px;height:18px;background:#EDE9FF;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6B5CE7" stroke-width="3"><polyline points="6,9 12,15 18,9"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="input-hint">02h : 00m</div>
+          </div>
+          <div class="modal-actions">
+            <div class="btn-cancel">Cancel</div>
+            <div class="btn-ok">OK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 5: CREATE DECK ══ -->
+  <div>
+    <div class="screen-label">Pantalla Create Deck</div>
+    <div class="phone-frame bg-routine" style="min-height:640px;">
+      <div class="status-bar">
+        <span>16:52</span><span>● ● ●</span>
+      </div>
+      <div class="screen-content" style="padding-bottom: 90px;">
+        <div class="back-header">
+          <div class="back-btn">
+            <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+          </div>
+          <div class="back-title">Create Deck</div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-field" style="background: #fff; border-color: #D8D2FF; border-radius: 16px; font-size:16px; font-weight:700; padding: 16px;">Rutina</div>
+        </div>
+
+        <div style="height: 12px;"></div>
+
+        <div class="routine-card-sm" style="margin-bottom:10px;">
+          <div class="rcard-left">
+            <div class="rcard-name">4 Portuguese</div>
+            <div class="rcard-time">20m</div>
+          </div>
+          <div class="rcard-right">
+            <div style="width:8px;height:8px;background:rgba(255,255,255,0.5);border-radius:3px;"></div>
+            <div style="width:8px;height:8px;background:rgba(255,255,255,0.5);border-radius:3px;"></div>
+            <div class="check-box checked">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6B5CE7" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="routine-card-sm coral" style="margin-bottom:10px;">
+          <div class="rcard-left">
+            <div class="rcard-name">5 App</div>
+            <div class="rcard-time">02h:00m</div>
+          </div>
+          <div class="rcard-right">
+            <div style="width:8px;height:8px;background:rgba(255,255,255,0.5);border-radius:3px;"></div>
+            <div style="width:8px;height:8px;background:rgba(255,255,255,0.5);border-radius:3px;"></div>
+            <div class="check-box checked">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E8527A" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="deck-card-sm">
+          <div class="deck-sm-info">
+            <div class="deck-sm-name">Japanesse</div>
+            <div class="deck-sm-count">10m</div>
+          </div>
+          <div class="deck-sm-check"></div>
+        </div>
+
+        <div class="deck-card-sm">
+          <div class="deck-sm-info">
+            <div class="deck-sm-name">Test</div>
+            <div class="deck-sm-count">30m</div>
+          </div>
+          <div class="deck-sm-check"></div>
+        </div>
+
+        <div class="deck-card-sm" style="border-bottom: none;">
+          <div class="deck-sm-info">
+            <div class="deck-sm-name">Code review</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="create-label" style="bottom: 76px; right: 76px;">Create Card</div>
+      <div class="fab" style="bottom: 70px; right: 18px;">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          </div>
+          <span class="nav-label">Routine</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon active">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="nav-label active">Decks</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <span class="nav-label">Stats</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
