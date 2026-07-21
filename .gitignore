@@ -23,3 +23,6 @@ out/
 */Pods/
 DerivedData/
 
+# Mobiai files
+.mobiai/
+
