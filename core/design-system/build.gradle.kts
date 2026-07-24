@@ -8,7 +8,7 @@ plugins {
 
 extensions.configure<LibraryExtension>  {
     namespace = "com.dalmuina.core.design_system"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26
