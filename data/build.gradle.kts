@@ -11,7 +11,7 @@ extensions.configure<LibraryExtension>  {
 
     namespace = "com.dalmuina.data"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {

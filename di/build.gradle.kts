@@ -7,7 +7,7 @@ plugins {
 extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.di"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
