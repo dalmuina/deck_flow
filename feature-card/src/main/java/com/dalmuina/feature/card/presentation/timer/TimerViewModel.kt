@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class TimerViewModel(
@@ -223,7 +224,7 @@ class TimerViewModel(
         timerJob?.cancel()
 
         timerJob = viewModelScope.launch {
-            while (true) {
+            while (isActive) {
                 val currentEndTime = endTime ?: break
                 val now = System.currentTimeMillis()
                 val elapsed = (now - (currentEndTime - _timerState.value.totalMillis)).coerceAtLeast(0L)
