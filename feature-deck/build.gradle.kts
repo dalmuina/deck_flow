@@ -4,6 +4,7 @@ import org.gradle.kotlin.dsl.configure
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ktlint)
 }
 
 extensions.configure<LibraryExtension>  {

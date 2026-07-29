@@ -10,7 +10,21 @@
       "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin)",
       "Bash(./gradlew :feature-card:compileDebugUnitTestKotlin --info)",
       "Bash(git *)",
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(where jq *)",
+      "Bash(where python *)",
+      "Bash(python --version)",
+      "Bash(where pwsh *)",
+      "Bash(where powershell *)",
+      "Bash(python -c \"print\\('ok'\\)\")",
+      "Bash(echo \"exit:$?\")",
+      "Bash(echo '{\"tool_input\":{\"file_path\":\"C:\\\\\\\\foo\\\\\\\\bar.kt\"}}')",
+      "Bash(powershell -NoProfile -Command '$json = [Console]::In.ReadToEnd\\(\\) | ConvertFrom-Json; if \\($json.tool_input.file_path -match \"\\\\.kts?$\"\\) { Write-Output \"WOULD_RUN\" } else { Write-Output \"SKIP\" }')",
+      "Bash(echo '{\"tool_input\":{\"file_path\":\"C:\\\\\\\\foo\\\\\\\\SPEC.md\"}}')",
+      "Bash(xxd)",
+      "Bash(where node *)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.json','utf8'\\)\\); console.log\\('VALID JSON'\\)\")",
+      "Bash(powershell -NoProfile -Command \"Get-Content .claude/settings.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'settings.json parses OK'\")"
     ]
   }
 }
