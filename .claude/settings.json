@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "$json = [Console]::In.ReadToEnd() | ConvertFrom-Json; if ($json.tool_input.file_path -match '\\.kts?$') { ./gradlew ktlintFormat }",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}
