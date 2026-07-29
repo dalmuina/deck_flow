@@ -14,6 +14,10 @@
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="study_timer" />
         </service>
+
+        <receiver
+            android:name=".presentation.timer.TimerNotificationActionReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

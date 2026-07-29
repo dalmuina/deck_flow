@@ -27,21 +27,23 @@ class TimerViewModel(
 
     private var timerJob: Job? = null
     private var endTime: Long? = null
+    private var currentCardId: Int? = null
 
     init {
-        restoreTimer()
+        syncFromPersisted()
     }
 
     fun process(intent: TimerIntent) {
         when (intent) {
-            is TimerIntent.Start -> start(intent.durationMillis)
+            is TimerIntent.Start -> start(intent.durationMillis, intent.cardId)
             TimerIntent.Resume -> resume()
             TimerIntent.Pause -> pause()
-            is TimerIntent.Reset -> reset(intent.durationMillis)
+            is TimerIntent.Reset -> reset(intent.durationMillis, intent.cardId)
+            TimerIntent.Sync -> syncFromPersisted()
         }
     }
 
-    private fun restoreTimer() {
+    private fun syncFromPersisted() {
         viewModelScope.launch {
             when (val persistedResult = observeTimerStateUseCase().firstOrNull()) {
                 null -> {
@@ -58,6 +60,10 @@ class TimerViewModel(
                     val persisted = persistedResult.data
                     val now = System.currentTimeMillis()
                     val persistedEndTime = persisted.endTimeMillis
+                    currentCardId = persisted.cardId
+
+                    timerJob?.cancel()
+                    timerJob = null
 
                     if (persisted.isRunning && persistedEndTime != null) {
                         val startTime = persistedEndTime - persisted.totalMillis
@@ -96,10 +102,11 @@ class TimerViewModel(
         }
     }
 
-    private fun start(durationMillis: Long) {
+    private fun start(durationMillis: Long, cardId: Int) {
         timerJob?.cancel()
         val now = System.currentTimeMillis()
         endTime = now + durationMillis
+        currentCardId = cardId
 
         reduce {
             copy(
@@ -185,10 +192,11 @@ class TimerViewModel(
         }
     }
 
-    private fun reset(durationMillis: Long) {
+    private fun reset(durationMillis: Long, cardId: Int) {
         timerJob?.cancel()
         timerJob = null
         endTime = null
+        currentCardId = cardId
 
         reduce {
             copy(
@@ -242,6 +250,7 @@ class TimerViewModel(
         isRunning: Boolean,
         endTimeMillis: Long?,
         elapsedMillis: Long = 0L,
+        cardId: Int? = currentCardId,
     ) {
         saveTimerStateUseCase(
             PersistedTimerState(
@@ -250,6 +259,7 @@ class TimerViewModel(
                 isRunning = isRunning,
                 endTimeMillis = endTimeMillis,
                 elapsedMillis = elapsedMillis,
+                cardId = cardId,
             )
         )
     }
