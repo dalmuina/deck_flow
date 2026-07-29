@@ -20,8 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -103,7 +105,7 @@ class TimerForegroundService : Service() {
     }
 
     private suspend fun tickWhileRunning(endTimeMillis: Long, cardName: String) {
-        while (true) {
+        while (currentCoroutineContext().isActive) {
             val now = System.currentTimeMillis()
             val remaining = endTimeMillis - now
 
