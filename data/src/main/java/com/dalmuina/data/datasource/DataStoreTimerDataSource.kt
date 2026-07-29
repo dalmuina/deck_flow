@@ -5,6 +5,7 @@ import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.dalmuina.core.data.helpers.CrashlyticsLogger
 import com.dalmuina.core.data.helpers.safePreferencesCall
@@ -28,6 +29,7 @@ class DataStoreTimerDataSource(
         private val IS_RUNNING = booleanPreferencesKey("timer_is_running")
         private val END_TIME_MILLIS = longPreferencesKey("timer_end_time_millis")
         private val ELAPSED_MILLIS = longPreferencesKey("timer_elapsed_millis")
+        private val CARD_ID = intPreferencesKey("timer_card_id")
     }
 
     override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>> {
@@ -40,6 +42,7 @@ class DataStoreTimerDataSource(
                         isRunning = prefs[IS_RUNNING] ?: false,
                         endTimeMillis = prefs[END_TIME_MILLIS],
                         elapsedMillis = prefs[ELAPSED_MILLIS] ?: 0L,
+                        cardId = prefs[CARD_ID],
                     )
                 )
             }
@@ -64,6 +67,9 @@ class DataStoreTimerDataSource(
 
                 state.endTimeMillis?.let { prefs[END_TIME_MILLIS] = it }
                     ?: prefs.remove(END_TIME_MILLIS)
+
+                state.cardId?.let { prefs[CARD_ID] = it }
+                    ?: prefs.remove(CARD_ID)
             }
         }.asEmptyResult()
     }

@@ -7,6 +7,9 @@ build/
 local.properties
 *.iml
 
+# Claude
+.claude/settings.local.json
+
 # IntelliJ / AS
 .idea/
 *.ipr

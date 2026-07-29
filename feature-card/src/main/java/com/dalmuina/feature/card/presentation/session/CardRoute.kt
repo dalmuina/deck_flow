@@ -108,6 +108,7 @@ fun CardRoute(
 
                 Lifecycle.Event.ON_START -> {
                     context.stopService(TimerForegroundService.stopIntent(context))
+                    timerViewModel.process(TimerIntent.Sync)
                 }
 
                 else -> Unit
@@ -120,13 +121,13 @@ fun CardRoute(
     val prevCardId = remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(currentCardId, isTimerLoaded) {
-        if (!isTimerLoaded || duration <= 0L) return@LaunchedEffect
+        if (!isTimerLoaded || duration <= 0L || currentCardId == null) return@LaunchedEffect
         val shouldReset = if (prevCardId.value == null) {
             timerState.totalMillis != duration
         } else {
             prevCardId.value != currentCardId
         }
-        if (shouldReset) timerViewModel.process(TimerIntent.Reset(duration))
+        if (shouldReset) timerViewModel.process(TimerIntent.Reset(duration, currentCardId))
         prevCardId.value = currentCardId
     }
 
@@ -163,7 +164,7 @@ fun CardRoute(
                         timerViewModel.process(TimerIntent.Resume)
                 },
                 onReset = {
-                    timerViewModel.process(TimerIntent.Reset(duration))
+                    currentCardId?.let { timerViewModel.process(TimerIntent.Reset(duration, it)) }
                 },
             )
         }

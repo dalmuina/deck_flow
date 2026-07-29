@@ -24,7 +24,10 @@
       "Bash(xxd)",
       "Bash(where node *)",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.json','utf8'\\)\\); console.log\\('VALID JSON'\\)\")",
-      "Bash(powershell -NoProfile -Command \"Get-Content .claude/settings.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'settings.json parses OK'\")"
+      "Bash(powershell -NoProfile -Command \"Get-Content .claude/settings.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'settings.json parses OK'\")",
+      "Bash(./gradlew clean *)",
+      "Bash(./gradlew *)",
+      "Bash(tasklist)"
     ]
   }
 }
