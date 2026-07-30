@@ -6,8 +6,6 @@ import com.dalmuina.core.test.helpers.FakeCrashlyticsLogger
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.data.dao.DFDeckDao
 import com.dalmuina.data.entity.CardInDeckEntity
-import com.dalmuina.data.entity.CardWithProgress
-import com.dalmuina.data.entity.CardEntity
 import com.dalmuina.data.entity.DeckEntity
 import com.dalmuina.data.entity.DeckWithCards
 import com.dalmuina.domain.model.DFResult
@@ -45,12 +43,12 @@ class RoomDeckDataSourceTest {
     // region createDeck
 
     @Test
-    fun `createDeck returns Success on happy path`() = runTest {
-        coJustRun { dao.insertDeckWithCards(any(), any()) }
+    fun `createDeck returns Success with new deck id on happy path`() = runTest {
+        coEvery { dao.insertDeckWithCards(any(), any()) } returns 7
 
         val result = datasource.createDeck(name = "My Deck", cardIds = listOf(1, 2, 3))
 
-        result shouldBe DFResult.Success(Unit)
+        result shouldBe DFResult.Success(7)
     }
 
     @Test

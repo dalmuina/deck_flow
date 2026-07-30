@@ -46,15 +46,14 @@ Lists all available decks. The user selects the active deck to use in the sessio
 
 ### Deck creator / editor — `Route.DeckCreator(mode)` → `DeckCreatorRoute`
 
-Form to create or edit a deck. The user enters the name and manages the associated card list (add, delete, reorder with drag-and-drop). `DeckCreatorMode` is `Create` or `Edit(deckId)`.
+Form to create or edit a deck. The user enters the name and manages the associated card list (add, delete, reorder with drag-and-drop). `DeckCreatorMode` is `Create` or `Edit(deckId)`. There is no explicit save action: the deck is created in the background as soon as the first card is added, and every subsequent change (name, card selection, reorder) auto-persists — the same behavior in both modes.
 
 **MVI**
 
 | | Class |
 |---|---|
-| State | `DeckCreatorState` — `name`, `deckCard: List<CardUi>`, `isEditMode`, `cardPendingDelete` |
-| Intent | `NameChanged`, `SaveDeck`, `SelectedCard`, `CardCreated`, `RequestDeleteCard`, `ConfirmDeleteCard`, `DismissDeleteDialog`, `Reorder` |
-| Event | `CloseScreen` |
+| State | `DeckCreatorState` — `name`, `deckCard: List<CardUi>`, `cardPendingDelete` |
+| Intent | `NameChanged`, `SelectedCard`, `CardCreated`, `RequestDeleteCard`, `ConfirmDeleteCard`, `DismissDeleteDialog`, `Reorder` |
 
 ---
 

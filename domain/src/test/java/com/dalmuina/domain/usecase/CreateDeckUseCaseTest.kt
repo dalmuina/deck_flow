@@ -32,7 +32,7 @@ class CreateDeckUseCaseTest {
 
         val name = "Morning routine"
         val cardIds = listOf(1, 2, 3)
-        val expected = DFResult.Success(Unit)
+        val expected = DFResult.Success(7)
 
         coEvery { repository.createDeck(name, cardIds) } returns expected
 

@@ -1,7 +1,6 @@
 package com.dalmuina.feature.deck.presentation.deckCreator
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,11 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.dalmuina.core.design_system.component.button.DFButtonElevated
 import com.dalmuina.core.design_system.component.dialog.DFDialogConfirm
 import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
@@ -49,18 +46,9 @@ fun DeckCreatorRoute(
     createdCardId: Int?,
     onCreatedCardConsumed: () -> Unit,
     onEditCard: (Int) -> Unit,
-    onBack: () -> Unit
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                is DeckCreatorEvent.CloseScreen -> onBack()
-            }
-        }
-    }
 
     LaunchedEffect(createdCardId) {
         createdCardId?.let { cardId ->
@@ -75,9 +63,7 @@ fun DeckCreatorRoute(
             DeckCreatorScreen(
                 items = state.deckCard,
                 name = state.name,
-                isEditMode = state.isEditMode,
                 onSelectedCard = { id -> viewModel.process(DeckCreatorIntent.SelectedCard(id)) },
-                onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
                 onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
                 onEditCard = onEditCard,
                 onDelete = { id -> viewModel.process(DeckCreatorIntent.RequestDeleteCard(id)) },
@@ -100,9 +86,7 @@ fun DeckCreatorRoute(
 fun DeckCreatorScreen(
     items: List<CardUi>,
     name: String,
-    isEditMode: Boolean,
     onSelectedCard: (Int) -> Unit,
-    onSaveDeck: () -> Unit,
     onNameChanged: (String) -> Unit,
     onEditCard: (Int) -> Unit,
     onDelete: (Int) -> Unit,
@@ -168,20 +152,6 @@ fun DeckCreatorScreen(
                 }
             }
         }
-        AnimatedVisibility(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(all = Spacing.l),
-            visible = items.any { it.isSelected && !isEditMode }
-        ) {
-            DFButtonElevated(
-                text = {
-                    Text(stringResource(R.string.create_deck))
-                }
-            ) {
-                onSaveDeck()
-            }
-        }
     }
 }
 
@@ -205,9 +175,7 @@ fun DeckCreatorScreenPreview() {
                 ),
             ),
             name = "name",
-            isEditMode = false,
             onSelectedCard = {},
-            onSaveDeck = {},
             onNameChanged = {},
             onEditCard = {},
             onDelete = {},
