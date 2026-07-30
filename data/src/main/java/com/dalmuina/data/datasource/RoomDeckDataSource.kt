@@ -25,13 +25,13 @@ class RoomDeckDataSource(
     override suspend fun createDeck(
         name: String,
         cardIds: List<Int>
-    ): EmptyResult<DataError> =
+    ): DFResult<Int, DataError> =
         safeDbCall(logger) {
             dao.insertDeckWithCards(
                 deck = DeckEntity(name = name),
                 cardIds = cardIds
             )
-        }.asEmptyResult()
+        }
 
     override suspend fun updateDeckName(
         deckId: Int,

@@ -2,6 +2,7 @@
 
 @SPEC.md
 @ARCHITECTURE.md
+@AGENTS.md
 
 ## Working Principles
 
@@ -33,3 +34,4 @@
 - `@Immutable` on UI model lists
 - `IO` dispatcher injected with `named("IO")` in use cases
 - Check `SPEC.md` for what to build and `ARCHITECTURE.md` for where it goes, then follow the skills in `.claude/skills/` for architecture, naming, and patterns
+- Token/cost logging (`AGENTS.md` section 1) is active for every task, not only ones started via `/start-task`: a human-reported baseline at the start, a human-reported end reading before commit logged to `EFFICIENCY.md`, and every prompt handed between agents logged to `PROMPT_LOG.md` as it happens

@@ -24,11 +24,14 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.dalmuina.core.design_system.animation.DFAnimations
 import com.dalmuina.core.design_system.component.button.DFButtonFloating
+import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.topbar.DFTopBar
 import com.dalmuina.core.presentation.events.UiEvent
 import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.deckflow.R
 import com.dalmuina.deckflow.navigation.component.DFNavigationBar
+import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.feature.card.presentation.session.CardRoute
 import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorDialogNavRoute
 import com.dalmuina.feature.deck.presentation.cardCreator.CardCreatorMode
@@ -36,15 +39,30 @@ import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorMode
 import com.dalmuina.feature.deck.presentation.deckCreator.DeckCreatorRoute
 import com.dalmuina.feature.deck.presentation.deckSelector.DeckSelectorRoute
 import com.dalmuina.feature.stats.presentation.StatsRoute
+import kotlinx.coroutines.flow.first
 import org.koin.compose.koinInject
 
 @Composable
 fun NavigationRoute(
     modifier: Modifier = Modifier,
-    uiEventDispatcher: UiEventDispatcher = koinInject()
+    uiEventDispatcher: UiEventDispatcher = koinInject(),
+    getSelectedDeckUseCase: GetSelectedDeckUseCase = koinInject()
 ) {
+    var startRoute by remember { mutableStateOf<Route?>(null) }
+
+    LaunchedEffect(Unit) {
+        val hasSelectedDeck = (getSelectedDeckUseCase().first() as? DFResult.Success)?.data != null
+        startRoute = if (hasSelectedDeck) Route.Card else Route.DeckSelector
+    }
+
+    val resolvedStartRoute = startRoute
+    if (resolvedStartRoute == null) {
+        DFLoadingCircular()
+        return
+    }
+
     val navigationState = rememberNavigationState(
-        startRoute = Route.Card,
+        startRoute = resolvedStartRoute,
         topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
     )
     val navigator = remember {
@@ -133,8 +151,7 @@ fun NavigationRoute(
                                 )
                             },
                             onCreatedCardConsumed = { createdCardId = null },
-                            createdCardId = createdCardId,
-                            onBack = { navigator.goBack() }
+                            createdCardId = createdCardId
                         )
                     }
                     entry<Route.CardCreator> { backStackEntry ->

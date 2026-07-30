@@ -10,6 +10,12 @@ All feature work follows this loop, driven by the Orchestrator:
 
 SPEC  ->  PLAN  ->  CODE  ->  REVIEW  ->  COMMIT
 
+Before SPEC: ask the human for the current session status bar reading
+(context tokens and estimated cost) as the baseline for this task. Do not
+proceed to SPEC confirmation until this baseline is recorded. Never
+estimate or fabricate it. This applies to every task, regardless of
+whether it was started via /start-task.
+
 - SPEC: confirm or update SPEC.md for the task at hand. Do not proceed
   to PLAN until acceptance criteria are explicit and testable.
 - PLAN: break the task into concrete steps, list which files will be
@@ -31,6 +37,17 @@ SPEC  ->  PLAN  ->  CODE  ->  REVIEW  ->  COMMIT
   test:). After committing, if the next task is unrelated to the one
   just finished, explicitly suggest the human run /new (fresh session)
   or /compact (summarize, same session) before starting it.
+
+Per-dispatch logging: every time the Orchestrator hands a prompt to
+another agent — the Reviewer, an escalated model, a Task-tool subagent, or
+itself moving into a new phase — append a row to PROMPT_LOG.md
+immediately: date/time, the agent that received the prompt, the prompt
+itself (verbatim or a faithful summary), and the token/cost delta for that
+exchange. That delta follows the same rule as the baseline/end readings
+above: always the human-reported session status bar reading taken
+immediately before and after the dispatch, never estimated or fabricated.
+EFFICIENCY.md stays the per-task rollup; PROMPT_LOG.md is the detailed
+trail it's rolled up from.
 
 The Orchestrator pauses for human approval at the end of each phase (a
 "gate") before moving to the next one. Do not skip gates even when a task
@@ -96,3 +113,6 @@ section for the pointer to the skills index.
   when only a section is relevant.
 - Prefer short, focused sessions over long ones; use /clear or /compact
   between unrelated tasks to avoid unnecessary context carryover.
+- Every prompt handed from one agent to another is logged in PROMPT_LOG.md
+  with its date/time, as it happens — see section 1's per-dispatch logging
+  rule. EFFICIENCY.md is the per-task summary rolled up from those rows.

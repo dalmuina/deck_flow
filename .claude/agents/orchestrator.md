@@ -25,7 +25,12 @@ table and the escalation rule.
    starts at Claude Haiku 4.5 per `AGENTS.md` section 3 — this is a hard
    mandate, not a judgment call; never pre-select a higher tier because a
    task looks complex going in.
-5. Hand the resulting diff to the Reviewer agent for evaluation.
+5. Hand the resulting diff to the Reviewer agent for evaluation. Every
+   time a prompt is handed to another agent — the Reviewer, an escalated
+   model, a Task-tool subagent, or itself moving into a new phase — log it
+   to `PROMPT_LOG.md` immediately (date/time, target agent, the prompt,
+   token/cost delta from the human-reported status bar). See `AGENTS.md`
+   section 1.
 6. On `PASS`: present a summary to the human and commit — this is the
    REVIEW→COMMIT gate.
 7. On `WARNING`: present the warning to the human; proceed only with

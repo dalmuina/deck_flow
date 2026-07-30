@@ -14,6 +14,11 @@ table and the escalation rule.
 
 ## Responsibilities
 
+0. Each time the Orchestrator dispatches a review to this agent, that
+   dispatch is logged in `PROMPT_LOG.md` by the Orchestrator (date/time,
+   the prompt handed over, token/cost delta) — see `AGENTS.md` section 1.
+   The Reviewer itself does not write to `PROMPT_LOG.md`; it returns its
+   verdict to the Orchestrator, which logs it.
 1. Read the diff under review together with `SPEC.md` (does behavior match
    the screen/MVI contract for what changed) and `ARCHITECTURE.md` (does
    it respect module boundaries).

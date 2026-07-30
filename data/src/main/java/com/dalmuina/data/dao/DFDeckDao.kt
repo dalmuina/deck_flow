@@ -24,7 +24,7 @@ interface DFDeckDao {
     suspend fun insertDeckWithCards(
         deck: DeckEntity,
         cardIds: List<Int>
-    ) {
+    ): Int {
         val deckId = insertDeck(deck).toInt()
 
         val refs = cardIds.mapIndexed { index, cardId ->
@@ -36,6 +36,8 @@ interface DFDeckDao {
         }
 
         insertCrossRefs(refs)
+
+        return deckId
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

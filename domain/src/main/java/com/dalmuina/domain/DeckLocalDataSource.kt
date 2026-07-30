@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DeckLocalDataSource {
 
-    suspend fun createDeck(name: String, cardIds: List<Int>): EmptyResult<DataError>
+    suspend fun createDeck(name: String, cardIds: List<Int>): DFResult<Int, DataError>
 
     suspend fun updateDeckName(deckId: Int, name: String): EmptyResult<DataError>
 

@@ -8,6 +8,5 @@ data class DeckCreatorState(
     val loading: Boolean = false,
     val name: String = "",
     val deckCard: List<CardUi> = emptyList(),
-    val isEditMode: Boolean = false,
     val cardPendingDelete: CardUi? = null,
 )

@@ -17,11 +17,9 @@ import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.feature.deck.model.CardUi
 import com.dalmuina.feature.deck.model.toUi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -32,9 +30,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class DeckCreatorViewModel(
-    private val mode: DeckCreatorMode,
+    mode: DeckCreatorMode,
     getAllCardsUseCase: GetAllCardsUseCase,
     private val createDeckUseCase: CreateDeckUseCase,
     private val updateDeckNameUseCase: UpdateDeckNameUseCase,
@@ -50,14 +49,11 @@ class DeckCreatorViewModel(
         private const val DELAY_PROCESS_INPUT = 1_000L
     }
 
-    private val _events = MutableSharedFlow<DeckCreatorEvent>()
-
-    val events = _events.asSharedFlow()
-
     private val selectedCards =
         MutableStateFlow<List<SelectedCard>>(emptyList())
     private val deckName = MutableStateFlow(DEFAULT_DECK_NAME)
     private val cardPendingDelete = MutableStateFlow<CardUi?>(null)
+    private val resolvedDeckId = MutableStateFlow(mode.deckId)
 
     init {
         mode.deckId?.let { deckId ->
@@ -82,11 +78,11 @@ class DeckCreatorViewModel(
     private fun observeDeckNameChange() {
         @OptIn(FlowPreview::class)
         deckName
-            .debounce(DELAY_PROCESS_INPUT)
+            .debounce(DELAY_PROCESS_INPUT.milliseconds)
             .distinctUntilChanged()
             .onEach { name ->
-                if (mode is DeckCreatorMode.Edit) {
-                    updateDeckNameUseCase(mode.deckId, name)
+                resolvedDeckId.value?.let { deckId ->
+                    updateDeckNameUseCase(deckId, name)
                 }
             }
             .launchIn(viewModelScope)
@@ -120,7 +116,6 @@ class DeckCreatorViewModel(
                 loading = false,
                 deckCard = deckCards,
                 name = name,
-                isEditMode = mode is DeckCreatorMode.Edit,
                 cardPendingDelete = pendingDelete
             )
         }
@@ -164,7 +159,6 @@ class DeckCreatorViewModel(
             is DeckCreatorIntent.CardCreated ->
                 onCardCreated(intent.id)
 
-            DeckCreatorIntent.SaveDeck -> saveDeck()
             is DeckCreatorIntent.NameChanged -> {
                 deckName.value = intent.value
             }
@@ -177,6 +171,23 @@ class DeckCreatorViewModel(
         }
     }
 
+    private fun persistCards(cardIds: List<Int>) {
+        viewModelScope.launch {
+            val deckId = resolvedDeckId.value
+            if (deckId == null) {
+                createDeckUseCase(deckName.value, cardIds)
+                    .onSuccess { newDeckId -> resolvedDeckId.value = newDeckId }
+                    .onFailure { error ->
+                        uiEventDispatcher.dispatch(
+                            UiEvent.ShowSnackBar(error.toUiText())
+                        )
+                    }
+            } else {
+                setDeckCardsUseCase(deckId, cardIds)
+            }
+        }
+    }
+
     private fun onCardCreated(cardId: Int) {
         selectedCards.update { current ->
             val newList = current + SelectedCard(
@@ -184,32 +195,9 @@ class DeckCreatorViewModel(
                 order = current.size
             )
 
-            if (mode is DeckCreatorMode.Edit) {
-                viewModelScope.launch {
-                    setDeckCardsUseCase(
-                        mode.deckId,
-                        newList.map { it.id }
-                    )
-                }
-            }
+            persistCards(newList.map { it.id })
 
             newList
-        }
-    }
-
-    private fun saveDeck() {
-        viewModelScope.launch {
-            createDeckUseCase(
-                deckName.value,
-                selectedCards.value
-                    .map { it.id }
-            )
-                .onSuccess { _events.emit(DeckCreatorEvent.CloseScreen) }
-                .onFailure { error ->
-                    uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar(error.toUiText())
-                    )
-                }
         }
     }
 
@@ -233,14 +221,7 @@ class DeckCreatorViewModel(
                     )
                 }
 
-            if (mode is DeckCreatorMode.Edit) {
-                viewModelScope.launch {
-                    setDeckCardsUseCase(
-                        mode.deckId,
-                        newList.map { it.id }
-                    )
-                }
-            }
+            persistCards(newList.map { it.id })
 
             newList
         }
@@ -280,14 +261,7 @@ class DeckCreatorViewModel(
                 card.copy(order = index)
             }
 
-            if (mode is DeckCreatorMode.Edit) {
-                viewModelScope.launch {
-                    setDeckCardsUseCase(
-                        mode.deckId,
-                        reordered.map { it.id }
-                    )
-                }
-            }
+            persistCards(reordered.map { it.id })
 
             reordered
         }
