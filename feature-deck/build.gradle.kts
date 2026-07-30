@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.feature.deck"
     compileSdk {
         version = release(37)
@@ -15,7 +15,6 @@ extensions.configure<LibraryExtension>  {
 
     defaultConfig {
         minSdk = 26
-
     }
 
     compileOptions {
@@ -53,10 +52,9 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //Koin
+    // Koin
     implementation(libs.koin.compose)
 
-    //Reorderable
+    // Reorderable
     implementation(libs.reorderable)
-
 }

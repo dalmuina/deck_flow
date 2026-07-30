@@ -15,9 +15,9 @@ object IconSize {
 }
 
 object Corner {
-    val xs = 8.dp
-    val s = 16.dp
-    val m = 24.dp
+    val xs = 12.dp
+    val s = 20.dp
+    val m = 28.dp
 }
 
 object Stroke {

@@ -27,7 +27,13 @@
       "Bash(powershell -NoProfile -Command \"Get-Content .claude/settings.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'settings.json parses OK'\")",
       "Bash(./gradlew clean *)",
       "Bash(./gradlew *)",
-      "Bash(tasklist)"
+      "Bash(tasklist)",
+      "Bash(dir /s /b .claude\\\\skills)",
+      "Bash(findstr /i compose-ui)",
+      "Bash(export ANDROID_HOME=\"/c/Users/dalmu/AppData/Local/Android/Sdk\")",
+      "Bash(nohup /c/Users/dalmu/AppData/Local/Android/Sdk/emulator/emulator -avd Pixel_7a -no-snapshot-load)",
+      "Bash(disown)",
+      "Bash(echo \"Launched emulator, PID $!\")"
     ]
   }
 }

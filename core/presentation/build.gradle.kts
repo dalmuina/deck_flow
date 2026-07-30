@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.core.presentation"
     compileSdk = 37
 

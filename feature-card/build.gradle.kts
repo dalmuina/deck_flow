@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.feature.card"
     compileSdk {
         version = release(37)
@@ -48,7 +48,7 @@ dependencies {
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.turbine)
 
-    //Koin
+    // Koin
     implementation(libs.koin.compose)
 
     // Compose UI tests

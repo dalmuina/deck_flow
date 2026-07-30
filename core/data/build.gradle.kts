@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.core.data"
     compileSdk = 37
 
@@ -30,5 +30,4 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
-
 }

@@ -28,8 +28,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)
-    testImplementation (libs.kotlinx.coroutines.test)
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotest.assertions)
-    testImplementation (libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.turbine)
 }
