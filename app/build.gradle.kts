@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<ApplicationExtension>  {
+extensions.configure<ApplicationExtension> {
     namespace = "com.dalmuina.deckflow"
     compileSdk {
         version = release(37)
@@ -33,7 +33,7 @@ extensions.configure<ApplicationExtension>  {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -47,7 +47,6 @@ extensions.configure<ApplicationExtension>  {
         compose = true
         buildConfig = true
     }
-
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -55,10 +54,9 @@ tasks.withType<KotlinCompile>().configureEach {
         "-P",
         "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.layout.buildDirectory}/compose_metrics",
         "-P",
-        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.layout.buildDirectory}/compose_reports"
+        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.layout.buildDirectory}/compose_reports",
     )
 }
-
 
 dependencies {
     implementation(project(":di"))

@@ -7,13 +7,12 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
     namespace = "com.dalmuina.core.design_system"
     compileSdk = 37
 
     defaultConfig {
         minSdk = 26
-
     }
 
     compileOptions {

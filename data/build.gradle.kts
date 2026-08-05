@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-extensions.configure<LibraryExtension>  {
+extensions.configure<LibraryExtension> {
 
     namespace = "com.dalmuina.data"
     compileSdk {

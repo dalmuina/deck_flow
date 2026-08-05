@@ -26,7 +26,7 @@ fun DFTopBar(
     TopAppBar(
         modifier = modifier.statusBarsPadding(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
         title = {
             Text(
