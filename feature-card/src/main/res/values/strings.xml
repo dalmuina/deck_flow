@@ -17,4 +17,7 @@
     <string name="cancel_button">Cancelar</string>
     <string name="streak_days">%1$d días seguidos</string>
     <string name="streak_none">Sin racha</string>
+    <string name="reminder_notification_title">Tarea pendiente en %1$s</string>
+    <string name="reminder_notification_text">%1$s te está esperando</string>
+    <string name="reminder_notification_channel_name">Recordatorios</string>
 </resources>

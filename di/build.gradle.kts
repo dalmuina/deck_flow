@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":feature-stats"))
 
     implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
     implementation(libs.datastore.preferences)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.room.ktx)

@@ -7,8 +7,10 @@ import com.dalmuina.di.domainModule
 import com.dalmuina.di.featureCardModule
 import com.dalmuina.di.featureDeckModule
 import com.dalmuina.di.featureStatsModule
+import com.dalmuina.feature.card.presentation.reminder.ReminderScheduler
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.GlobalContext.startKoin
 
 class App : Application() {
@@ -19,6 +21,7 @@ class App : Application() {
 
         startKoin {
             androidContext(this@App)
+            workManagerFactory()
             modules(
                 featureCardModule,
                 featureDeckModule,
@@ -28,5 +31,7 @@ class App : Application() {
                 coreUiModule,
             )
         }
+
+        ReminderScheduler.scheduleDailyReminders(this)
     }
 }
