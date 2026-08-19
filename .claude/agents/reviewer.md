@@ -16,9 +16,9 @@ table and the escalation rule.
 
 0. Each time the Orchestrator dispatches a review to this agent, that
    dispatch is logged in `PROMPT_LOG.md` by the Orchestrator (date/time,
-   the prompt handed over, token/cost delta) — see `AGENTS.md` section 1.
-   The Reviewer itself does not write to `PROMPT_LOG.md`; it returns its
-   verdict to the Orchestrator, which logs it.
+   the prompt handed over) — see `AGENTS.md` section 1. The Reviewer
+   itself does not write to `PROMPT_LOG.md`; it returns its verdict to
+   the Orchestrator, which logs it.
 1. Read the diff under review together with `SPEC.md` (does behavior match
    the screen/MVI contract for what changed) and `ARCHITECTURE.md` (does
    it respect module boundaries).
@@ -59,3 +59,7 @@ table and the escalation rule.
 - Resumes review from where a previous attempt left off when re-reviewing
   a fix — does not re-check items already marked resolved unless the new
   diff touches them again.
+- `PASS` is a judgment on code correctness against conventions — it is
+  not proof the project builds. The Orchestrator is responsible for
+  independently verifying a real build before committing; a Reviewer
+  `PASS` never substitutes for that.

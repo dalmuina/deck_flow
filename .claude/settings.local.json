@@ -33,7 +33,14 @@
       "Bash(export ANDROID_HOME=\"/c/Users/dalmu/AppData/Local/Android/Sdk\")",
       "Bash(nohup /c/Users/dalmu/AppData/Local/Android/Sdk/emulator/emulator -avd Pixel_7a -no-snapshot-load)",
       "Bash(disown)",
-      "Bash(echo \"Launched emulator, PID $!\")"
+      "Bash(echo \"Launched emulator, PID $!\")",
+      "Bash(./gradlew.bat :feature-card:compileDebugKotlin --stacktrace)",
+      "Bash(./gradlew.bat :feature-card:compileDebugKotlin --stacktrace --offline=false)",
+      "Bash(./gradlew.bat :feature-card:compileDebugKotlin --refresh-dependencies --stacktrace)",
+      "Bash(echo \"EXIT:$?\")",
+      "Read(//tmp/**)",
+      "Bash(curl -sL --cacert /c/Users/dalmu/norton-root.pem -w \"\\\\nHTTP:%{http_code}\\\\n\" \"https://dl.google.com/dl/android/maven2/com/android/application/com.android.application.gradle.plugin/9.2.1/com.android.application.gradle.plugin-9.2.1.pom\")",
+      "Bash(curl -sL --cacert /c/Users/dalmu/norton-root.pem -o /dev/null -w \"HTTP:%{http_code}\\\\n\" \"https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.2.1/gradle-9.2.1.pom\")"
     ]
   }
 }

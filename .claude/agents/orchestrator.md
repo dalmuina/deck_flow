@@ -28,11 +28,18 @@ table and the escalation rule.
 5. Hand the resulting diff to the Reviewer agent for evaluation. Every
    time a prompt is handed to another agent — the Reviewer, an escalated
    model, a Task-tool subagent, or itself moving into a new phase — log it
-   to `PROMPT_LOG.md` immediately (date/time, target agent, the prompt,
-   token/cost delta from the human-reported status bar). See `AGENTS.md`
-   section 1.
-6. On `PASS`: present a summary to the human and commit — this is the
-   REVIEW→COMMIT gate.
+   to `PROMPT_LOG.md` immediately (date/time, target agent, the prompt).
+   See `AGENTS.md` section 1.
+6. On `PASS`: before committing, independently verify the affected
+   modules actually build — a real compile run in this session, not a
+   re-read of the diff. Reviewer PASS is a judgment on code correctness;
+   it is not proof the project builds and never substitutes for running
+   it. If the build cannot be verified (e.g. a genuine environment/network
+   limitation), stop and explicitly ask the human whether to commit
+   anyway — never decide unilaterally that an unverified build is good
+   enough. Once verified (or the human has explicitly accepted the risk),
+   present a summary to the human and commit — this is the REVIEW→COMMIT
+   gate.
 7. On `WARNING`: present the warning to the human; proceed only with
    explicit approval.
 8. On `FAIL`: fix the issues raised and resubmit to the Reviewer. If `FAIL`
@@ -53,3 +60,6 @@ table and the escalation rule.
   change explicitly to the human first.
 - Keeps each session focused on one task; suggests `/clear` or `/compact`
   before starting an unrelated task.
+- Never commits a diff whose build hasn't been verified to succeed in
+  this session, unless the human has explicitly accepted that specific
+  risk.
