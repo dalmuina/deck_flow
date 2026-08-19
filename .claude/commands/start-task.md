@@ -9,9 +9,10 @@ build
 Please act as the Orchestrator. Start the following task: $ARGUMENTS
 
 Follow the SPEC→PLAN→CODE→REVIEW→COMMIT loop as defined in AGENTS.md,
-including its baseline/end token logging (EFFICIENCY.md) and per-dispatch
-logging (PROMPT_LOG.md) — both apply automatically via CLAUDE.md, this
-command doesn't need to repeat the mechanics:
+including its per-dispatch logging (PROMPT_LOG.md), per-task rollup
+(EFFICIENCY.md), and build-verification-before-commit gate — all apply
+automatically via CLAUDE.md, this command doesn't need to repeat the
+mechanics:
 
 Confirm the task against SPEC.md and ARCHITECTURE.md before planning.
 Present a plan (files to touch, approach, tests) and stop at the PLAN gate for explicit human approval before writing any code.

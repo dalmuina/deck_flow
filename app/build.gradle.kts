@@ -88,6 +88,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
     implementation(libs.koin.compose)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)

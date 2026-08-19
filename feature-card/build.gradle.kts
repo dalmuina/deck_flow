@@ -31,6 +31,7 @@ dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":domain"))
     implementation(project(":core:presentation"))
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(project(":core:test"))
 
     implementation(platform(libs.androidx.compose.bom))

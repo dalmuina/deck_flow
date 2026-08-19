@@ -10,12 +10,6 @@ All feature work follows this loop, driven by the Orchestrator:
 
 SPEC  ->  PLAN  ->  CODE  ->  REVIEW  ->  COMMIT
 
-Before SPEC: ask the human for the current session status bar reading
-(context tokens and estimated cost) as the baseline for this task. Do not
-proceed to SPEC confirmation until this baseline is recorded. Never
-estimate or fabricate it. This applies to every task, regardless of
-whether it was started via /start-task.
-
 - SPEC: confirm or update SPEC.md for the task at hand. Do not proceed
   to PLAN until acceptance criteria are explicit and testable.
 - PLAN: break the task into concrete steps, list which files will be
@@ -26,28 +20,27 @@ whether it was started via /start-task.
 - REVIEW: hand the diff to the Reviewer agent (see .claude/agents/reviewer.md),
   which evaluates it against CLAUDE.md, ARCHITECTURE.md, SPEC.md, and the
   relevant skill(s), and returns PASS, WARNING, or FAIL with reasons.
-- COMMIT: only on PASS (or WARNING explicitly accepted by the human).
-  Before committing, ask the human to report the current session status bar
-  reading (context tokens and estimated cost) — the Orchestrator has no
-  direct way to read this value itself, so it must not estimate or
-  fabricate it. Append a row to EFFICIENCY.md for the task just
-  completed using that reported value: model(s) used, context tokens and
-  cost as reported, escalations if any, and a short note. Commit messages
-  follow Conventional Commits (feat:, fix:, docs:, chore:,
-  test:). After committing, if the next task is unrelated to the one
-  just finished, explicitly suggest the human run /new (fresh session)
-  or /compact (summarize, same session) before starting it.
+- COMMIT: only on PASS (or WARNING explicitly accepted by the human), AND
+  only after a real build/compile has actually succeeded in this session.
+  Reviewer PASS is a judgment on code correctness against conventions —
+  it is not proof the project builds, and it never substitutes for
+  actually running the build. If the build cannot be verified (e.g. a
+  genuine environment/network limitation), the Orchestrator must stop
+  and explicitly ask the human whether to commit anyway — it must never
+  decide on its own that an unverified build is good enough to commit.
+  Append a row to EFFICIENCY.md for the task just completed: model(s)
+  used, escalations if any, and a short note. Commit messages follow
+  Conventional Commits (feat:, fix:, docs:, chore:, test:). After
+  committing, if the next task is unrelated to the one just finished,
+  explicitly suggest the human run /new (fresh session) or /compact
+  (summarize, same session) before starting it.
 
 Per-dispatch logging: every time the Orchestrator hands a prompt to
 another agent — the Reviewer, an escalated model, a Task-tool subagent, or
 itself moving into a new phase — append a row to PROMPT_LOG.md
-immediately: date/time, the agent that received the prompt, the prompt
-itself (verbatim or a faithful summary), and the token/cost delta for that
-exchange. That delta follows the same rule as the baseline/end readings
-above: always the human-reported session status bar reading taken
-immediately before and after the dispatch, never estimated or fabricated.
-EFFICIENCY.md stays the per-task rollup; PROMPT_LOG.md is the detailed
-trail it's rolled up from.
+immediately: date/time, the agent that received the prompt, and the
+prompt itself (verbatim or a faithful summary). EFFICIENCY.md stays the
+per-task rollup; PROMPT_LOG.md is the detailed trail it's rolled up from.
 
 The Orchestrator pauses for human approval at the end of each phase (a
 "gate") before moving to the next one. Do not skip gates even when a task

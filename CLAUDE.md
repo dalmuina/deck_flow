@@ -34,4 +34,5 @@
 - `@Immutable` on UI model lists
 - `IO` dispatcher injected with `named("IO")` in use cases
 - Check `SPEC.md` for what to build and `ARCHITECTURE.md` for where it goes, then follow the skills in `.claude/skills/` for architecture, naming, and patterns
-- Token/cost logging (`AGENTS.md` section 1) is active for every task, not only ones started via `/start-task`: a human-reported baseline at the start, a human-reported end reading before commit logged to `EFFICIENCY.md`, and every prompt handed between agents logged to `PROMPT_LOG.md` as it happens
+- Per-dispatch logging (`AGENTS.md` section 1) is active for every task, not only ones started via `/start-task`: every prompt handed between agents logged to `PROMPT_LOG.md` as it happens, rolled up into a task row in `EFFICIENCY.md` at commit time
+- Never commit a change without first verifying it actually builds in this session — Reviewer PASS is not a substitute for running the build. If the build can't be verified, stop and ask the human before committing — see `AGENTS.md` section 1
