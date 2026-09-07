@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +18,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -30,9 +39,14 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -43,16 +57,19 @@ import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.theme.Success
-import com.dalmuina.core.design_system.theme.Postpone
+import com.dalmuina.core.design_system.theme.PostponeContainer
+import com.dalmuina.core.design_system.theme.SecondaryContainerDark
+import com.dalmuina.core.design_system.theme.SuccessContainer
+import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Dimen
+import com.dalmuina.core.design_system.tokens.IconSize
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.card.R
-import com.dalmuina.feature.card.model.CardUi
-import com.dalmuina.feature.card.model.SwipeDirection
 import com.dalmuina.feature.card.component.CardWithTimer
 import com.dalmuina.feature.card.component.CardWithoutTimer
 import com.dalmuina.feature.card.component.SwipeCard
+import com.dalmuina.feature.card.model.CardUi
+import com.dalmuina.feature.card.model.SwipeDirection
 import com.dalmuina.feature.card.presentation.timer.TimerForegroundService
 import com.dalmuina.feature.card.presentation.timer.TimerIntent
 import com.dalmuina.feature.card.presentation.timer.TimerState
@@ -71,49 +88,54 @@ fun CardRoute(
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val isTimerLoaded by timerViewModel.isLoaded.collectAsStateWithLifecycle()
     val currentCardId = state.cards.firstOrNull()?.id
-    val duration = state.cards.firstOrNull()?.duration?.inWholeMilliseconds ?: 0L
+    val duration =
+        state.cards
+            .firstOrNull()
+            ?.duration
+            ?.inWholeMilliseconds ?: 0L
 
     val context = LocalContext.current
     val activity = context as ComponentActivity
     val currentTimerState by rememberUpdatedState(timerState)
     val currentCardName by rememberUpdatedState(state.cards.firstOrNull()?.name ?: "")
 
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        val notificationPermissionLauncher = rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { /* la notificación es informativa; si se deniega, el servicio sigue activo */ }
+        val notificationPermissionLauncher =
+            rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission(),
+            ) { /* la notificación es informativa; si se deniega, el servicio sigue activo */ }
         LaunchedEffect(Unit) {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
     DisposableEffect(Unit) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_STOP -> {
-                    if (currentTimerState.isRunning) {
-                        val endTimeMillis =
-                            System.currentTimeMillis() + currentTimerState.remainingMillis
-                        ContextCompat.startForegroundService(
-                            context,
-                            TimerForegroundService.startIntent(
+        val observer =
+            LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_STOP -> {
+                        if (currentTimerState.isRunning) {
+                            val endTimeMillis =
+                                System.currentTimeMillis() + currentTimerState.remainingMillis
+                            ContextCompat.startForegroundService(
                                 context,
-                                endTimeMillis,
-                                currentCardName
-                            ),
-                        )
+                                TimerForegroundService.startIntent(
+                                    context,
+                                    endTimeMillis,
+                                    currentCardName,
+                                ),
+                            )
+                        }
                     }
-                }
 
-                Lifecycle.Event.ON_START -> {
-                    context.stopService(TimerForegroundService.stopIntent(context))
-                    timerViewModel.process(TimerIntent.Sync)
-                }
+                    Lifecycle.Event.ON_START -> {
+                        context.stopService(TimerForegroundService.stopIntent(context))
+                        timerViewModel.process(TimerIntent.Sync)
+                    }
 
-                else -> Unit
+                    else -> Unit
+                }
             }
-        }
         activity.lifecycle.addObserver(observer)
         onDispose { activity.lifecycle.removeObserver(observer) }
     }
@@ -122,11 +144,12 @@ fun CardRoute(
 
     LaunchedEffect(currentCardId, isTimerLoaded) {
         if (!isTimerLoaded || duration <= 0L || currentCardId == null) return@LaunchedEffect
-        val shouldReset = if (prevCardId.value == null) {
-            timerState.totalMillis != duration
-        } else {
-            prevCardId.value != currentCardId
-        }
+        val shouldReset =
+            if (prevCardId.value == null) {
+                timerState.totalMillis != duration
+            } else {
+                prevCardId.value != currentCardId
+            }
         if (shouldReset) timerViewModel.process(TimerIntent.Reset(duration, currentCardId))
         prevCardId.value = currentCardId
     }
@@ -158,10 +181,11 @@ fun CardRoute(
                     }
                 },
                 onPlay = { isPLaying ->
-                    if (isPLaying)
+                    if (isPLaying) {
                         timerViewModel.process(TimerIntent.Pause)
-                    else
+                    } else {
                         timerViewModel.process(TimerIntent.Resume)
+                    }
                 },
                 onReset = {
                     currentCardId?.let { timerViewModel.process(TimerIntent.Reset(duration, it)) }
@@ -193,15 +217,17 @@ fun CardScreen(
     val primary = MaterialTheme.colorScheme.primary
     val secondary = MaterialTheme.colorScheme.secondary
 
-    fun brushForDepth(depth: Int): Brush = when (depth % 2) {
-        0 -> Brush.verticalGradient(listOf(primary, secondary))
-        else -> Brush.verticalGradient(listOf(secondary, primary))
-    }
+    fun brushForDepth(depth: Int): Brush =
+        when (depth % 2) {
+            0 -> Brush.verticalGradient(listOf(primary, secondary))
+            else -> Brush.verticalGradient(listOf(secondary, primary))
+        }
 
     Box(
-        modifier = Modifier
-            .padding(Spacing.l)
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .padding(Spacing.l)
+                .fillMaxSize(),
     ) {
         var dragOffsetX by remember { mutableFloatStateOf(0f) }
         val swipeProgress = (abs(dragOffsetX) / 300f).coerceIn(0f, 1f)
@@ -220,7 +246,8 @@ fun CardScreen(
                 }
 
             val scale by animateFloatAsState(
-                targetValue = targetScale, label = "cardScale"
+                targetValue = targetScale,
+                label = "cardScale",
             )
 
             val baseOffset = (depth * 16).dp
@@ -233,7 +260,8 @@ fun CardScreen(
                 }
 
             val offset by animateDpAsState(
-                targetValue = targetOffset, label = "cardOffset"
+                targetValue = targetOffset,
+                label = "cardOffset",
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -243,10 +271,11 @@ fun CardScreen(
                 Spacer(modifier = Modifier.height(Dimen.m))
                 if (depth == 0) {
                     SwipeCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .offset(y = offset)
-                            .scale(scale),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .offset { IntOffset(x = 0, y = offset.roundToPx()) }
+                                .scale(scale),
                         onSwiped = { direction ->
                             dragOffsetX = 0f
                             onSwiped(direction)
@@ -273,7 +302,6 @@ fun CardScreen(
             }
         }
     }
-
 }
 
 @Composable
@@ -286,12 +314,12 @@ fun SwipeCardContent(
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
 ) {
-
     val leftAlphaAnimated = (-signedProgress).coerceIn(0f, 1f)
     val rightAlphaAnimated = (signedProgress).coerceIn(0f, 1f)
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier =
+            modifier
+                .fillMaxSize(),
     ) {
         CardWithTimer(
             card = card,
@@ -301,66 +329,118 @@ fun SwipeCardContent(
             onReset = onReset,
         )
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             Spacer(modifier = Modifier.height(60.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = Spacing.l),
-                horizontalArrangement = Arrangement.SpaceBetween
-            )
-            {
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(all = Spacing.l),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
                 DFBadgeSwipe(
                     text = stringResource(R.string.completed_level).uppercase(),
-                    strokeColor = Postpone,
+                    strokeColor = SuccessContainer,
                     rotation = -5f,
-                    alpha = rightAlphaAnimated
+                    alpha = rightAlphaAnimated,
                 )
                 DFBadgeSwipe(
                     text = stringResource(R.string.postponed_level).uppercase(),
-                    strokeColor = Success,
+                    strokeColor = PostponeContainer,
                     rotation = 5f,
-                    alpha = leftAlphaAnimated
+                    alpha = leftAlphaAnimated,
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            SwipeDirectionHint(modifier = Modifier.padding(all = Spacing.l))
         }
+    }
+}
 
+@Composable
+private fun SwipeDirectionHint(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SwipeDirectionBadge(
+            icons = listOf(Icons.AutoMirrored.Filled.ArrowBack, Icons.Default.Schedule),
+            tint = PostponeContainer,
+            contentDescription = stringResource(R.string.postponed_level),
+        )
+        SwipeDirectionBadge(
+            icons = listOf(Icons.Default.Check, Icons.AutoMirrored.Filled.ArrowForward),
+            tint = SuccessContainer,
+            contentDescription = stringResource(R.string.completed_level),
+        )
+    }
+}
+
+@Composable
+private fun SwipeDirectionBadge(
+    icons: List<ImageVector>,
+    tint: Color,
+    contentDescription: String,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(Corner.m))
+                .background(SecondaryContainerDark)
+                .padding(horizontal = Spacing.m, vertical = Spacing.s),
+    ) {
+        icons.forEachIndexed { index, icon ->
+            if (index > 0) {
+                Spacer(modifier = Modifier.width(Spacing.xs))
+            }
+            Icon(
+                imageVector = icon,
+                contentDescription = if (index == 0) contentDescription else null,
+                tint = tint,
+                modifier = Modifier.size(IconSize.m),
+            )
+        }
     }
 }
 
 @DFPreview
 @Composable
 fun CardScreenPreview() {
-
     DeckFlowTheme {
         CardScreen(
-            cards = listOf(
-                CardUi(
-                    id = 0,
-                    name = "Reading",
-                    duration = 3L.minutes,
-                    isCompleted = true,
-                    isPostponed = false,
-                ), CardUi(
-                    id = 1,
-                    name = "Writing",
-                    duration = 30L.minutes,
-                    isCompleted = false,
-                    isPostponed = false,
-                ), CardUi(
-                    id = 2,
-                    name = "Studying",
-                    duration = 1L.hours,
-                    isCompleted = false,
-                    isPostponed = true,
-                )
-            ),
-            timerState = TimerState(
-                totalMillis = 15000L,
-                remainingMillis = 10000L,
-                isRunning = false,
-            ),
+            cards =
+                listOf(
+                    CardUi(
+                        id = 0,
+                        name = "Reading",
+                        duration = 3L.minutes,
+                        isCompleted = true,
+                        isPostponed = false,
+                    ),
+                    CardUi(
+                        id = 1,
+                        name = "Writing",
+                        duration = 30L.minutes,
+                        isCompleted = false,
+                        isPostponed = false,
+                    ),
+                    CardUi(
+                        id = 2,
+                        name = "Studying",
+                        duration = 1L.hours,
+                        isCompleted = false,
+                        isPostponed = true,
+                    ),
+                ),
+            timerState =
+                TimerState(
+                    totalMillis = 15000L,
+                    remainingMillis = 10000L,
+                    isRunning = false,
+                ),
             onSwiped = {},
             onPlay = {},
             onReset = {},
