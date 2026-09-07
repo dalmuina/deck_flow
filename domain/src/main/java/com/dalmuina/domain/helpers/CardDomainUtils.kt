@@ -12,6 +12,8 @@ fun List<CardDomain>.sortedForSession(): List<CardDomain> =
                     else -> 0
                 }
             }.thenBy { card ->
+                card.postponedAt ?: Long.MIN_VALUE
+            }.thenBy { card ->
                 card.order ?: Int.MAX_VALUE
             },
         )
