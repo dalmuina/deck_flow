@@ -8,11 +8,11 @@ data class CardInDeckEntity(
     val duration: Long,
     val completedAt: Long?,
     val postponedAt: Long?,
-    val order: Int
+    val order: Int,
 )
 
-fun CardInDeckEntity.toDomain(): CardDomain {
-    return CardDomain(
+fun CardInDeckEntity.toDomain(): CardDomain =
+    CardDomain(
         id = id,
         name = name,
         durationMillis = duration,
@@ -20,4 +20,3 @@ fun CardInDeckEntity.toDomain(): CardDomain {
         postponedAt = postponedAt,
         order = order,
     )
-}

@@ -16,49 +16,52 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UpdateCardUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository: DeckLocalDataSource = mockk()
 
     @Test
-    fun `invoke should return success when repository updates deck name successfully`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = UpdateDeckNameUseCase(
-            repository = repository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return success when repository updates deck name successfully`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                UpdateDeckNameUseCase(
+                    repository = repository,
+                    dispatcher = dispatcher,
+                )
 
-        val deckId = 1
-        val name = "New name"
-        val expected = DFResult.Success(Unit)
+            val deckId = 1
+            val name = "New name"
+            val expected = DFResult.Success(Unit)
 
-        coEvery { repository.updateDeckName(deckId, name) } returns expected
+            coEvery { repository.updateDeckName(deckId, name) } returns expected
 
-        val result = useCase(deckId, name)
+            val result = useCase(deckId, name)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.updateDeckName(deckId, name) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.updateDeckName(deckId, name) }
+        }
 
     @Test
-    fun `invoke should return error when repository fails updating deck name`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = UpdateDeckNameUseCase(
-            repository = repository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return error when repository fails updating deck name`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                UpdateDeckNameUseCase(
+                    repository = repository,
+                    dispatcher = dispatcher,
+                )
 
-        val deckId = 1
-        val name = "New name"
-        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+            val deckId = 1
+            val name = "New name"
+            val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
-        coEvery { repository.updateDeckName(deckId, name) } returns expected
+            coEvery { repository.updateDeckName(deckId, name) } returns expected
 
-        val result = useCase(deckId, name)
+            val result = useCase(deckId, name)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.updateDeckName(deckId, name) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.updateDeckName(deckId, name) }
+        }
 }

@@ -6,7 +6,6 @@ import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.flow.Flow
 
 interface SelectedDeckDataSource {
-
     val selectedDeckId: Flow<DFResult<Int?, DataError>>
 
     suspend fun setSelectedDeck(id: Int): EmptyResult<DataError>

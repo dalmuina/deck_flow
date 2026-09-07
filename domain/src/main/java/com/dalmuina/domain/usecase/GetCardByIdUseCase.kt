@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 
 class GetCardByIdUseCase(
     private val repository: CardLocalDataSource,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
 ) {
     suspend operator fun invoke(cardId: Int): DFResult<CardDomain, DataError> =
         withContext(dispatcher) {

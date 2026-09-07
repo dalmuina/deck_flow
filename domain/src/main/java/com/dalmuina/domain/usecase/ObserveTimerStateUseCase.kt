@@ -9,6 +9,5 @@ import kotlinx.coroutines.flow.Flow
 class ObserveTimerStateUseCase(
     private val repository: TimerDataSource,
 ) {
-    operator fun invoke(): Flow<DFResult<PersistedTimerState, DataError>> =
-        repository.observeTimerState()
+    operator fun invoke(): Flow<DFResult<PersistedTimerState, DataError>> = repository.observeTimerState()
 }

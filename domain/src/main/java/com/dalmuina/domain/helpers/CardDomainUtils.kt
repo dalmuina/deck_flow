@@ -2,8 +2,8 @@ package com.dalmuina.domain.helpers
 
 import com.dalmuina.domain.model.CardDomain
 
-fun List<CardDomain>.sortedForSession(): List<CardDomain> {
-    return this
+fun List<CardDomain>.sortedForSession(): List<CardDomain> =
+    this
         .sortedWith(
             compareBy<CardDomain> { card ->
                 when {
@@ -13,6 +13,5 @@ fun List<CardDomain>.sortedForSession(): List<CardDomain> {
                 }
             }.thenBy { card ->
                 card.order ?: Int.MAX_VALUE
-            }
+            },
         )
-}

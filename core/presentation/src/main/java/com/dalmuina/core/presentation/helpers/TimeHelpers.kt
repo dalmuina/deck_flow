@@ -6,12 +6,13 @@ import java.util.Calendar
 import kotlin.time.Duration
 
 fun getLast7DaysRange(): Pair<Long, Long> {
-    val calendar = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }
+    val calendar =
+        Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
 
     val toDay = calendar.timeInMillis
 
@@ -22,11 +23,25 @@ fun getLast7DaysRange(): Pair<Long, Long> {
     return fromDay to toDay
 }
 
-fun getMonthRange(year: Int, month: Int): Pair<Long, Long> {
+fun getMonthRange(
+    year: Int,
+    month: Int,
+): Pair<Long, Long> {
     val zone = ZoneId.systemDefault()
     val ym = YearMonth.of(year, month)
-    val fromDay = ym.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
-    val toDay = ym.atEndOfMonth().atStartOfDay(zone).plusDays(1).toInstant().toEpochMilli() - 1
+    val fromDay =
+        ym
+            .atDay(1)
+            .atStartOfDay(zone)
+            .toInstant()
+            .toEpochMilli()
+    val toDay =
+        ym
+            .atEndOfMonth()
+            .atStartOfDay(zone)
+            .plusDays(1)
+            .toInstant()
+            .toEpochMilli() - 1
     return fromDay to toDay
 }
 

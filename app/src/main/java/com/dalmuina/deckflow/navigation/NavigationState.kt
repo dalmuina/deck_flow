@@ -23,16 +23,17 @@ import kotlinx.serialization.modules.polymorphic
 class NavigationState(
     val startRoute: NavKey,
     topLevelRoute: MutableState<NavKey>,
-    val backStacks: Map<NavKey, NavBackStack<NavKey>>
+    val backStacks: Map<NavKey, NavBackStack<NavKey>>,
 ) {
     var topLevelRoute by topLevelRoute
 
     val stacksInUse: List<NavKey>
-        get() = if (topLevelRoute == startRoute) {
-            listOf(startRoute)
-        } else {
-            listOf(startRoute, topLevelRoute)
-        }
+        get() =
+            if (topLevelRoute == startRoute) {
+                listOf(startRoute)
+            } else {
+                listOf(startRoute, topLevelRoute)
+            }
 
     val currentRoute: Route?
         get() = backStacks[topLevelRoute]?.lastOrNull() as? Route
@@ -41,59 +42,63 @@ class NavigationState(
 @Composable
 fun rememberNavigationState(
     startRoute: NavKey,
-    topLevelRoutes: Set<NavKey>
+    topLevelRoutes: Set<NavKey>,
 ): NavigationState {
-    val topLevelRoute = rememberSerializable(
-        startRoute,
-        topLevelRoutes,
-        configuration = serializersConfig,
-    ) {
-        mutableStateOf(startRoute)
-    }
-
-    val backStacks = topLevelRoutes.associateWith { key ->
-        rememberNavBackStack(
+    val topLevelRoute =
+        rememberSerializable(
+            startRoute,
+            topLevelRoutes,
             configuration = serializersConfig,
-            key
-        )
-    }
+        ) {
+            mutableStateOf(startRoute)
+        }
+
+    val backStacks =
+        topLevelRoutes.associateWith { key ->
+            rememberNavBackStack(
+                configuration = serializersConfig,
+                key,
+            )
+        }
 
     return remember(startRoute, topLevelRoutes) {
         NavigationState(
             startRoute = startRoute,
             topLevelRoute = topLevelRoute,
-            backStacks = backStacks
+            backStacks = backStacks,
         )
     }
 }
 
-val serializersConfig = SavedStateConfiguration {
-    serializersModule = SerializersModule {
-        polymorphic(NavKey::class) {
-            subclass(Route.Card::class, Route.Card.serializer())
-            subclass(Route.DeckSelector::class, Route.DeckSelector.serializer())
-            subclass(Route.DeckCreator::class, Route.DeckCreator.serializer())
-            subclass(Route.CardCreator::class, Route.CardCreator.serializer())
-            subclass(Route.Stats::class, Route.Stats.serializer())
-        }
+val serializersConfig =
+    SavedStateConfiguration {
+        serializersModule =
+            SerializersModule {
+                polymorphic(NavKey::class) {
+                    subclass(Route.Card::class, Route.Card.serializer())
+                    subclass(Route.DeckSelector::class, Route.DeckSelector.serializer())
+                    subclass(Route.DeckCreator::class, Route.DeckCreator.serializer())
+                    subclass(Route.CardCreator::class, Route.CardCreator.serializer())
+                    subclass(Route.Stats::class, Route.Stats.serializer())
+                }
+            }
     }
-}
 
 @Composable
-fun NavigationState.toEntries(
-    entryProvider: (NavKey) -> NavEntry<NavKey>
-): SnapshotStateList<NavEntry<NavKey>> {
-    val decoratedEntries = backStacks.mapValues { (_, stack) ->
-        val decorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
-            rememberViewModelStoreNavEntryDecorator()
-        )
-        rememberDecoratedNavEntries(
-            backStack = stack,
-            entryDecorators = decorators,
-            entryProvider = entryProvider,
-        )
-    }
+fun NavigationState.toEntries(entryProvider: (NavKey) -> NavEntry<NavKey>): SnapshotStateList<NavEntry<NavKey>> {
+    val decoratedEntries =
+        backStacks.mapValues { (_, stack) ->
+            val decorators =
+                listOf(
+                    rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+                    rememberViewModelStoreNavEntryDecorator(),
+                )
+            rememberDecoratedNavEntries(
+                backStack = stack,
+                entryDecorators = decorators,
+                entryProvider = entryProvider,
+            )
+        }
     return stacksInUse
         .flatMap { decoratedEntries[it] ?: emptyList() }
         .toMutableStateList()

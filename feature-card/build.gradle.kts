@@ -27,6 +27,10 @@ extensions.configure<LibraryExtension> {
     }
 }
 
+composeCompiler {
+    stabilityConfigurationFiles.add(layout.projectDirectory.file("stability_config.conf"))
+}
+
 dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":domain"))

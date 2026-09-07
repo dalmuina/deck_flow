@@ -24,18 +24,20 @@ fun DFStreakBadge(
     streakDays: Int,
 ) {
     val badgeColor = Color.White.copy(alpha = 0.22f)
-    val text = if (streakDays > 0) {
-        stringResource(R.string.streak_days, streakDays)
-    } else {
-        stringResource(R.string.streak_none)
-    }
+    val text =
+        if (streakDays > 0) {
+            stringResource(R.string.streak_days, streakDays)
+        } else {
+            stringResource(R.string.streak_none)
+        }
 
     Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(badgeColor)
-            .padding(horizontal = Spacing.m, vertical = Spacing.xs),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(20.dp))
+                .background(badgeColor)
+                .padding(horizontal = Spacing.m, vertical = Spacing.xs),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = if (streakDays > 0) "🔥 $text" else text,

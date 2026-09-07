@@ -35,46 +35,50 @@ fun DFTextFieldOutlined(
         mutableStateOf(
             TextFieldValue(
                 text = name,
-                selection = TextRange(name.length)
-            )
+                selection = TextRange(name.length),
+            ),
         )
     }
 
     LaunchedEffect(name) {
         if (textFieldValue.text != name) {
-            textFieldValue = textFieldValue.copy(
-                text = name,
-                selection = TextRange(name.length)
-            )
+            textFieldValue =
+                textFieldValue.copy(
+                    text = name,
+                    selection = TextRange(name.length),
+                )
         }
     }
 
     OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                if (focusRequester != null) {
-                    Modifier.focusRequester(focusRequester)
-                } else {
-                    Modifier
-                }
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .then(
+                    if (focusRequester != null) {
+                        Modifier.focusRequester(focusRequester)
+                    } else {
+                        Modifier
+                    },
+                ),
         value = textFieldValue,
         onValueChange = {
             textFieldValue = it
             onNameChanged(it.text)
         },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
-        ),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Done,
-            capitalization = KeyboardCapitalization.Sentences,
-        ),
-        label = label
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
+            ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+                capitalization = KeyboardCapitalization.Sentences,
+            ),
+        label = label,
     )
 }
 
@@ -86,7 +90,7 @@ fun DFTextFieldOutlinedPreview() {
             name = "",
             focusRequester = null,
             onNameChanged = {},
-            label = { Text(text = "Actividad") }
+            label = { Text(text = "Actividad") },
         )
     }
 }

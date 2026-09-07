@@ -20,8 +20,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class TimerNotificationActionReceiver : BroadcastReceiver(), KoinComponent {
-
+class TimerNotificationActionReceiver :
+    BroadcastReceiver(),
+    KoinComponent {
     private val observeTimerStateUseCase: ObserveTimerStateUseCase by inject()
     private val saveTimerStateUseCase: SaveTimerStateUseCase by inject()
     private val completeCardUseCase: CompleteCardUseCase by inject()
@@ -49,7 +50,10 @@ class TimerNotificationActionReceiver : BroadcastReceiver(), KoinComponent {
             )
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val appContext = context.applicationContext
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
@@ -67,12 +71,13 @@ class TimerNotificationActionReceiver : BroadcastReceiver(), KoinComponent {
     private suspend fun handleToggle() {
         val persisted = currentPersistedState() ?: return
         val now = System.currentTimeMillis()
-        val updated = if (persisted.isRunning) {
-            persisted.pausedAt(now)
-        } else {
-            if (persisted.totalMillis == 0L) return
-            persisted.resumedAt(now)
-        }
+        val updated =
+            if (persisted.isRunning) {
+                persisted.pausedAt(now)
+            } else {
+                if (persisted.totalMillis == 0L) return
+                persisted.resumedAt(now)
+            }
         saveTimerStateUseCase(updated)
     }
 
@@ -88,6 +93,5 @@ class TimerNotificationActionReceiver : BroadcastReceiver(), KoinComponent {
         context.stopService(Intent(context, TimerForegroundService::class.java))
     }
 
-    private suspend fun currentPersistedState(): PersistedTimerState? =
-        (observeTimerStateUseCase().first() as? DFResult.Success)?.data
+    private suspend fun currentPersistedState(): PersistedTimerState? = (observeTimerStateUseCase().first() as? DFResult.Success)?.data
 }

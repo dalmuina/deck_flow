@@ -12,19 +12,16 @@ data class CardEntity(
     val duration: Long,
 )
 
-fun CardDomain.toEntity(): CardEntity {
-    return CardEntity(
+fun CardDomain.toEntity(): CardEntity =
+    CardEntity(
         id = id,
         name = name,
         duration = durationMillis,
     )
-}
 
-fun CardEntity.toDomain(): CardDomain {
-    return CardDomain(
-        id= id,
+fun CardEntity.toDomain(): CardDomain =
+    CardDomain(
+        id = id,
         name = name,
         durationMillis = duration,
     )
-}
-

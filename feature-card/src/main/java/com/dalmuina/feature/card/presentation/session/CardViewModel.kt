@@ -33,11 +33,9 @@ class CardViewModel(
     private val completeCardUseCase: CompleteCardUseCase,
     private val postponeCardUseCase: PostponeCardUseCase,
 ) : ViewModel() {
-
     private val _sessionCards = MutableStateFlow<List<CardUi>>(emptyList())
     private val _completionPending = MutableStateFlow<CardCompletionPending?>(null)
     private var currentDeckId: Int? = null
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val deckFlow =
@@ -105,23 +103,30 @@ class CardViewModel(
                     )
                 }
             }
-        }
-            .onStart {
-                emit(CardState(loading = true))
-            }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                CardState(loading = true)
-            )
+        }.onStart {
+            emit(CardState(loading = true))
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            CardState(loading = true),
+        )
 
     fun process(intent: CardIntent) {
         when (intent) {
             is CardIntent.SwipeTopCard -> swipeTopCard(intent.direction)
             is CardIntent.RequestCompleteCard -> requestCompleteCard(intent.totalMillis)
-            is CardIntent.ChangeCompletionTime -> _completionPending.update { it?.copy(spentDuration = intent.value.toLongOrNull()?.minutes ?: Duration.ZERO) }
+            is CardIntent.ChangeCompletionTime ->
+                _completionPending.update {
+                    it?.copy(
+                        spentDuration =
+                            intent.value.toLongOrNull()?.minutes ?: Duration.ZERO,
+                    )
+                }
             is CardIntent.MoreCompletionTime -> _completionPending.update { it?.copy(spentDuration = (it.spentDuration + 1.minutes)) }
-            is CardIntent.LessCompletionTime -> _completionPending.update { it?.copy(spentDuration = (it.spentDuration - 1.minutes).coerceAtLeast(Duration.ZERO)) }
+            is CardIntent.LessCompletionTime ->
+                _completionPending.update {
+                    it?.copy(spentDuration = (it.spentDuration - 1.minutes).coerceAtLeast(Duration.ZERO))
+                }
             is CardIntent.ConfirmCompletion -> confirmCompletion()
             is CardIntent.DismissCompletion -> _completionPending.value = null
         }
@@ -137,11 +142,12 @@ class CardViewModel(
     private fun requestCompleteCard(totalMillis: Long) {
         if (_completionPending.value != null) return
         val card = _sessionCards.value.firstOrNull() ?: return
-        _completionPending.value = CardCompletionPending(
-            cardId = card.id,
-            cardName = card.name,
-            spentDuration = totalMillis.milliseconds.inWholeMinutes.minutes,
-        )
+        _completionPending.value =
+            CardCompletionPending(
+                cardId = card.id,
+                cardName = card.name,
+                spentDuration = totalMillis.milliseconds.inWholeMinutes.minutes,
+            )
     }
 
     private fun confirmCompletion() {

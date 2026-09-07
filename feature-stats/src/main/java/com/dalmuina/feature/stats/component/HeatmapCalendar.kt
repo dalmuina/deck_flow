@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,8 +45,6 @@ import com.dalmuina.feature.stats.model.MonthHeatmapDayUi
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
-import java.util.Locale
-import androidx.compose.ui.platform.LocalLocale
 
 private val DAY_LABELS = listOf("Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do")
 
@@ -61,13 +60,16 @@ fun HeatmapCalendar(
     onNextMonth: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val monthLabel = Month.of(month)
-        .getDisplayName(java.time.format.TextStyle.FULL, LocalLocale.current.platformLocale)
-        .replaceFirstChar { it.uppercase() }
+    val monthLabel =
+        Month
+            .of(month)
+            .getDisplayName(java.time.format.TextStyle.FULL, LocalLocale.current.platformLocale)
+            .replaceFirstChar { it.uppercase() }
 
-    val firstDayOffset = YearMonth.of(year, month).atDay(1).dayOfWeek.let {
-        (it.value - DayOfWeek.MONDAY.value + 7) % 7
-    }
+    val firstDayOffset =
+        YearMonth.of(year, month).atDay(1).dayOfWeek.let {
+            (it.value - DayOfWeek.MONDAY.value + 7) % 7
+        }
 
     var selectedDay by remember(year, month) { mutableStateOf<MonthHeatmapDayUi?>(null) }
 
@@ -84,9 +86,10 @@ fun HeatmapCalendar(
 
         if (isLoading) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(modifier = Modifier.size(32.dp))
@@ -125,8 +128,12 @@ private fun MonthNavigatorRow(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Mes anterior",
-                tint = if (hasPreviousData) MaterialTheme.colorScheme.onSurface
-                       else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                tint =
+                    if (hasPreviousData) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    },
             )
         }
 
@@ -140,8 +147,12 @@ private fun MonthNavigatorRow(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Mes siguiente",
-                tint = if (hasNextMonth) MaterialTheme.colorScheme.onSurface
-                       else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                tint =
+                    if (hasNextMonth) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    },
             )
         }
     }
@@ -150,9 +161,10 @@ private fun MonthNavigatorRow(
 @Composable
 private fun WeekDayHeaderRow() {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = Spacing.xs),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = Spacing.xs),
         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         DAY_LABELS.forEach { label ->
@@ -216,25 +228,33 @@ private fun DayCell(
     val backgroundColor = day.level.toHeatmapColor(primary = primary, empty = empty)
 
     Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(Corner.xs))
-            .background(backgroundColor)
-            .then(
-                if (isSelected) Modifier.border(
-                    width = Stroke.m,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(Corner.xs),
-                ) else Modifier
-            )
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(Corner.xs))
+                .background(backgroundColor)
+                .then(
+                    if (isSelected) {
+                        Modifier.border(
+                            width = Stroke.m,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(Corner.xs),
+                        )
+                    } else {
+                        Modifier
+                    },
+                ).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = day.dayOfMonth.toString(),
             fontSize = 10.sp,
-            color = if (day.level >= 3) MaterialTheme.colorScheme.onPrimary
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
+            color =
+                if (day.level >= 3) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
         )
     }
 }
@@ -248,10 +268,12 @@ private fun BottomRow(selectedDay: MonthHeatmapDayUi?) {
     ) {
         if (selectedDay != null) {
             Text(
-                text = if (selectedDay.totalSpentMillis > 0)
-                    "Día ${selectedDay.dayOfMonth} · ${selectedDay.totalSpentMillis.toReadableTime()}"
-                else
-                    "Día ${selectedDay.dayOfMonth} · Sin actividad",
+                text =
+                    if (selectedDay.totalSpentMillis > 0) {
+                        "Día ${selectedDay.dayOfMonth} · ${selectedDay.totalSpentMillis.toReadableTime()}"
+                    } else {
+                        "Día ${selectedDay.dayOfMonth} · Sin actividad"
+                    },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
@@ -280,10 +302,11 @@ private fun ColorLegend() {
         )
         (0..4).forEach { level ->
             Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(level.toHeatmapColor(primary = primary, empty = empty)),
+                modifier =
+                    Modifier
+                        .size(12.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(level.toHeatmapColor(primary = primary, empty = empty)),
             )
         }
         Text(
@@ -294,13 +317,17 @@ private fun ColorLegend() {
     }
 }
 
-private fun Int.toHeatmapColor(primary: Color, empty: Color): Color = when (this) {
-    0 -> empty
-    1 -> primary.copy(alpha = 0.25f)
-    2 -> primary.copy(alpha = 0.50f)
-    3 -> primary.copy(alpha = 0.75f)
-    else -> primary
-}
+private fun Int.toHeatmapColor(
+    primary: Color,
+    empty: Color,
+): Color =
+    when (this) {
+        0 -> empty
+        1 -> primary.copy(alpha = 0.25f)
+        2 -> primary.copy(alpha = 0.50f)
+        3 -> primary.copy(alpha = 0.75f)
+        else -> primary
+    }
 
 private fun Long.toReadableTime(): String {
     val totalMinutes = this / 60_000L
@@ -316,25 +343,28 @@ private fun Long.toReadableTime(): String {
 @DFPreview
 @Composable
 private fun HeatmapCalendarPreview() {
-    val previewDays = (1..30).map { day ->
-        MonthHeatmapDayUi(
-            dayOfMonth = day,
-            dayStart = 0L,
-            totalSpentMillis = when {
-                day % 7 == 0 -> 0L
-                day % 3 == 0 -> 3_600_000L
-                day % 2 == 0 -> 1_800_000L
-                else -> 900_000L
-            },
-            completedCount = if (day % 7 == 0) 0 else 1,
-            level = when {
-                day % 7 == 0 -> 0
-                day % 3 == 0 -> 4
-                day % 2 == 0 -> 2
-                else -> 1
-            },
-        )
-    }
+    val previewDays =
+        (1..30).map { day ->
+            MonthHeatmapDayUi(
+                dayOfMonth = day,
+                dayStart = 0L,
+                totalSpentMillis =
+                    when {
+                        day % 7 == 0 -> 0L
+                        day % 3 == 0 -> 3_600_000L
+                        day % 2 == 0 -> 1_800_000L
+                        else -> 900_000L
+                    },
+                completedCount = if (day % 7 == 0) 0 else 1,
+                level =
+                    when {
+                        day % 7 == 0 -> 0
+                        day % 3 == 0 -> 4
+                        day % 2 == 0 -> 2
+                        else -> 1
+                    },
+            )
+        }
     DeckFlowTheme(darkTheme = false) {
         HeatmapCalendar(
             year = 2025,

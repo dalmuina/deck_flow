@@ -21,17 +21,18 @@ fun DFTopBar(
     modifier: Modifier = Modifier,
     title: String,
     showBack: Boolean,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     TopAppBar(
         modifier = modifier.statusBarsPadding(),
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        ),
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         },
         navigationIcon = {
@@ -39,11 +40,11 @@ fun DFTopBar(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = "Back",
                     )
                 }
             }
-        }
+        },
     )
 }
 
@@ -53,7 +54,7 @@ fun DFTopBarPreview() {
     DeckFlowTheme {
         DFTopBar(
             title = "Deck",
-            showBack = false
+            showBack = false,
         ) { }
     }
 }
@@ -64,7 +65,7 @@ fun DFTopBarWithArrowPreview() {
     DeckFlowTheme {
         DFTopBar(
             title = "Deck",
-            showBack = true
+            showBack = true,
         ) { }
     }
 }

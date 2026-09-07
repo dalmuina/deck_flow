@@ -51,4 +51,3 @@ val OnPrimaryLight = Color(0xFFFFFFFF)
 
 val OnSecondaryContainerLight = Color(0xFF881337)
 val OnSecondaryContainerDark = Color(0xFF1C1C2E)
-

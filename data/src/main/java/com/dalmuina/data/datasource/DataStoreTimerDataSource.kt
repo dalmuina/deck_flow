@@ -18,11 +18,11 @@ import com.dalmuina.domain.model.asEmptyResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+
 class DataStoreTimerDataSource(
     private val dataStore: DataStore<Preferences>,
     private val logger: CrashlyticsLogger,
 ) : TimerDataSource {
-
     companion object {
         private val TOTAL_MILLIS = longPreferencesKey("timer_total_millis")
         private val REMAINING_MILLIS = longPreferencesKey("timer_remaining_millis")
@@ -32,8 +32,8 @@ class DataStoreTimerDataSource(
         private val CARD_ID = intPreferencesKey("timer_card_id")
     }
 
-    override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>> {
-        return dataStore.data
+    override fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>> =
+        dataStore.data
             .map<Preferences, DFResult<PersistedTimerState, DataError>> { prefs ->
                 DFResult.Success(
                     PersistedTimerState(
@@ -43,22 +43,18 @@ class DataStoreTimerDataSource(
                         endTimeMillis = prefs[END_TIME_MILLIS],
                         elapsedMillis = prefs[ELAPSED_MILLIS] ?: 0L,
                         cardId = prefs[CARD_ID],
-                    )
+                    ),
                 )
-            }
-            .catch { e ->
+            }.catch { e ->
                 if (e is IOException) {
                     emit(DFResult.Error(DataError.Preferences.Storage))
                 } else {
                     throw e
                 }
             }
-    }
 
-    override suspend fun saveTimerState(
-        state: PersistedTimerState
-    ): EmptyResult<DataError> {
-        return safePreferencesCall(logger) {
+    override suspend fun saveTimerState(state: PersistedTimerState): EmptyResult<DataError> =
+        safePreferencesCall(logger) {
             dataStore.edit { prefs ->
                 prefs[TOTAL_MILLIS] = state.totalMillis
                 prefs[REMAINING_MILLIS] = state.remainingMillis
@@ -72,5 +68,4 @@ class DataStoreTimerDataSource(
                     ?: prefs.remove(CARD_ID)
             }
         }.asEmptyResult()
-    }
 }

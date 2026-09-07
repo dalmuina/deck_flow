@@ -19,7 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class TimerViewModelRobot {
-
     val observeTimerStateUseCase = mockk<ObserveTimerStateUseCase>()
     val saveTimerStateUseCase = mockk<SaveTimerStateUseCase>(relaxed = true)
 
@@ -28,7 +27,6 @@ class TimerViewModelRobot {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TimerViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -41,37 +39,40 @@ class TimerViewModelTest {
     }
 
     @Test
-    fun `when reset then persists cardId`() = runTest {
-        every { robot.observeTimerStateUseCase() } returns flowOf(
-            DFResult.Success(
-                PersistedTimerState()
-            )
-        )
+    fun `when reset then persists cardId`() =
+        runTest {
+            every { robot.observeTimerStateUseCase() } returns
+                flowOf(
+                    DFResult.Success(
+                        PersistedTimerState(),
+                    ),
+                )
 
-        viewModel = robot.build()
-        runCurrent()
+            viewModel = robot.build()
+            runCurrent()
 
-        viewModel.process(TimerIntent.Reset(durationMillis = 60_000L, cardId = 7))
-        runCurrent()
+            viewModel.process(TimerIntent.Reset(durationMillis = 60_000L, cardId = 7))
+            runCurrent()
 
-        val slot = slot<PersistedTimerState>()
-        coVerify { robot.saveTimerStateUseCase(capture(slot)) }
+            val slot = slot<PersistedTimerState>()
+            coVerify { robot.saveTimerStateUseCase(capture(slot)) }
 
-        slot.captured.cardId shouldBe 7
-        slot.captured.totalMillis shouldBe 60_000L
-        slot.captured.isRunning shouldBe false
-    }
+            slot.captured.cardId shouldBe 7
+            slot.captured.totalMillis shouldBe 60_000L
+            slot.captured.isRunning shouldBe false
+        }
 
     @Test
     fun `when restoring a running persisted state then timer state reflects it running`() =
         runTest {
             val now = System.currentTimeMillis()
-            val persisted = PersistedTimerState(
-                totalMillis = 10_000L,
-                isRunning = true,
-                endTimeMillis = now + 5_000L,
-                cardId = 3,
-            )
+            val persisted =
+                PersistedTimerState(
+                    totalMillis = 10_000L,
+                    isRunning = true,
+                    endTimeMillis = now + 5_000L,
+                    cardId = 3,
+                )
             every { robot.observeTimerStateUseCase() } returns flowOf(DFResult.Success(persisted))
 
             viewModel = robot.build()
@@ -87,69 +88,76 @@ class TimerViewModelTest {
         }
 
     @Test
-    fun `when restoring a paused persisted state then timer state reflects it paused`() = runTest {
-        val persisted = PersistedTimerState(
-            totalMillis = 10_000L,
-            remainingMillis = 4_000L,
-            elapsedMillis = 6_000L,
-            isRunning = false,
-            cardId = 9,
-        )
-        every { robot.observeTimerStateUseCase() } returns flowOf(DFResult.Success(persisted))
+    fun `when restoring a paused persisted state then timer state reflects it paused`() =
+        runTest {
+            val persisted =
+                PersistedTimerState(
+                    totalMillis = 10_000L,
+                    remainingMillis = 4_000L,
+                    elapsedMillis = 6_000L,
+                    isRunning = false,
+                    cardId = 9,
+                )
+            every { robot.observeTimerStateUseCase() } returns flowOf(DFResult.Success(persisted))
 
-        viewModel = robot.build()
-        runCurrent()
+            viewModel = robot.build()
+            runCurrent()
 
-        viewModel.timerState.value.isRunning shouldBe false
-        viewModel.timerState.value.remainingMillis shouldBe 4_000L
-    }
-
-    @Test
-    fun `when pausing after restoring persisted cardId then it saves the same cardId`() = runTest {
-        val now = System.currentTimeMillis()
-        val persisted = PersistedTimerState(
-            totalMillis = 10_000L,
-            isRunning = true,
-            endTimeMillis = now + 5_000L,
-            cardId = 11,
-        )
-        every { robot.observeTimerStateUseCase() } returns flowOf(DFResult.Success(persisted))
-
-        viewModel = robot.build()
-        runCurrent()
-
-        viewModel.process(TimerIntent.Pause)
-        runCurrent()
-
-        val slot = slot<PersistedTimerState>()
-        coVerify { robot.saveTimerStateUseCase(capture(slot)) }
-
-        slot.captured.cardId shouldBe 11
-    }
+            viewModel.timerState.value.isRunning shouldBe false
+            viewModel.timerState.value.remainingMillis shouldBe 4_000L
+        }
 
     @Test
-    fun `when Sync then re-pulls persisted state without resetting isLoaded`() = runTest {
-        every { robot.observeTimerStateUseCase() } returns flowOf(
-            DFResult.Success(
-                PersistedTimerState()
-            )
-        )
+    fun `when pausing after restoring persisted cardId then it saves the same cardId`() =
+        runTest {
+            val now = System.currentTimeMillis()
+            val persisted =
+                PersistedTimerState(
+                    totalMillis = 10_000L,
+                    isRunning = true,
+                    endTimeMillis = now + 5_000L,
+                    cardId = 11,
+                )
+            every { robot.observeTimerStateUseCase() } returns flowOf(DFResult.Success(persisted))
 
-        viewModel = robot.build()
-        runCurrent()
+            viewModel = robot.build()
+            runCurrent()
 
-        viewModel.isLoaded.value shouldBe true
+            viewModel.process(TimerIntent.Pause)
+            runCurrent()
 
-        every { robot.observeTimerStateUseCase() } returns flowOf(
-            DFResult.Success(
-                PersistedTimerState(totalMillis = 20_000L, remainingMillis = 20_000L, cardId = 4)
-            )
-        )
+            val slot = slot<PersistedTimerState>()
+            coVerify { robot.saveTimerStateUseCase(capture(slot)) }
 
-        viewModel.process(TimerIntent.Sync)
-        runCurrent()
+            slot.captured.cardId shouldBe 11
+        }
 
-        viewModel.timerState.value.totalMillis shouldBe 20_000L
-        viewModel.isLoaded.value shouldBe true
-    }
+    @Test
+    fun `when Sync then re-pulls persisted state without resetting isLoaded`() =
+        runTest {
+            every { robot.observeTimerStateUseCase() } returns
+                flowOf(
+                    DFResult.Success(
+                        PersistedTimerState(),
+                    ),
+                )
+
+            viewModel = robot.build()
+            runCurrent()
+
+            viewModel.isLoaded.value shouldBe true
+
+            every { robot.observeTimerStateUseCase() } returns
+                flowOf(
+                    DFResult.Success(
+                        PersistedTimerState(totalMillis = 20_000L, remainingMillis = 20_000L, cardId = 4),
+                    ),
+                )
+
+            viewModel.process(TimerIntent.Sync)
+            runCurrent()
+
+            viewModel.timerState.value.totalMillis shouldBe 20_000L
+            viewModel.isLoaded.value shouldBe true
+        }
 }

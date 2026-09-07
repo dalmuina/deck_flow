@@ -17,47 +17,50 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SaveCardUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository: CardLocalDataSource = mockk()
 
     @Test
-    fun `invoke should return success when repository saves card successfully`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = SaveCardUseCase(
-            repository = repository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return success when repository saves card successfully`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                SaveCardUseCase(
+                    repository = repository,
+                    dispatcher = dispatcher,
+                )
 
-        val card = CardDomainTestData.card(id = 1)
-        val expected = DFResult.Success(1)
+            val card = CardDomainTestData.card(id = 1)
+            val expected = DFResult.Success(1)
 
-        coEvery { repository.saveCard(card) } returns expected
+            coEvery { repository.saveCard(card) } returns expected
 
-        val result = useCase(card)
+            val result = useCase(card)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.saveCard(card) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.saveCard(card) }
+        }
 
     @Test
-    fun `invoke should return error when repository fails saving card`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = SaveCardUseCase(
-            repository = repository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return error when repository fails saving card`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                SaveCardUseCase(
+                    repository = repository,
+                    dispatcher = dispatcher,
+                )
 
-        val card = CardDomainTestData.card(id = 1)
-        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+            val card = CardDomainTestData.card(id = 1)
+            val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
-        coEvery { repository.saveCard(card) } returns expected
+            coEvery { repository.saveCard(card) } returns expected
 
-        val result = useCase(card)
+            val result = useCase(card)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.saveCard(card) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.saveCard(card) }
+        }
 }

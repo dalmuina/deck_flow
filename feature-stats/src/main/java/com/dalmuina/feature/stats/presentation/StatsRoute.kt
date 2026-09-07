@@ -22,19 +22,18 @@ import com.dalmuina.feature.stats.component.HeatmapCalendar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun StatsRoute(
-    statsViewModel: StatsViewModel = koinViewModel(),
-) {
+fun StatsRoute(statsViewModel: StatsViewModel = koinViewModel()) {
     val state by statsViewModel.uiState.collectAsStateWithLifecycle()
 
     when {
         state.loading -> DFLoadingCircular()
-        else -> StatsScreen(
-            state = state,
-            onActivitySelected = { statsViewModel.process(StatsIntent.SelectActivity(it)) },
-            onPreviousMonth = { statsViewModel.process(StatsIntent.PreviousMonth) },
-            onNextMonth = { statsViewModel.process(StatsIntent.NextMonth) },
-        )
+        else ->
+            StatsScreen(
+                state = state,
+                onActivitySelected = { statsViewModel.process(StatsIntent.SelectActivity(it)) },
+                onPreviousMonth = { statsViewModel.process(StatsIntent.PreviousMonth) },
+                onNextMonth = { statsViewModel.process(StatsIntent.NextMonth) },
+            )
     }
 }
 
@@ -46,9 +45,10 @@ fun StatsScreen(
     onNextMonth: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Spacing.l),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(Spacing.l),
     ) {
         DFDropdownSelector(
             label = "Actividad",

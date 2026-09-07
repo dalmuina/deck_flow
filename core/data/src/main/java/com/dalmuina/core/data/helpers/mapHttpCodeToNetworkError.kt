@@ -4,9 +4,9 @@ import com.dalmuina.domain.model.DataError
 
 fun mapHttpCodeToNetworkError(
     code: Int,
-    throwable: Throwable? = null
-): DataError {
-    return when (code) {
+    throwable: Throwable? = null,
+): DataError =
+    when (code) {
         400 -> DataError.Network.BadRequest
         401 -> DataError.Network.Unauthorized
         403 -> DataError.Network.Forbidden
@@ -19,4 +19,3 @@ fun mapHttpCodeToNetworkError(
         503 -> DataError.Network.ServiceUnavailable
         else -> DataError.Network.Unknown(throwable)
     }
-}

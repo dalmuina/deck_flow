@@ -25,31 +25,31 @@ import com.dalmuina.core.design_system.tokens.IconSize
 
 @Composable
 fun DFButtonIconSecondary(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     contentDescription: String,
-    onAction: ()->Unit,
+    onAction: () -> Unit,
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(Dimen.m)
-            .clip(RoundedCornerShape(Corner.s))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = ripple(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f)),
-                onClick = {onAction()},
-            )
+        modifier =
+            modifier
+                .size(Dimen.m)
+                .clip(RoundedCornerShape(Corner.s))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = ripple(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f)),
+                    onClick = { onAction() },
+                ),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.size(IconSize.m)
+            modifier = Modifier.size(IconSize.m),
         )
     }
 }
@@ -58,11 +58,10 @@ fun DFButtonIconSecondary(
 @Composable
 fun DFButtonIconSecondaryPreview() {
     DeckFlowTheme {
-        DFButtonIconSecondary (
+        DFButtonIconSecondary(
             icon = Icons.Default.Replay,
             contentDescription = "",
         ) {
-            
         }
     }
 }

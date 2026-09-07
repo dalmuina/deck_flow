@@ -46,7 +46,7 @@ import org.koin.compose.koinInject
 fun NavigationRoute(
     modifier: Modifier = Modifier,
     uiEventDispatcher: UiEventDispatcher = koinInject(),
-    getSelectedDeckUseCase: GetSelectedDeckUseCase = koinInject()
+    getSelectedDeckUseCase: GetSelectedDeckUseCase = koinInject(),
 ) {
     var startRoute by remember { mutableStateOf<Route?>(null) }
 
@@ -61,13 +61,15 @@ fun NavigationRoute(
         return
     }
 
-    val navigationState = rememberNavigationState(
-        startRoute = resolvedStartRoute,
-        topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
-    )
-    val navigator = remember {
-        Navigator(navigationState)
-    }
+    val navigationState =
+        rememberNavigationState(
+            startRoute = resolvedStartRoute,
+            topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys,
+        )
+    val navigator =
+        remember {
+            Navigator(navigationState)
+        }
 
     val snackBarHostState = remember { SnackbarHostState() }
     val context by rememberUpdatedState(LocalContext.current)
@@ -78,16 +80,16 @@ fun NavigationRoute(
         uiEventDispatcher.events.collect { event ->
             when (event) {
                 is UiEvent.ShowSnackBar -> {
-
                     val message = context.getString(event.messageRes)
 
-                    val action = event.actionLabelRes?.let {
-                        context.getString(it)
-                    }
+                    val action =
+                        event.actionLabelRes?.let {
+                            context.getString(it)
+                        }
 
                     snackBarHostState.showSnackbar(
                         message = message,
-                        actionLabel = action
+                        actionLabel = action,
                     )
                 }
             }
@@ -100,7 +102,7 @@ fun NavigationRoute(
             DFTopBar(
                 title = navigationState.currentRoute?.title() ?: "",
                 showBack = navigationState.currentRoute !in TOP_LEVEL_DESTINATIONS,
-                onBack = navigator::goBack
+                onBack = navigator::goBack,
             )
         },
         snackbarHost = {
@@ -111,66 +113,69 @@ fun NavigationRoute(
                 selectedKey = navigationState.topLevelRoute,
                 onSelectedKey = {
                     navigator.navigate(it)
-                })
+                },
+            )
         },
         floatingActionButton = {
             FabArea(navigationState) { route ->
                 navigator.navigate(route)
             }
-        }
+        },
     ) { innerPadding ->
         NavDisplay(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
             onBack = navigator::goBack,
-            entries = navigationState.toEntries(
-                entryProvider = entryProvider {
-                    entry<Route.Card> {
-                        CardRoute()
-                    }
-                    entry<Route.DeckSelector> {
-                        DeckSelectorRoute(
-                            onEditDeck = { deckId ->
-                                navigator.navigate(
-                                    Route.DeckCreator(
-                                        DeckCreatorMode.Edit(deckId)
-                                    )
+            entries =
+                navigationState.toEntries(
+                    entryProvider =
+                        entryProvider {
+                            entry<Route.Card> {
+                                CardRoute()
+                            }
+                            entry<Route.DeckSelector> {
+                                DeckSelectorRoute(
+                                    onEditDeck = { deckId ->
+                                        navigator.navigate(
+                                            Route.DeckCreator(
+                                                DeckCreatorMode.Edit(deckId),
+                                            ),
+                                        )
+                                    },
                                 )
                             }
-                        )
-                    }
-                    entry<Route.DeckCreator> { backStackEntry ->
-                        DeckCreatorRoute(
-                            mode = backStackEntry.mode,
-                            onEditCard = { cardId ->
-                                navigator.navigate(
-                                    Route.CardCreator(
-                                        CardCreatorMode.Edit(cardId)
-                                    )
+                            entry<Route.DeckCreator> { backStackEntry ->
+                                DeckCreatorRoute(
+                                    mode = backStackEntry.mode,
+                                    onEditCard = { cardId ->
+                                        navigator.navigate(
+                                            Route.CardCreator(
+                                                CardCreatorMode.Edit(cardId),
+                                            ),
+                                        )
+                                    },
+                                    onCreatedCardConsumed = { createdCardId = null },
+                                    createdCardId = createdCardId,
                                 )
-                            },
-                            onCreatedCardConsumed = { createdCardId = null },
-                            createdCardId = createdCardId
-                        )
-                    }
-                    entry<Route.CardCreator> { backStackEntry ->
-                        CardCreatorDialogNavRoute(
-                            mode = backStackEntry.mode,
-                            onCardSaved = { cardId ->
-                                createdCardId = cardId
-                            },
-                            onDismiss = { navigator.goBack() }
-                        )
-                    }
-                    entry<Route.Stats> {
-                        StatsRoute()
-                    }
-                }
-            )
+                            }
+                            entry<Route.CardCreator> { backStackEntry ->
+                                CardCreatorDialogNavRoute(
+                                    mode = backStackEntry.mode,
+                                    onCardSaved = { cardId ->
+                                        createdCardId = cardId
+                                    },
+                                    onDismiss = { navigator.goBack() },
+                                )
+                            }
+                            entry<Route.Stats> {
+                                StatsRoute()
+                            }
+                        },
+                ),
         )
     }
-
 }
 
 @Composable
@@ -178,17 +183,18 @@ fun FabArea(
     state: NavigationState,
     navigate: (Route) -> Unit,
 ) {
-    val showFab = when (state.currentRoute) {
-        is Route.DeckSelector -> true
-        is Route.Card -> false
-        is Route.DeckCreator -> true
-        else -> false
-    }
+    val showFab =
+        when (state.currentRoute) {
+            is Route.DeckSelector -> true
+            is Route.Card -> false
+            is Route.DeckCreator -> true
+            else -> false
+        }
 
     AnimatedVisibility(
         visible = showFab,
         enter = DFAnimations.ScaleFadeIn,
-        exit = DFAnimations.ScaleFadeOut
+        exit = DFAnimations.ScaleFadeOut,
     ) {
         when (state.currentRoute) {
             Route.DeckSelector -> {
@@ -197,9 +203,9 @@ fun FabArea(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.create_deck_action)
+                            contentDescription = stringResource(R.string.create_deck_action),
                         )
-                    }
+                    },
                 ) {
                     navigate(Route.DeckCreator(DeckCreatorMode.Create))
                 }
@@ -211,11 +217,10 @@ fun FabArea(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.select_deck_action)
+                            contentDescription = stringResource(R.string.select_deck_action),
                         )
-                    }
+                    },
                 ) {
-
                 }
             }
 
@@ -225,14 +230,14 @@ fun FabArea(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.create_card_action)
+                            contentDescription = stringResource(R.string.create_card_action),
                         )
-                    }
+                    },
                 ) {
                     navigate(
                         Route.CardCreator(
-                            CardCreatorMode.Create
-                        )
+                            CardCreatorMode.Create,
+                        ),
                     )
                 }
             }

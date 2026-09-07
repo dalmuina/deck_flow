@@ -14,138 +14,139 @@ import com.dalmuina.domain.usecase.ObserveTimerStateUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.SaveTimerStateUseCase
+import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.SetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
-import com.dalmuina.domain.usecase.SetDeckCardsUseCase
 import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val domainModule = module {
+val domainModule =
+    module {
 
-    single<CoroutineDispatcher>(named("IO")) { Dispatchers.IO }
+        single<CoroutineDispatcher>(named("IO")) { Dispatchers.IO }
 
-    factory {
-        SaveCardUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
+        factory {
+            SaveCardUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            UpdateCardUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            GetAllCardsUseCase(
+                repository = get(),
+            )
+        }
+
+        factory {
+            CreateDeckUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            UpdateDeckNameUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            GetAllDecksUseCase(
+                repository = get(),
+            )
+        }
+
+        factory {
+            GetCardByIdUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            DeleteCardUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            DeleteDeckUseCase(
+                repository = get(),
+                selectedDeckRepository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            GetSelectedDeckUseCase(
+                dataSource = get(),
+            )
+        }
+
+        factory {
+            SetSelectedDeckUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            GetDeckByIdUseCase(
+                repository = get(),
+                clock = get(),
+            )
+        }
+
+        factory {
+            CompleteCardUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            PostponeCardUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            SetDeckCardsUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            ObserveTimerStateUseCase(
+                repository = get(),
+            )
+        }
+
+        factory {
+            SaveTimerStateUseCase(
+                repository = get(),
+                dispatcher = get(named("IO")),
+            )
+        }
+
+        factory {
+            GetCardStatsUseCase(
+                repository = get(),
+            )
+        }
     }
-
-    factory {
-        UpdateCardUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        GetAllCardsUseCase(
-            repository = get(),
-        )
-    }
-
-    factory {
-        CreateDeckUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        UpdateDeckNameUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        GetAllDecksUseCase(
-            repository = get(),
-        )
-    }
-
-    factory {
-        GetCardByIdUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        DeleteCardUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        DeleteDeckUseCase(
-            repository = get(),
-            selectedDeckRepository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        GetSelectedDeckUseCase(
-            dataSource = get(),
-        )
-    }
-
-    factory {
-        SetSelectedDeckUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        GetDeckByIdUseCase(
-            repository = get(),
-            clock = get(),
-        )
-    }
-
-    factory {
-        CompleteCardUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        PostponeCardUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        SetDeckCardsUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        ObserveTimerStateUseCase(
-            repository = get(),
-        )
-    }
-
-    factory {
-        SaveTimerStateUseCase(
-            repository = get(),
-            dispatcher = get(named("IO")),
-        )
-    }
-
-    factory {
-        GetCardStatsUseCase(
-            repository = get(),
-        )
-    }
-}

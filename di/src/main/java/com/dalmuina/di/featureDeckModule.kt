@@ -6,8 +6,9 @@ import com.dalmuina.feature.deck.presentation.deckSelector.DeckSelectorViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val featureDeckModule = module{
-    viewModelOf(::DeckSelectorViewModel)
-    viewModelOf(::DeckCreatorViewModel)
-    viewModelOf(::CardCreatorViewModel)
-}
+val featureDeckModule =
+    module {
+        viewModelOf(::DeckSelectorViewModel)
+        viewModelOf(::DeckCreatorViewModel)
+        viewModelOf(::CardCreatorViewModel)
+    }

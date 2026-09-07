@@ -7,8 +7,7 @@ import com.dalmuina.domain.model.DataError
 import kotlinx.coroutines.flow.Flow
 
 class GetAllCardsUseCase(
-    private val repository: CardLocalDataSource
+    private val repository: CardLocalDataSource,
 ) {
-    operator fun invoke(): Flow<DFResult<List<CardDomain>, DataError>> =
-        repository.getAllCards()
+    operator fun invoke(): Flow<DFResult<List<CardDomain>, DataError>> = repository.getAllCards()
 }

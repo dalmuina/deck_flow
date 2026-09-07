@@ -11,12 +11,10 @@ import kotlinx.coroutines.withContext
 class DeleteDeckUseCase(
     private val repository: DeckLocalDataSource,
     private val selectedDeckRepository: SelectedDeckDataSource,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
 ) {
-
     suspend operator fun invoke(deckId: Int): DFResult<Int?, DataError> =
         withContext(dispatcher) {
-
             when (val decksResult = repository.getAllDecksWithCards().first()) {
                 is DFResult.Error -> {
                     DFResult.Error(decksResult.error)
@@ -34,9 +32,11 @@ class DeleteDeckUseCase(
                             val selectedId = selectedIdResult.data
 
                             val nextDeck =
-                                if (selectedId == deckId)
+                                if (selectedId == deckId) {
                                     calculateNextDeck(deckId, decks.map { it.id })
-                                else null
+                                } else {
+                                    null
+                                }
 
                             when (val deleteResult = repository.deleteDeck(deckId)) {
                                 is DFResult.Error ->
@@ -53,7 +53,7 @@ class DeleteDeckUseCase(
 
     private fun calculateNextDeck(
         deletedId: Int,
-        decks: List<Int>
+        decks: List<Int>,
     ): Int? {
         val index = decks.indexOf(deletedId)
 

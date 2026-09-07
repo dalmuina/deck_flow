@@ -11,9 +11,8 @@ class SaveTimerStateUseCase(
     private val repository: TimerDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend operator fun invoke(
-        state: PersistedTimerState
-    ): EmptyResult<DataError> = withContext(dispatcher) {
-        repository.saveTimerState(state)
-    }
+    suspend operator fun invoke(state: PersistedTimerState): EmptyResult<DataError> =
+        withContext(dispatcher) {
+            repository.saveTimerState(state)
+        }
 }

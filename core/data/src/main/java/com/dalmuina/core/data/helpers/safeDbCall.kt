@@ -7,9 +7,9 @@ import kotlin.coroutines.cancellation.CancellationException
 
 suspend inline fun <reified T> safeDbCall(
     logger: CrashlyticsLogger,
-    crossinline call: suspend () -> T
-): DFResult<T, DataError> {
-    return try {
+    crossinline call: suspend () -> T,
+): DFResult<T, DataError> =
+    try {
         DFResult.Success(call())
     } catch (e: CancellationException) {
         throw e
@@ -20,4 +20,3 @@ suspend inline fun <reified T> safeDbCall(
         logger.logException(e, mapOf("source" to "db"))
         DFResult.Error(DataError.Local.Unknown(e))
     }
-}

@@ -24,7 +24,7 @@ import com.dalmuina.core.design_system.tokens.Spacing
 
 @Composable
 fun DFDialogConfirm(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     title: String,
     message: String,
     onConfirm: () -> Unit,
@@ -33,35 +33,36 @@ fun DFDialogConfirm(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(Corner.m)
+            shape = RoundedCornerShape(Corner.m),
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Spacing.l)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(Spacing.l),
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.padding(top = Spacing.m))
                 Text(
                     text = message,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.padding(top = Spacing.xl))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     DFButton(
                         text = { Text(text = stringResource(R.string.cancel_button)) },
-                        onClick = onDismiss
+                        onClick = onDismiss,
                     )
                     Spacer(modifier = Modifier.width(Spacing.l))
                     DFButton(
                         text = { Text(text = stringResource(R.string.delete_button)) },
-                        onClick = onConfirm
+                        onClick = onConfirm,
                     )
                 }
             }
@@ -77,7 +78,7 @@ fun DFDialogConfirmPreview() {
             title = "Delete Card",
             message = "Are you sure you want to delete Fitness?",
             onConfirm = {},
-            onDismiss = {}
+            onDismiss = {},
         )
     }
 }

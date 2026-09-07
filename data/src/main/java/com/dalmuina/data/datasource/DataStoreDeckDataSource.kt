@@ -20,7 +20,6 @@ class DataStoreDeckDataSource(
     private val dataStore: DataStore<Preferences>,
     private val logger: CrashlyticsLogger,
 ) : SelectedDeckDataSource {
-
     private val SELECTED_DECK = intPreferencesKey("selected_deck")
 
     override val selectedDeckId: Flow<DFResult<Int?, DataError>> =
@@ -28,15 +27,14 @@ class DataStoreDeckDataSource(
             .catch { emit(emptyPreferences()) }
             .map { prefs ->
                 DFResult.Success(
-                    prefs[SELECTED_DECK]
+                    prefs[SELECTED_DECK],
                 )
             }
 
-    override suspend fun setSelectedDeck(id: Int): EmptyResult<DataError> {
-        return safePreferencesCall(logger) {
+    override suspend fun setSelectedDeck(id: Int): EmptyResult<DataError> =
+        safePreferencesCall(logger) {
             dataStore.edit { prefs ->
                 prefs[SELECTED_DECK] = id
             }
         }.asEmptyResult()
-    }
 }

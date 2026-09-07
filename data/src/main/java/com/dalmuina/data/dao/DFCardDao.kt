@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DFCardDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(card: CardEntity): Long
 
@@ -29,18 +28,24 @@ interface DFCardDao {
     UPDATE card_progress
     SET completedAt = :time
     WHERE cardId = :cardId
-    """
+    """,
     )
-    suspend fun markCompleted(cardId: Int, time: Long)
+    suspend fun markCompleted(
+        cardId: Int,
+        time: Long,
+    )
 
     @Query(
         """
     UPDATE card_progress
     SET postponeAt = :time
     WHERE cardId = :cardId
-    """
+    """,
     )
-    suspend fun markPostponed(cardId: Int, time: Long)
+    suspend fun markPostponed(
+        cardId: Int,
+        time: Long,
+    )
 
     @Insert
     suspend fun insertCompletedStat(stat: CardHistoryEntity): Long
@@ -49,7 +54,7 @@ interface DFCardDao {
     @Query(
         """
         SELECT * FROM cards
-    """
+    """,
     )
     fun getAllCards(): Flow<List<CardEntity>>
 
@@ -57,7 +62,7 @@ interface DFCardDao {
     @Query(
         """
         SELECT * FROM cards WHERE id = :idCard
-    """
+    """,
     )
     suspend fun getCardById(idCard: Int): CardEntity
 
@@ -65,7 +70,7 @@ interface DFCardDao {
         """
     DELETE FROM cards
     WHERE id = :cardId
-"""
+""",
     )
     suspend fun deleteCard(cardId: Int)
 
@@ -81,12 +86,12 @@ interface DFCardDao {
       AND h.dayStart BETWEEN :fromDay AND :toDay
     GROUP BY h.dayStart
     ORDER BY h.dayStart ASC
-    """
+    """,
     )
     fun getDailyStatsForDeck(
         deckId: Int,
         fromDay: Long,
-        toDay: Long
+        toDay: Long,
     ): Flow<List<DailyStatsEntity>>
 
     @Query(
@@ -100,12 +105,11 @@ interface DFCardDao {
       AND h.dayStart BETWEEN :fromDay AND :toDay
     GROUP BY h.dayStart
     ORDER BY h.dayStart ASC
-    """
+    """,
     )
     fun getDailyStatsForCard(
         cardId: Int,
         fromDay: Long,
-        toDay: Long
+        toDay: Long,
     ): Flow<List<DailyStatsEntity>>
-
 }

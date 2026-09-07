@@ -21,7 +21,6 @@ import java.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetDeckByIdUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -29,145 +28,163 @@ class GetDeckByIdUseCaseTest {
     private val clock: Clock = mockk()
 
     @Test
-    fun `invoke should emit error when repository returns error`() = runTest {
-        val deckId = 1
-        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+    fun `invoke should emit error when repository returns error`() =
+        runTest {
+            val deckId = 1
+            val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
-        every { repository.getDeckWithCardsById(deckId) } returns flowOf(expected)
+            every { repository.getDeckWithCardsById(deckId) } returns flowOf(expected)
 
-        val useCase = GetDeckByIdUseCase(
-            repository = repository,
-            clock = clock
-        )
+            val useCase =
+                GetDeckByIdUseCase(
+                    repository = repository,
+                    clock = clock,
+                )
 
-        useCase(deckId).test {
-            awaitItem() shouldBe expected
-            awaitComplete()
+            useCase(deckId).test {
+                awaitItem() shouldBe expected
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `invoke should keep today timestamps and clear old timestamps`() = runTest {
-        val deckId = 1
-        val now = Instant.parse("2026-03-21T10:00:00Z").toEpochMilli()
-        val todayMillis = Instant.parse("2026-03-21T08:00:00Z").toEpochMilli()
-        val oldMillis = Instant.parse("2026-03-20T08:00:00Z").toEpochMilli()
+    fun `invoke should keep today timestamps and clear old timestamps`() =
+        runTest {
+            val deckId = 1
+            val now = Instant.parse("2026-03-21T10:00:00Z").toEpochMilli()
+            val todayMillis = Instant.parse("2026-03-21T08:00:00Z").toEpochMilli()
+            val oldMillis = Instant.parse("2026-03-20T08:00:00Z").toEpochMilli()
 
-        every { clock.millis() } returns now
+            every { clock.millis() } returns now
 
-        val cardCompletedToday = CardDomainTestData.card(
-            id = 1,
-            completedAt = todayMillis,
-            postponedAt = null
-        )
-        val cardCompletedOld = CardDomainTestData.card(
-            id = 2,
-            completedAt = oldMillis,
-            postponedAt = null
-        )
-        val cardPostponedToday = CardDomainTestData.card(
-            id = 3,
-            completedAt = null,
-            postponedAt = todayMillis
-        )
-        val cardPostponedOld = CardDomainTestData.card(
-            id = 4,
-            completedAt = null,
-            postponedAt = oldMillis
-        )
-
-        val deck = DeckDomainTestData.deck(
-            id = deckId,
-            cards = listOf(
-                cardCompletedToday,
-                cardCompletedOld,
-                cardPostponedToday,
-                cardPostponedOld
-            )
-        )
-
-        every { repository.getDeckWithCardsById(deckId) } returns flowOf(
-            DFResult.Success(deck)
-        )
-
-        val useCase = GetDeckByIdUseCase(
-            repository = repository,
-            clock = clock
-        )
-
-        useCase(deckId).test {
-            val result = awaitItem()
-
-            result shouldBe DFResult.Success(
-                deck.copy(
-                    cards = listOf(
-                        cardCompletedToday.copy(
-                            completedAt = todayMillis,
-                            postponedAt = null
-                        ),
-                        cardCompletedOld.copy(
-                            completedAt = null,
-                            postponedAt = null
-                        ),
-                        cardPostponedToday.copy(
-                            completedAt = null,
-                            postponedAt = todayMillis
-                        ),
-                        cardPostponedOld.copy(
-                            completedAt = null,
-                            postponedAt = null
-                        )
-                    ).sortedForSession()
+            val cardCompletedToday =
+                CardDomainTestData.card(
+                    id = 1,
+                    completedAt = todayMillis,
+                    postponedAt = null,
                 )
-            )
+            val cardCompletedOld =
+                CardDomainTestData.card(
+                    id = 2,
+                    completedAt = oldMillis,
+                    postponedAt = null,
+                )
+            val cardPostponedToday =
+                CardDomainTestData.card(
+                    id = 3,
+                    completedAt = null,
+                    postponedAt = todayMillis,
+                )
+            val cardPostponedOld =
+                CardDomainTestData.card(
+                    id = 4,
+                    completedAt = null,
+                    postponedAt = oldMillis,
+                )
 
-            awaitComplete()
+            val deck =
+                DeckDomainTestData.deck(
+                    id = deckId,
+                    cards =
+                        listOf(
+                            cardCompletedToday,
+                            cardCompletedOld,
+                            cardPostponedToday,
+                            cardPostponedOld,
+                        ),
+                )
+
+            every { repository.getDeckWithCardsById(deckId) } returns
+                flowOf(
+                    DFResult.Success(deck),
+                )
+
+            val useCase =
+                GetDeckByIdUseCase(
+                    repository = repository,
+                    clock = clock,
+                )
+
+            useCase(deckId).test {
+                val result = awaitItem()
+
+                result shouldBe
+                    DFResult.Success(
+                        deck.copy(
+                            cards =
+                                listOf(
+                                    cardCompletedToday.copy(
+                                        completedAt = todayMillis,
+                                        postponedAt = null,
+                                    ),
+                                    cardCompletedOld.copy(
+                                        completedAt = null,
+                                        postponedAt = null,
+                                    ),
+                                    cardPostponedToday.copy(
+                                        completedAt = null,
+                                        postponedAt = todayMillis,
+                                    ),
+                                    cardPostponedOld.copy(
+                                        completedAt = null,
+                                        postponedAt = null,
+                                    ),
+                                ).sortedForSession(),
+                        ),
+                    )
+
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `invoke should emit normalized deck with cards sorted for session`() = runTest {
-        val deckId = 1
-        val now = Instant.parse("2026-03-21T10:00:00Z").toEpochMilli()
+    fun `invoke should emit normalized deck with cards sorted for session`() =
+        runTest {
+            val deckId = 1
+            val now = Instant.parse("2026-03-21T10:00:00Z").toEpochMilli()
 
-        every { clock.millis() } returns now
+            every { clock.millis() } returns now
 
-        val first = CardDomainTestData.card(id = 1)
-        val second = CardDomainTestData.card(id = 2)
-        val third = CardDomainTestData.card(id = 3)
+            val first = CardDomainTestData.card(id = 1)
+            val second = CardDomainTestData.card(id = 2)
+            val third = CardDomainTestData.card(id = 3)
 
-        val cards = listOf(first, second, third)
-        val deck = DeckDomainTestData.deck(
-            id = deckId,
-            cards = cards
-        )
-
-        every { repository.getDeckWithCardsById(deckId) } returns flowOf(
-            DFResult.Success(deck)
-        )
-
-        val useCase = GetDeckByIdUseCase(
-            repository = repository,
-            clock = clock
-        )
-
-        useCase(deckId).test {
-            val result = awaitItem()
-
-            result shouldBe DFResult.Success(
-                deck.copy(
-                    cards = cards
-                        .map { card ->
-                            card.copy(
-                                completedAt = null,
-                                postponedAt = null
-                            )
-                        }
-                        .sortedForSession()
+            val cards = listOf(first, second, third)
+            val deck =
+                DeckDomainTestData.deck(
+                    id = deckId,
+                    cards = cards,
                 )
-            )
 
-            awaitComplete()
+            every { repository.getDeckWithCardsById(deckId) } returns
+                flowOf(
+                    DFResult.Success(deck),
+                )
+
+            val useCase =
+                GetDeckByIdUseCase(
+                    repository = repository,
+                    clock = clock,
+                )
+
+            useCase(deckId).test {
+                val result = awaitItem()
+
+                result shouldBe
+                    DFResult.Success(
+                        deck.copy(
+                            cards =
+                                cards
+                                    .map { card ->
+                                        card.copy(
+                                            completedAt = null,
+                                            postponedAt = null,
+                                        )
+                                    }.sortedForSession(),
+                        ),
+                    )
+
+                awaitComplete()
+            }
         }
-    }
 }

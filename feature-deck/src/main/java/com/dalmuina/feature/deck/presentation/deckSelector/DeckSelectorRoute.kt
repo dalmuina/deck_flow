@@ -21,9 +21,9 @@ import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
-import com.dalmuina.feature.deck.model.DeckUi
 import com.dalmuina.feature.deck.component.DeckSlot
 import com.dalmuina.feature.deck.component.SwipeToDelete
+import com.dalmuina.feature.deck.model.DeckUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,7 +52,7 @@ fun DeckSelectorRoute(
             title = stringResource(R.string.delete_deck_dialog_title),
             message = stringResource(R.string.delete_dialog_message, deck.name),
             onConfirm = { viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck) },
-            onDismiss = { viewModel.process(DeckSelectorIntent.DismissDeleteDialog) }
+            onDismiss = { viewModel.process(DeckSelectorIntent.DismissDeleteDialog) },
         )
     }
 }
@@ -69,26 +69,30 @@ fun DeckSelectorScreen(
         EmptyState(text = stringResource(R.string.no_deck_created))
     } else {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(Spacing.l),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(Spacing.l),
             verticalArrangement = Arrangement.spacedBy(Spacing.l),
-            contentPadding = PaddingValues(
-                top = Spacing.l,
-                bottom = Spacing.xxl
-            )
+            contentPadding =
+                PaddingValues(
+                    top = Spacing.l,
+                    bottom = Spacing.xxl,
+                ),
         ) {
             items(
                 items,
-                key = { it.id }) { deck ->
+                key = { it.id },
+            ) { deck ->
                 Box(
-                    modifier = Modifier.animateItem(
-                        placementSpec = tween(350)
-                    )
+                    modifier =
+                        Modifier.animateItem(
+                            placementSpec = tween(350),
+                        ),
                 ) {
                     SwipeToDelete(
                         id = deck.id,
-                        onDelete = onDelete
+                        onDelete = onDelete,
                     ) {
                         DeckSlot(
                             deck,
@@ -101,7 +105,6 @@ fun DeckSelectorScreen(
                         )
                     }
                 }
-
             }
         }
     }
@@ -112,14 +115,15 @@ fun DeckSelectorScreen(
 fun DeckSelectorPreview() {
     DeckFlowTheme {
         DeckSelectorScreen(
-            items = listOf(
-                DeckUi(
-                    id = 0,
-                    name = "asd",
-                    cardCount = 4,
-                    isSelected = true,
-                )
-            ),
+            items =
+                listOf(
+                    DeckUi(
+                        id = 0,
+                        name = "asd",
+                        cardCount = 4,
+                        isSelected = true,
+                    ),
+                ),
             onEditDeck = {},
             onDelete = {},
             onDeckSelected = {},

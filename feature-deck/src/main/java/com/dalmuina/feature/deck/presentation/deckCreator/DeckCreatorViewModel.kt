@@ -40,9 +40,8 @@ class DeckCreatorViewModel(
     private val getDeckByIdUseCase: GetDeckByIdUseCase,
     private val deleteCardUseCase: DeleteCardUseCase,
     private val setDeckCardsUseCase: SetDeckCardsUseCase,
-    private val uiEventDispatcher: UiEventDispatcher
+    private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
-
     companion object {
         private const val DEFAULT_DECK_NAME = "Deck name"
         private const val STOP_SUBSCRIPTION = 5_000L
@@ -84,8 +83,7 @@ class DeckCreatorViewModel(
                 resolvedDeckId.value?.let { deckId ->
                     updateDeckNameUseCase(deckId, name)
                 }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     val uiState: StateFlow<DeckCreatorState> =
@@ -93,40 +91,38 @@ class DeckCreatorViewModel(
             cardsUiFlow,
             selectedCards,
             deckName,
-            cardPendingDelete
+            cardPendingDelete,
         ) { cards, selected, name, pendingDelete ->
 
             val orderMap = selected.associate { it.id to it.order }
 
-            val deckCards = cards
-                .map { card ->
-                    val order = orderMap[card.id]
+            val deckCards =
+                cards
+                    .map { card ->
+                        val order = orderMap[card.id]
 
-                    card.copy(
-                        isSelected = order != null,
-                        order = order
+                        card.copy(
+                            isSelected = order != null,
+                            order = order,
+                        )
+                    }.sortedWith(
+                        compareBy<CardUi> { !it.isSelected }
+                            .thenBy { it.order ?: Int.MAX_VALUE },
                     )
-                }
-                .sortedWith(
-                    compareBy<CardUi> { !it.isSelected }
-                        .thenBy { it.order ?: Int.MAX_VALUE }
-                )
 
             DeckCreatorState(
                 loading = false,
                 deckCard = deckCards,
                 name = name,
-                cardPendingDelete = pendingDelete
+                cardPendingDelete = pendingDelete,
             )
-        }
-            .onStart {
-                emit(DeckCreatorState(loading = true))
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
-                initialValue = DeckCreatorState(loading = true)
-            )
+        }.onStart {
+            emit(DeckCreatorState(loading = true))
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
+            initialValue = DeckCreatorState(loading = true),
+        )
 
     private fun loadDeck(deckId: Int) {
         getDeckByIdUseCase(deckId)
@@ -139,14 +135,13 @@ class DeckCreatorViewModel(
                                     card.order?.let { order ->
                                         SelectedCard(card.id, order)
                                     }
-                                }
-                                .sortedBy { it.order }
+                                }.sortedBy { it.order }
                         deckName.value = result.data.name
                     }
 
                     is DFResult.Error -> {
                         uiEventDispatcher.dispatch(
-                            UiEvent.ShowSnackBar(result.error.toUiText())
+                            UiEvent.ShowSnackBar(result.error.toUiText()),
                         )
                     }
                 }
@@ -179,7 +174,7 @@ class DeckCreatorViewModel(
                     .onSuccess { newDeckId -> resolvedDeckId.value = newDeckId }
                     .onFailure { error ->
                         uiEventDispatcher.dispatch(
-                            UiEvent.ShowSnackBar(error.toUiText())
+                            UiEvent.ShowSnackBar(error.toUiText()),
                         )
                     }
             } else {
@@ -190,10 +185,12 @@ class DeckCreatorViewModel(
 
     private fun onCardCreated(cardId: Int) {
         selectedCards.update { current ->
-            val newList = current + SelectedCard(
-                id = cardId,
-                order = current.size
-            )
+            val newList =
+                current +
+                    SelectedCard(
+                        id = cardId,
+                        order = current.size,
+                    )
 
             persistCards(newList.map { it.id })
 
@@ -202,7 +199,6 @@ class DeckCreatorViewModel(
     }
 
     private fun selectedCard(cardId: Int) {
-
         selectedCards.update { current ->
 
             val exists = current.any { it.id == cardId }
@@ -215,10 +211,11 @@ class DeckCreatorViewModel(
                             card.copy(order = index)
                         }
                 } else {
-                    current + SelectedCard(
-                        id = cardId,
-                        order = current.size
-                    )
+                    current +
+                        SelectedCard(
+                            id = cardId,
+                            order = current.size,
+                        )
                 }
 
             persistCards(newList.map { it.id })
@@ -240,14 +237,16 @@ class DeckCreatorViewModel(
                 .onSuccess { }
                 .onFailure { error ->
                     uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar(error.toUiText())
+                        UiEvent.ShowSnackBar(error.toUiText()),
                     )
                 }
         }
     }
 
-    private fun reorder(from: Int, to: Int) {
-
+    private fun reorder(
+        from: Int,
+        to: Int,
+    ) {
         selectedCards.update { current ->
 
             if (from == to) return@update current
@@ -257,9 +256,10 @@ class DeckCreatorViewModel(
             val item = mutable.removeAt(from)
             mutable.add(to, item)
 
-            val reordered = mutable.mapIndexed { index, card ->
-                card.copy(order = index)
-            }
+            val reordered =
+                mutable.mapIndexed { index, card ->
+                    card.copy(order = index)
+                }
 
             persistCards(reordered.map { it.id })
 

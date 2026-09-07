@@ -17,42 +17,43 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetAllCardsUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository: CardLocalDataSource = mockk()
 
     @Test
-    fun `invoke should emit cards when repository returns success`() = runTest {
-        val cards = CardDomainTestData.cards(1, 2, 3)
-        val expected = DFResult.Success(cards)
+    fun `invoke should emit cards when repository returns success`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1, 2, 3)
+            val expected = DFResult.Success(cards)
 
-        every { repository.getAllCards() } returns flowOf(expected)
+            every { repository.getAllCards() } returns flowOf(expected)
 
-        val useCase = GetAllCardsUseCase(repository)
+            val useCase = GetAllCardsUseCase(repository)
 
-        useCase().test {
-            awaitItem() shouldBe expected
-            awaitComplete()
+            useCase().test {
+                awaitItem() shouldBe expected
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `invoke should emit values from repository in order`() = runTest {
-        val first = DFResult.Success(CardDomainTestData.cards(1))
-        val second = DFResult.Success(CardDomainTestData.cards(1, 2))
-        val third = DFResult.Error<DataError.Local>(DataError.Local.ConstraintViolation)
+    fun `invoke should emit values from repository in order`() =
+        runTest {
+            val first = DFResult.Success(CardDomainTestData.cards(1))
+            val second = DFResult.Success(CardDomainTestData.cards(1, 2))
+            val third = DFResult.Error<DataError.Local>(DataError.Local.ConstraintViolation)
 
-        every { repository.getAllCards() } returns flowOf(first, second, third)
+            every { repository.getAllCards() } returns flowOf(first, second, third)
 
-        val useCase = GetAllCardsUseCase(repository)
+            val useCase = GetAllCardsUseCase(repository)
 
-        useCase().test {
-            awaitItem() shouldBe first
-            awaitItem() shouldBe second
-            awaitItem() shouldBe third
-            awaitComplete()
+            useCase().test {
+                awaitItem() shouldBe first
+                awaitItem() shouldBe second
+                awaitItem() shouldBe third
+                awaitComplete()
+            }
         }
-    }
 }

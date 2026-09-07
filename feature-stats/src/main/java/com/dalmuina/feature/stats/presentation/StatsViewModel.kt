@@ -10,9 +10,6 @@ import com.dalmuina.domain.usecase.GetAllDecksUseCase
 import com.dalmuina.domain.usecase.GetCardStatsUseCase
 import com.dalmuina.feature.stats.model.MonthHeatmapDayUi
 import com.dalmuina.feature.stats.model.toUi
-import java.time.Instant
-import java.time.YearMonth
-import java.time.ZoneId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,12 +21,14 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import java.time.Instant
+import java.time.YearMonth
+import java.time.ZoneId
 
 class StatsViewModel(
     getAllDecksUseCase: GetAllDecksUseCase,
     private val getCardStatsUseCase: GetCardStatsUseCase,
 ) : ViewModel() {
-
     private val selectedCardId = MutableStateFlow<Int?>(null)
     private val currentYearMonth = MutableStateFlow(YearMonth.now())
 
@@ -53,15 +52,17 @@ class StatsViewModel(
                     val allCards = result.data.flatMap { it.cards }
                     val activityOptions = allCards.map { it.toUi() }
 
-                    val effectiveCardId = activityOptions
-                        .firstOrNull { it.id == selectedCardId }
-                        ?.id
-                        ?: activityOptions.firstOrNull()?.id
+                    val effectiveCardId =
+                        activityOptions
+                            .firstOrNull { it.id == selectedCardId }
+                            ?.id
+                            ?: activityOptions.firstOrNull()?.id
 
-                    val cardDurationMillis = allCards
-                        .firstOrNull { it.id == effectiveCardId }
-                        ?.durationMillis
-                        ?: 0L
+                    val cardDurationMillis =
+                        allCards
+                            .firstOrNull { it.id == effectiveCardId }
+                            ?.durationMillis
+                            ?: 0L
 
                     SelectionData(
                         loading = false,
@@ -71,17 +72,17 @@ class StatsViewModel(
                     )
                 }
 
-                is DFResult.Error -> SelectionData(
-                    loading = false,
-                    selectedCardId = selectedCardId,
-                )
+                is DFResult.Error ->
+                    SelectionData(
+                        loading = false,
+                        selectedCardId = selectedCardId,
+                    )
             }
-        }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5_000),
-                SelectionData(loading = true),
-            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            SelectionData(loading = true),
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val statsState: StateFlow<StatsData> =
@@ -105,29 +106,30 @@ class StatsViewModel(
                 getCardStatsUseCase(cardId, prevFrom, prevTo),
             ) { currentResult, prevResult ->
                 when (currentResult) {
-                    is DFResult.Success -> StatsData(
-                        loading = false,
-                        year = yearMonth.year,
-                        month = yearMonth.monthValue,
-                        heatmapDays = buildMonthHeatmapDays(
-                            yearMonth.year,
-                            yearMonth.monthValue,
-                            currentResult.data,
-                            cardDuration,
-                        ),
-                        hasPreviousData = prevResult is DFResult.Success && prevResult.data.isNotEmpty(),
-                        hasNextMonth = hasNextMonth,
-                    )
+                    is DFResult.Success ->
+                        StatsData(
+                            loading = false,
+                            year = yearMonth.year,
+                            month = yearMonth.monthValue,
+                            heatmapDays =
+                                buildMonthHeatmapDays(
+                                    yearMonth.year,
+                                    yearMonth.monthValue,
+                                    currentResult.data,
+                                    cardDuration,
+                                ),
+                            hasPreviousData = prevResult is DFResult.Success && prevResult.data.isNotEmpty(),
+                            hasNextMonth = hasNextMonth,
+                        )
 
                     is DFResult.Error -> StatsData(loading = false)
                 }
             }.onStart { emit(StatsData(loading = true)) }
-        }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5_000),
-                StatsData(),
-            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            StatsData(),
+        )
 
     val uiState: StateFlow<StatsState> =
         combine(selectionState, statsState) { selection, stats ->
@@ -142,12 +144,11 @@ class StatsViewModel(
                 hasPreviousData = stats.hasPreviousData,
                 hasNextMonth = stats.hasNextMonth,
             )
-        }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5_000),
-                StatsState(loading = true),
-            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            StatsState(loading = true),
+        )
 
     private fun buildMonthHeatmapDays(
         year: Int,
@@ -157,15 +158,21 @@ class StatsViewModel(
     ): List<MonthHeatmapDayUi> {
         val zone = ZoneId.systemDefault()
         val ym = YearMonth.of(year, month)
-        val statsMap = stats.associateBy { stat ->
-            Instant.ofEpochMilli(stat.dayStart).atZone(zone).dayOfMonth
-        }
+        val statsMap =
+            stats.associateBy { stat ->
+                Instant.ofEpochMilli(stat.dayStart).atZone(zone).dayOfMonth
+            }
         return (1..ym.lengthOfMonth()).map { day ->
             val stat = statsMap[day]
             val totalSpent = stat?.totalSpentMillis ?: 0L
             MonthHeatmapDayUi(
                 dayOfMonth = day,
-                dayStart = ym.atDay(day).atStartOfDay(zone).toInstant().toEpochMilli(),
+                dayStart =
+                    ym
+                        .atDay(day)
+                        .atStartOfDay(zone)
+                        .toInstant()
+                        .toEpochMilli(),
                 totalSpentMillis = totalSpent,
                 completedCount = stat?.completedCount ?: 0,
                 level = totalSpent.toHeatmapLevel(cardDurationMillis),

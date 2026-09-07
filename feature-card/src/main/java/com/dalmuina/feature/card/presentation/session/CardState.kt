@@ -8,7 +8,7 @@ import com.dalmuina.feature.card.model.CardUi
 data class CardState(
     val loading: Boolean = false,
     val name: String = "",
-    val cards : List<CardUi> = emptyList(),
+    val cards: List<CardUi> = emptyList(),
     val isDeckSelected: Boolean = false,
     val completionPending: CardCompletionPending? = null,
 )

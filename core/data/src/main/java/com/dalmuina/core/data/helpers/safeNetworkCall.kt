@@ -11,10 +11,8 @@ import kotlinx.serialization.SerializationException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-suspend inline fun <T> safeNetworkCall(
-    crossinline call: suspend () -> T
-): DFResult<T, DataError> {
-    return try {
+suspend inline fun <T> safeNetworkCall(crossinline call: suspend () -> T): DFResult<T, DataError> =
+    try {
         DFResult.Success(call())
     } catch (e: CancellationException) {
         throw e
@@ -35,5 +33,3 @@ suspend inline fun <T> safeNetworkCall(
     } catch (e: Exception) {
         DFResult.Error(DataError.Network.Unknown(e))
     }
-}
-

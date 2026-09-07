@@ -15,41 +15,43 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetSelectedDeckUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository: SelectedDeckDataSource = mockk()
 
     @Test
-    fun `invoke should emit selected deck id when repository returns value`() = runTest {
-        val expected = 3
+    fun `invoke should emit selected deck id when repository returns value`() =
+        runTest {
+            val expected = 3
 
-        every { repository.selectedDeckId } returns flowOf(DFResult.Success(expected))
+            every { repository.selectedDeckId } returns flowOf(DFResult.Success(expected))
 
-        val useCase = GetSelectedDeckUseCase(repository)
+            val useCase = GetSelectedDeckUseCase(repository)
 
-        useCase().test {
-            awaitItem() shouldBe DFResult.Success(expected)
-            awaitComplete()
+            useCase().test {
+                awaitItem() shouldBe DFResult.Success(expected)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `invoke should emit values from repository in order`() = runTest {
-        every { repository.selectedDeckId } returns flowOf(
-            DFResult.Success(1),
-            DFResult.Success(2),
-            DFResult.Success(3)
-        )
+    fun `invoke should emit values from repository in order`() =
+        runTest {
+            every { repository.selectedDeckId } returns
+                flowOf(
+                    DFResult.Success(1),
+                    DFResult.Success(2),
+                    DFResult.Success(3),
+                )
 
-        val useCase = GetSelectedDeckUseCase(repository)
+            val useCase = GetSelectedDeckUseCase(repository)
 
-        useCase().test {
-            awaitItem() shouldBe DFResult.Success(1)
-            awaitItem() shouldBe DFResult.Success(2)
-            awaitItem() shouldBe DFResult.Success(3)
-            awaitComplete()
+            useCase().test {
+                awaitItem() shouldBe DFResult.Success(1)
+                awaitItem() shouldBe DFResult.Success(2)
+                awaitItem() shouldBe DFResult.Success(3)
+                awaitComplete()
+            }
         }
-    }
 }

@@ -28,10 +28,12 @@ class CardCreatorViewModel(
     private val getCardByIdUseCase: GetCardByIdUseCase,
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(CardCreatorState(
-        loading = mode is CardCreatorMode.Edit
-    ))
+    private val _uiState =
+        MutableStateFlow(
+            CardCreatorState(
+                loading = mode is CardCreatorMode.Edit,
+            ),
+        )
     val uiState: StateFlow<CardCreatorState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<CardCreatorEvent>()
@@ -73,13 +75,12 @@ class CardCreatorViewModel(
                         copy(
                             loading = false,
                             name = card.name,
-                            duration = card.durationMillis.milliseconds
+                            duration = card.durationMillis.milliseconds,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar(error.toUiText())
+                        UiEvent.ShowSnackBar(error.toUiText()),
                     )
                     reduce {
                         copy(
@@ -93,18 +94,19 @@ class CardCreatorViewModel(
     private fun changeName(value: String) {
         reduce {
             copy(
-                name = value
+                name = value,
             )
         }
     }
 
     private fun changeMinutes(raw: String) {
         val filtered = raw.filter(Char::isDigit)
-        val minutes = if (filtered.isBlank()) {
-            0L
-        } else {
-            filtered.toLongOrNull() ?: 0L
-        }
+        val minutes =
+            if (filtered.isBlank()) {
+                0L
+            } else {
+                filtered.toLongOrNull() ?: 0L
+            }
         reduce { copy(duration = minutes.minutes) }
     }
 
@@ -120,19 +122,20 @@ class CardCreatorViewModel(
         viewModelScope.launch {
             reduce { copy(processing = true) }
             val card = buildCard()
-            val result = when (mode) {
-                CardCreatorMode.Create ->
-                    saveCardUseCase(card)
+            val result =
+                when (mode) {
+                    CardCreatorMode.Create ->
+                        saveCardUseCase(card)
 
-                is CardCreatorMode.Edit ->
-                    updateCardUseCase(card)
-            }
+                    is CardCreatorMode.Edit ->
+                        updateCardUseCase(card)
+                }
             result
                 .onSuccess { cardId ->
                     _events.emit(CardCreatorEvent.CloseScreen(cardId))
                 }.onFailure { error ->
                     uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar(error.toUiText())
+                        UiEvent.ShowSnackBar(error.toUiText()),
                     )
                     reduce { copy(processing = false) }
                 }
@@ -155,12 +158,9 @@ class CardCreatorViewModel(
         }
     }
 
-    private inline fun reduce(
-        reducer: CardCreatorState.() -> CardCreatorState
-    ) {
+    private inline fun reduce(reducer: CardCreatorState.() -> CardCreatorState) {
         _uiState.update {
             it.reducer()
         }
     }
-
 }

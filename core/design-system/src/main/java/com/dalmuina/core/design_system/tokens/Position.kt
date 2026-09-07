@@ -3,7 +3,6 @@ package com.dalmuina.core.design_system.tokens
 import androidx.compose.ui.unit.dp
 
 object Spacing {
-
     /** Extra extra small spacing (2.dp) */
     val xxs = 2.dp
 
@@ -29,8 +28,10 @@ object Spacing {
 object Elevation {
     /** Extra small elevation (2.dp) */
     val xs = 2.dp
+
     /** Small elevation (3.dp) */
     val s = 3.dp
+
     /** Medium elevation (6.dp) */
     val m = 6.dp
 }

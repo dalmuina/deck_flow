@@ -60,9 +60,10 @@ fun CardCompletionDialogContent(
         shape = RoundedCornerShape(Corner.m),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Spacing.l),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(Spacing.l),
         ) {
             Text(
                 text = stringResource(R.string.completion_dialog_title),
@@ -105,11 +106,12 @@ fun CardCompletionDialogContent(
 fun CardCompletionDialogDefaultPreview() {
     DeckFlowTheme {
         CardCompletionDialogContent(
-            pending = CardCompletionPending(
-                cardId = 1,
-                cardName = "Morning Run",
-                spentDuration = 30.minutes,
-            ),
+            pending =
+                CardCompletionPending(
+                    cardId = 1,
+                    cardName = "Morning Run",
+                    spentDuration = 30.minutes,
+                ),
             onTimeChanged = {},
             onMoreTime = {},
             onLessTime = {},
@@ -124,11 +126,12 @@ fun CardCompletionDialogDefaultPreview() {
 fun CardCompletionDialogZeroPreview() {
     DeckFlowTheme {
         CardCompletionDialogContent(
-            pending = CardCompletionPending(
-                cardId = 2,
-                cardName = "Deep Work Session",
-                spentDuration = 0.minutes,
-            ),
+            pending =
+                CardCompletionPending(
+                    cardId = 2,
+                    cardName = "Deep Work Session",
+                    spentDuration = 0.minutes,
+                ),
             onTimeChanged = {},
             onMoreTime = {},
             onLessTime = {},

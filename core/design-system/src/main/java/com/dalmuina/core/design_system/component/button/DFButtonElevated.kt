@@ -10,17 +10,16 @@ import com.dalmuina.core.design_system.tokens.Elevation
 fun DFButtonElevated(
     modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-
     ElevatedButton(
         modifier = modifier,
-        elevation = ButtonDefaults.elevatedButtonElevation(
-            defaultElevation = Elevation.m
-        ),
+        elevation =
+            ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = Elevation.m,
+            ),
         onClick = onClick,
     ) {
         text()
     }
 }
-
