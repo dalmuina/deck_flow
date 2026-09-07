@@ -33,10 +33,11 @@ fun DFButtonFloating(
         )
         Spacer(modifier = Modifier.width(Spacing.m))
         FloatingActionButton(
-            elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = Elevation.m
-            ),
-            onClick = onClick
+            elevation =
+                FloatingActionButtonDefaults.elevation(
+                    defaultElevation = Elevation.m,
+                ),
+            onClick = onClick,
         ) {
             icon()
         }
@@ -52,10 +53,10 @@ fun DFButtonFloatingPreview() {
             icon = {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Deck"
+                    contentDescription = "Add Deck",
                 )
             },
-            onClick = {}
+            onClick = {},
         )
     }
 }

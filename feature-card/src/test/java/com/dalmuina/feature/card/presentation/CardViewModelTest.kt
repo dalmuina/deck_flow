@@ -11,7 +11,6 @@ import com.dalmuina.domain.usecase.CompleteCardUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
 import com.dalmuina.domain.usecase.GetSelectedDeckUseCase
 import com.dalmuina.domain.usecase.PostponeCardUseCase
-import com.dalmuina.feature.card.model.SwipeDirection
 import com.dalmuina.feature.card.presentation.session.CardIntent
 import com.dalmuina.feature.card.presentation.session.CardViewModel
 import io.kotest.matchers.shouldBe
@@ -25,11 +24,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class CardViewModelRobot {
-
     val getSelectedDeckUseCase = mockk<GetSelectedDeckUseCase>(relaxed = true)
     val getDeckByIdUseCase = mockk<GetDeckByIdUseCase>(relaxed = true)
 
-    val completeCardUseCase = mockk<CompleteCardUseCase>(relaxed= true)
+    val completeCardUseCase = mockk<CompleteCardUseCase>(relaxed = true)
 
     val postponeCardUseCase = mockk<PostponeCardUseCase>(relaxed = true)
 
@@ -44,7 +42,6 @@ class CardViewModelRobot {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CardViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -57,170 +54,173 @@ class CardViewModelTest {
     }
 
     @Test
-    fun `when viewModel starts then emits loading`() = runTest {
+    fun `when viewModel starts then emits loading`() =
+        runTest {
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                val loading = awaitItem()
 
-        viewModel.uiState.test {
+                loading.loading shouldBe true
 
-            val loading = awaitItem()
-
-            loading.loading shouldBe true
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when no deck selected then emits empty state`() = runTest {
+    fun `when no deck selected then emits empty state`() =
+        runTest {
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                awaitItem()
 
-        viewModel.uiState.test {
+                val state = awaitItem()
 
-            awaitItem()
+                state.cards shouldBe emptyList()
 
-            val state = awaitItem()
-
-            state.cards shouldBe emptyList()
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when deck selected then emits cards`() = runTest {
+    fun `when deck selected then emits cards`() =
+        runTest {
+            val deck =
+                DeckDomainTestData.deck(
+                    id = 1,
+                    cards =
+                        listOf(
+                            CardDomainTestData.card(1),
+                            CardDomainTestData.card(2),
+                            CardDomainTestData.card(3),
+                        ),
+                )
 
-        val deck = DeckDomainTestData.deck(
-            id = 1,
-            cards = listOf(
-                CardDomainTestData.card(1),
-                CardDomainTestData.card(2),
-                CardDomainTestData.card(3)
-            )
-        )
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
+            every { robot.getDeckByIdUseCase(1) } returns
+                flowOf(
+                    success(deck),
+                )
 
-        every { robot.getDeckByIdUseCase(1) } returns flowOf(
-            success(deck)
-        )
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                awaitItem() // loading
 
-        viewModel.uiState.test {
+                val state = awaitItem()
 
-            awaitItem() // loading
+                state.name shouldBe deck.name
+                state.cards.size shouldBe 3
 
-            val state = awaitItem()
-
-            state.name shouldBe deck.name
-            state.cards.size shouldBe 3
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when complete top card via dialog then first card is removed`() = runTest {
+    fun `when complete top card via dialog then first card is removed`() =
+        runTest {
+            val deck =
+                DeckDomainTestData.deck(
+                    id = 1,
+                    cards =
+                        listOf(
+                            CardDomainTestData.card(1),
+                            CardDomainTestData.card(2),
+                        ),
+                )
 
-        val deck = DeckDomainTestData.deck(
-            id = 1,
-            cards = listOf(
-                CardDomainTestData.card(1),
-                CardDomainTestData.card(2)
-            )
-        )
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
+            every { robot.getDeckByIdUseCase(1) } returns
+                flowOf(
+                    success(deck),
+                )
 
-        every { robot.getDeckByIdUseCase(1) } returns flowOf(
-            success(deck)
-        )
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                awaitLoaded()
 
-        viewModel.uiState.test {
+                viewModel.process(CardIntent.RequestCompleteCard(15000L))
+                awaitItem() // dialog opens
 
-            awaitLoaded()
+                viewModel.process(CardIntent.ConfirmCompletion)
+                val updated = awaitItem()
 
-            viewModel.process(CardIntent.RequestCompleteCard(15000L))
-            awaitItem() // dialog opens
+                updated.cards.first().id shouldBe 2
+                updated.cards.last().id shouldBe 2
 
-            viewModel.process(CardIntent.ConfirmCompletion)
-            val updated = awaitItem()
-
-            updated.cards.first().id shouldBe 2
-            updated.cards.last().id shouldBe 2
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when dismiss completion then completionPending is cleared`() = runTest {
+    fun `when dismiss completion then completionPending is cleared`() =
+        runTest {
+            val deck =
+                DeckDomainTestData.deck(
+                    id = 1,
+                    cards = listOf(CardDomainTestData.card(1)),
+                )
 
-        val deck = DeckDomainTestData.deck(
-            id = 1,
-            cards = listOf(CardDomainTestData.card(1))
-        )
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
+            every { robot.getDeckByIdUseCase(1) } returns flowOf(success(deck))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
-        every { robot.getDeckByIdUseCase(1) } returns flowOf(success(deck))
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                awaitLoaded()
 
-        viewModel.uiState.test {
+                viewModel.process(CardIntent.RequestCompleteCard(60000L))
+                val withDialog = awaitItem()
+                withDialog.completionPending shouldBe withDialog.completionPending
 
-            awaitLoaded()
+                viewModel.process(CardIntent.DismissCompletion)
+                val dismissed = awaitItem()
 
-            viewModel.process(CardIntent.RequestCompleteCard(60000L))
-            val withDialog = awaitItem()
-            withDialog.completionPending shouldBe withDialog.completionPending
+                dismissed.completionPending shouldBe null
+                dismissed.cards.size shouldBe 1
 
-            viewModel.process(CardIntent.DismissCompletion)
-            val dismissed = awaitItem()
-
-            dismissed.completionPending shouldBe null
-            dismissed.cards.size shouldBe 1
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when completeTopCard with empty cards then state unchanged`() = runTest {
+    fun `when completeTopCard with empty cards then state unchanged`() =
+        runTest {
+            val deck =
+                DeckDomainTestData.deck(
+                    id = 1,
+                    cards = emptyList(),
+                )
 
-        val deck = DeckDomainTestData.deck(
-            id = 1,
-            cards = emptyList()
-        )
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
+            every { robot.getDeckByIdUseCase(1) } returns
+                flowOf(
+                    success(deck),
+                )
 
-        every { robot.getDeckByIdUseCase(1) } returns flowOf(
-            success(deck)
-        )
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                awaitItem() // loading
 
-        viewModel.uiState.test {
+                val initial = awaitItem()
 
-            awaitItem() // loading
+                viewModel.process(CardIntent.RequestCompleteCard(15000L))
 
-            val initial = awaitItem()
+                expectNoEvents()
 
-            viewModel.process(CardIntent.RequestCompleteCard(15000L))
+                initial.cards shouldBe emptyList()
 
-            expectNoEvents()
-
-            initial.cards shouldBe emptyList()
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 }

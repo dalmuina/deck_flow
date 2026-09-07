@@ -7,17 +7,18 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Immutable
 data class CardUi(
-    val id: Int=0,
+    val id: Int = 0,
     val name: String,
     val duration: Duration,
     val isSelected: Boolean,
     val order: Int? = null,
 )
 
-fun CardDomain.toUi(): CardUi = CardUi(
-    id = id,
-    name = name,
-    duration = durationMillis.milliseconds,
-    isSelected = true,
-    order = order,
-)
+fun CardDomain.toUi(): CardUi =
+    CardUi(
+        id = id,
+        name = name,
+        duration = durationMillis.milliseconds,
+        isSelected = true,
+        order = order,
+    )

@@ -6,7 +6,6 @@ import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class ReminderSchedulerTest {
-
     @Test
     fun `millisUntilNextOccurrenceOf returns delay to today when target hour is still upcoming`() {
         val now = calendarAt(hour = 8, minute = 0)
@@ -34,7 +33,10 @@ class ReminderSchedulerTest {
         result shouldBe TimeUnit.DAYS.toMillis(1)
     }
 
-    private fun calendarAt(hour: Int, minute: Int): Calendar =
+    private fun calendarAt(
+        hour: Int,
+        minute: Int,
+    ): Calendar =
         Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)

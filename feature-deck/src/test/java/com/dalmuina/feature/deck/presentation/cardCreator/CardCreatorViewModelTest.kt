@@ -2,11 +2,11 @@ package com.dalmuina.feature.deck.presentation.cardCreator
 
 import app.cash.turbine.test
 import com.dalmuina.core.presentation.events.UiEventDispatcher
+import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.core.test.helpers.failure
 import com.dalmuina.core.test.helpers.success
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
@@ -22,7 +22,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class CardCreatorViewModelRobot {
-
     val saveCardUseCase = mockk<SaveCardUseCase>(relaxed = true)
     val updateCardUseCase = mockk<UpdateCardUseCase>(relaxed = true)
     val getCardByIdUseCase = mockk<GetCardByIdUseCase>(relaxed = true)
@@ -34,13 +33,12 @@ class CardCreatorViewModelRobot {
             saveCardUseCase = saveCardUseCase,
             updateCardUseCase = updateCardUseCase,
             getCardByIdUseCase = getCardByIdUseCase,
-            uiEventDispatcher = uiEventDispatcher
+            uiEventDispatcher = uiEventDispatcher,
         )
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CardCreatorViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -53,147 +51,140 @@ class CardCreatorViewModelTest {
     }
 
     @Test
-    fun `when name changes then uiState updates`() = runTest {
+    fun `when name changes then uiState updates`() =
+        runTest {
+            viewModel = robot.build(CardCreatorMode.Create)
 
-        viewModel = robot.build(CardCreatorMode.Create)
+            viewModel.process(CardCreatorIntent.NameChanged("Test card"))
 
-        viewModel.process(CardCreatorIntent.NameChanged("Test card"))
+            viewModel.uiState.test {
+                val state = awaitItem()
 
-        viewModel.uiState.test {
+                state.name shouldBe "Test card"
 
-            val state = awaitItem()
-
-            state.name shouldBe "Test card"
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when time text changes then duration updates`() = runTest {
+    fun `when time text changes then duration updates`() =
+        runTest {
+            viewModel = robot.build(CardCreatorMode.Create)
 
-        viewModel = robot.build(CardCreatorMode.Create)
+            viewModel.process(CardCreatorIntent.TimeChanged("15"))
 
-        viewModel.process(CardCreatorIntent.TimeChanged("15"))
+            viewModel.uiState.test {
+                val state = awaitItem()
 
-        viewModel.uiState.test {
+                state.duration.inWholeMinutes shouldBe 15
 
-            val state = awaitItem()
-
-            state.duration.inWholeMinutes shouldBe 15
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when MoreTime intent then duration increases`() = runTest {
+    fun `when MoreTime intent then duration increases`() =
+        runTest {
+            viewModel = robot.build(CardCreatorMode.Create)
 
-        viewModel = robot.build(CardCreatorMode.Create)
+            viewModel.process(CardCreatorIntent.TimeChanged("5"))
+            viewModel.process(CardCreatorIntent.MoreTime)
 
-        viewModel.process(CardCreatorIntent.TimeChanged("5"))
-        viewModel.process(CardCreatorIntent.MoreTime)
+            viewModel.uiState.test {
+                val state = awaitItem()
 
-        viewModel.uiState.test {
+                state.duration.inWholeMinutes shouldBe 6
 
-            val state = awaitItem()
-
-            state.duration.inWholeMinutes shouldBe 6
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when LessTime at zero then duration stays zero`() = runTest {
+    fun `when LessTime at zero then duration stays zero`() =
+        runTest {
+            viewModel = robot.build(CardCreatorMode.Create)
 
-        viewModel = robot.build(CardCreatorMode.Create)
+            viewModel.process(CardCreatorIntent.LessTime)
 
-        viewModel.process(CardCreatorIntent.LessTime)
+            viewModel.uiState.test {
+                val state = awaitItem()
 
-        viewModel.uiState.test {
+                state.duration.inWholeMinutes shouldBe 0
 
-            val state = awaitItem()
-
-            state.duration.inWholeMinutes shouldBe 0
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when edit mode loads card then uiState populated`() = runTest {
+    fun `when edit mode loads card then uiState populated`() =
+        runTest {
+            val card = CardDomainTestData.card(5)
 
-        val card = CardDomainTestData.card(5)
+            coEvery { robot.getCardByIdUseCase(5) } returns success(card)
 
-        coEvery { robot.getCardByIdUseCase(5) } returns success(card)
+            viewModel = robot.build(CardCreatorMode.Edit(5))
 
-        viewModel = robot.build(CardCreatorMode.Edit(5))
+            viewModel.uiState.test {
+                val loading = awaitItem()
+                loading.loading shouldBe true
 
-        viewModel.uiState.test {
+                val loaded = awaitItem()
 
-            val loading = awaitItem()
-            loading.loading shouldBe true
+                loaded.loading shouldBe false
+                loaded.name shouldBe card.name
 
-            val loaded = awaitItem()
-
-            loaded.loading shouldBe false
-            loaded.name shouldBe card.name
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when save card in create mode then saveCardUseCase called`() = runTest {
+    fun `when save card in create mode then saveCardUseCase called`() =
+        runTest {
+            coEvery { robot.saveCardUseCase(any()) } returns success(7)
 
-        coEvery { robot.saveCardUseCase(any()) } returns success(7)
+            viewModel = robot.build(CardCreatorMode.Create)
 
-        viewModel = robot.build(CardCreatorMode.Create)
+            viewModel.process(CardCreatorIntent.NameChanged("Test"))
+            viewModel.process(CardCreatorIntent.SaveActivity)
 
-        viewModel.process(CardCreatorIntent.NameChanged("Test"))
-        viewModel.process(CardCreatorIntent.SaveActivity)
+            advanceUntilIdle()
 
-        advanceUntilIdle()
-
-        coVerify {
-            robot.saveCardUseCase(any())
+            coVerify {
+                robot.saveCardUseCase(any())
+            }
         }
-    }
 
     @Test
-    fun `when save succeeds then emits CloseScreen event`() = runTest {
+    fun `when save succeeds then emits CloseScreen event`() =
+        runTest {
+            coEvery { robot.saveCardUseCase(any()) } returns success(7)
 
-        coEvery { robot.saveCardUseCase(any()) } returns success(7)
+            viewModel = robot.build(CardCreatorMode.Create)
 
-        viewModel = robot.build(CardCreatorMode.Create)
+            viewModel.events.test {
+                viewModel.process(CardCreatorIntent.SaveActivity)
 
-        viewModel.events.test {
+                advanceUntilIdle()
+
+                awaitItem() shouldBe CardCreatorEvent.CloseScreen(7)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `when save fails then dispatch snackbar`() =
+        runTest {
+            coEvery { robot.saveCardUseCase(any()) } returns failure(ErrorTestData.unknown)
+
+            viewModel = robot.build(CardCreatorMode.Create)
 
             viewModel.process(CardCreatorIntent.SaveActivity)
 
             advanceUntilIdle()
 
-            awaitItem() shouldBe CardCreatorEvent.CloseScreen(7)
-
-            cancelAndIgnoreRemainingEvents()
+            coVerify {
+                robot.uiEventDispatcher.dispatch(any())
+            }
         }
-    }
-
-    @Test
-    fun `when save fails then dispatch snackbar`() = runTest {
-
-        coEvery { robot.saveCardUseCase(any()) } returns failure(ErrorTestData.unknown)
-
-        viewModel = robot.build(CardCreatorMode.Create)
-
-        viewModel.process(CardCreatorIntent.SaveActivity)
-
-        advanceUntilIdle()
-
-        coVerify {
-            robot.uiEventDispatcher.dispatch(any())
-        }
-    }
-
 }

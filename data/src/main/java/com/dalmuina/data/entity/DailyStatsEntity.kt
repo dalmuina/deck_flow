@@ -5,7 +5,7 @@ import com.dalmuina.domain.model.DailyStatsDomain
 data class DailyStatsEntity(
     val dayStart: Long,
     val totalSpentMillis: Long,
-    val completedCount: Int
+    val completedCount: Int,
 )
 
 fun DailyStatsEntity.toDomain(): DailyStatsDomain =

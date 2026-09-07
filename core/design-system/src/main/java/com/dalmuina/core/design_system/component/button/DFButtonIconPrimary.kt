@@ -25,31 +25,31 @@ import com.dalmuina.core.design_system.tokens.IconSize
 
 @Composable
 fun DFButtonIconPrimary(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     contentDescription: String,
-    onAction: ()->Unit,
+    onAction: () -> Unit,
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(Dimen.l)
-            .clip(RoundedCornerShape(Corner.s))
-            .background(MaterialTheme.colorScheme.primary)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = ripple(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.25f)),
-                onClick = {onAction()},
-            )
+        modifier =
+            modifier
+                .size(Dimen.l)
+                .clip(RoundedCornerShape(Corner.s))
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = ripple(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.25f)),
+                    onClick = { onAction() },
+                ),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.size(IconSize.l)
+            modifier = Modifier.size(IconSize.l),
         )
     }
 }
@@ -60,7 +60,7 @@ fun DFButtonIconPrimaryPreview() {
     DeckFlowTheme {
         DFButtonIconPrimary(
             icon = Icons.Default.PlayArrow,
-            contentDescription = ""
+            contentDescription = "",
         ) { }
     }
 }

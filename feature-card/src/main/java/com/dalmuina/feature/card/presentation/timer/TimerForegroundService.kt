@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class TimerForegroundService : Service() {
-
     private val observeTimerState: ObserveTimerStateUseCase by inject()
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var watchJob: Job? = null
@@ -42,18 +41,25 @@ class TimerForegroundService : Service() {
         const val NOTIFICATION_ID = 1001
         const val CHANNEL_ID = "timer_channel"
 
-        fun startIntent(context: Context, endTimeMillis: Long, cardName: String): Intent =
+        fun startIntent(
+            context: Context,
+            endTimeMillis: Long,
+            cardName: String,
+        ): Intent =
             Intent(context, TimerForegroundService::class.java).apply {
                 action = ACTION_START
                 putExtra(EXTRA_END_TIME_MILLIS, endTimeMillis)
                 putExtra(EXTRA_CARD_NAME, cardName)
             }
 
-        fun stopIntent(context: Context): Intent =
-            Intent(context, TimerForegroundService::class.java).apply { action = ACTION_STOP }
+        fun stopIntent(context: Context): Intent = Intent(context, TimerForegroundService::class.java).apply { action = ACTION_STOP }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         when (intent?.action) {
             ACTION_START -> startForegroundWithTimer(intent)
             ACTION_STOP -> stopSelf()
@@ -75,17 +81,21 @@ class TimerForegroundService : Service() {
         startForeground(NOTIFICATION_ID, buildNotification(isRunning = true, timeText = initialText, cardName))
 
         watchJob?.cancel()
-        watchJob = serviceScope.launch {
-            observeTimerState()
-                .catch { }
-                .collect { result ->
-                    if (result !is DFResult.Success) return@collect
-                    onTimerStateChanged(result.data, cardName)
-                }
-        }
+        watchJob =
+            serviceScope.launch {
+                observeTimerState()
+                    .catch { }
+                    .collect { result ->
+                        if (result !is DFResult.Success) return@collect
+                        onTimerStateChanged(result.data, cardName)
+                    }
+            }
     }
 
-    private fun onTimerStateChanged(state: PersistedTimerState, cardName: String) {
+    private fun onTimerStateChanged(
+        state: PersistedTimerState,
+        cardName: String,
+    ) {
         tickJob?.cancel()
 
         if (state.cardId == null) {
@@ -96,24 +106,29 @@ class TimerForegroundService : Service() {
         }
 
         val endTimeMillis = state.endTimeMillis
-        tickJob = if (state.isRunning && endTimeMillis != null) {
-            serviceScope.launch { tickWhileRunning(endTimeMillis, cardName) }
-        } else {
-            notify(buildNotification(isRunning = false, timeText = state.remainingMillis.toTimerText(), cardName))
-            null
-        }
+        tickJob =
+            if (state.isRunning && endTimeMillis != null) {
+                serviceScope.launch { tickWhileRunning(endTimeMillis, cardName) }
+            } else {
+                notify(buildNotification(isRunning = false, timeText = state.remainingMillis.toTimerText(), cardName))
+                null
+            }
     }
 
-    private suspend fun tickWhileRunning(endTimeMillis: Long, cardName: String) {
+    private suspend fun tickWhileRunning(
+        endTimeMillis: Long,
+        cardName: String,
+    ) {
         while (currentCoroutineContext().isActive) {
             val now = System.currentTimeMillis()
             val remaining = endTimeMillis - now
 
-            val timeText = if (remaining > 0) {
-                remaining.toTimerText()
-            } else {
-                "+${(-remaining).toTimerText()}"
-            }
+            val timeText =
+                if (remaining > 0) {
+                    remaining.toTimerText()
+                } else {
+                    "+${(-remaining).toTimerText()}"
+                }
 
             notify(buildNotification(isRunning = true, timeText = timeText, cardName))
 
@@ -126,35 +141,43 @@ class TimerForegroundService : Service() {
         getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
     }
 
-    private fun buildNotification(isRunning: Boolean, timeText: String, cardName: String): Notification {
-        val tapIntent = PendingIntent.getActivity(
-            this,
-            0,
-            packageManager.getLaunchIntentForPackage(packageName),
-            PendingIntent.FLAG_IMMUTABLE,
-        )
-
-        val toggleAction = if (isRunning) {
-            NotificationCompat.Action(
-                R.drawable.ic_notification_pause,
-                getString(R.string.timer_action_pause),
-                TimerNotificationActionReceiver.togglePendingIntent(this),
+    private fun buildNotification(
+        isRunning: Boolean,
+        timeText: String,
+        cardName: String,
+    ): Notification {
+        val tapIntent =
+            PendingIntent.getActivity(
+                this,
+                0,
+                packageManager.getLaunchIntentForPackage(packageName),
+                PendingIntent.FLAG_IMMUTABLE,
             )
-        } else {
+
+        val toggleAction =
+            if (isRunning) {
+                NotificationCompat.Action(
+                    R.drawable.ic_notification_pause,
+                    getString(R.string.timer_action_pause),
+                    TimerNotificationActionReceiver.togglePendingIntent(this),
+                )
+            } else {
+                NotificationCompat.Action(
+                    R.drawable.ic_notification_play,
+                    getString(R.string.timer_action_play),
+                    TimerNotificationActionReceiver.togglePendingIntent(this),
+                )
+            }
+
+        val completeAction =
             NotificationCompat.Action(
-                R.drawable.ic_notification_play,
-                getString(R.string.timer_action_play),
-                TimerNotificationActionReceiver.togglePendingIntent(this),
+                R.drawable.ic_notification_check,
+                getString(R.string.timer_action_complete),
+                TimerNotificationActionReceiver.completePendingIntent(this),
             )
-        }
 
-        val completeAction = NotificationCompat.Action(
-            R.drawable.ic_notification_check,
-            getString(R.string.timer_action_complete),
-            TimerNotificationActionReceiver.completePendingIntent(this),
-        )
-
-        return NotificationCompat.Builder(this, CHANNEL_ID)
+        return NotificationCompat
+            .Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_timer_notification)
             .setContentTitle(getString(R.string.timer_notification_title, cardName))
             .setContentText(getString(R.string.timer_notification_text, timeText))
@@ -170,11 +193,12 @@ class TimerForegroundService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                getString(R.string.timer_notification_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            ).apply { setShowBadge(false) }
+            val channel =
+                NotificationChannel(
+                    CHANNEL_ID,
+                    getString(R.string.timer_notification_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ).apply { setShowBadge(false) }
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
     }

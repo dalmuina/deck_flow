@@ -16,47 +16,50 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PostponeCardUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository: CardLocalDataSource = mockk()
 
     @Test
-    fun `invoke should return success when repository postpones card successfully`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = PostponeCardUseCase(
-            repository = repository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return success when repository postpones card successfully`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                PostponeCardUseCase(
+                    repository = repository,
+                    dispatcher = dispatcher,
+                )
 
-        val cardId = 1
-        val expected = DFResult.Success(1)
+            val cardId = 1
+            val expected = DFResult.Success(1)
 
-        coEvery { repository.postponeCard(cardId) } returns expected
+            coEvery { repository.postponeCard(cardId) } returns expected
 
-        val result = useCase(cardId)
+            val result = useCase(cardId)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.postponeCard(cardId) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.postponeCard(cardId) }
+        }
 
     @Test
-    fun `invoke should return error when repository fails postponing card`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = PostponeCardUseCase(
-            repository = repository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return error when repository fails postponing card`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                PostponeCardUseCase(
+                    repository = repository,
+                    dispatcher = dispatcher,
+                )
 
-        val cardId = 1
-        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+            val cardId = 1
+            val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
-        coEvery { repository.postponeCard(cardId) } returns expected
+            coEvery { repository.postponeCard(cardId) } returns expected
 
-        val result = useCase(cardId)
+            val result = useCase(cardId)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.postponeCard(cardId) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.postponeCard(cardId) }
+        }
 }

@@ -14,8 +14,8 @@ import com.dalmuina.data.entity.DeckEntity
     entities = [CardEntity::class, DeckEntity::class, DeckCardCrossEntity::class, CardProgressEntity::class, CardHistoryEntity::class],
     version = 1,
 )
-
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cardDao(): DFCardDao
+
     abstract fun deckDao(): DFDeckDao
 }

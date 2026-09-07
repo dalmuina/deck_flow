@@ -22,19 +22,20 @@ fun <T : DFSelectableOption> DFDropdownSelector(
     options: List<T>,
     selectedId: Int?,
     onSelected: (Int) -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    var selectedText = options
-        .firstOrNull { it.id == selectedId }
-        ?.name
-        .orEmpty()
+    var selectedText =
+        options
+            .firstOrNull { it.id == selectedId }
+            ?.name
+            .orEmpty()
 
     ExposedDropdownMenuBox(
         modifier = modifier,
         expanded = expanded,
-        onExpandedChange = { if (enabled) expanded = !expanded }
+        onExpandedChange = { if (enabled) expanded = !expanded },
     ) {
         OutlinedTextField(
             value = selectedText,
@@ -43,15 +44,16 @@ fun <T : DFSelectableOption> DFDropdownSelector(
             },
             readOnly = true,
             label = { Text(label) },
-            modifier = Modifier
-                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                .fillMaxWidth(),
-            enabled = enabled
+            modifier =
+                Modifier
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth(),
+            enabled = enabled,
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
@@ -59,7 +61,7 @@ fun <T : DFSelectableOption> DFDropdownSelector(
                     onClick = {
                         expanded = false
                         onSelected(option.id)
-                    }
+                    },
                 )
             }
         }

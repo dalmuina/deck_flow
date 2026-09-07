@@ -1,6 +1,5 @@
 package com.dalmuina.core.design_system.component.badge
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,10 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
-import com.dalmuina.core.design_system.theme.SuccessContainer
-import com.dalmuina.core.design_system.theme.Success
 import com.dalmuina.core.design_system.theme.PostponeContainer
-import com.dalmuina.core.design_system.theme.Postpone
+import com.dalmuina.core.design_system.theme.SuccessContainer
 import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.core.design_system.tokens.Stroke
@@ -37,22 +34,23 @@ fun DFBadgeSwipe(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = modifier
-            .rotate(rotation)
-            .clip(RoundedCornerShape(Corner.m))
-            .border(
-                width = Stroke.l,
-                color = strokeColor.copy(alpha = alpha),
-                shape = RoundedCornerShape(Corner.m)
-            )
-            .padding(horizontal = Spacing.l, vertical = Spacing.s)
+        modifier =
+            modifier
+                .rotate(rotation)
+                .clip(RoundedCornerShape(Corner.m))
+                .border(
+                    width = Stroke.l,
+                    color = strokeColor.copy(alpha = alpha),
+                    shape = RoundedCornerShape(Corner.m),
+                ).padding(horizontal = Spacing.l, vertical = Spacing.s),
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 0.10.sp,
-            ),
+            style =
+                MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.10.sp,
+                ),
             color = Color.White.copy(alpha = alpha),
         )
     }

@@ -11,11 +11,11 @@ import com.dalmuina.core.design_system.theme.DeckFlowTheme
 
 @Composable
 fun DFButton(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
     isLoading: Boolean = false,
     isEnable: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Button(
         modifier = modifier,
@@ -37,7 +37,7 @@ fun DFButton(
 fun DFButtonPreview() {
     DeckFlowTheme {
         DFButton(
-            text = {Text(text = "Create")}
+            text = { Text(text = "Create") },
         ) { }
     }
 }

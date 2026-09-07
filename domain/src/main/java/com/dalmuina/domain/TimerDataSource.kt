@@ -8,5 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TimerDataSource {
     fun observeTimerState(): Flow<DFResult<PersistedTimerState, DataError>>
+
     suspend fun saveTimerState(state: PersistedTimerState): EmptyResult<DataError>
 }

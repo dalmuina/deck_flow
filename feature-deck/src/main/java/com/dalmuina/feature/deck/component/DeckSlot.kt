@@ -48,11 +48,12 @@ fun DeckSlot(
 ) {
     val height by animateDpAsState(
         targetValue = if (deck.isSelected) 160.dp else 100.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "deck_height_${deck.id}"
+        animationSpec =
+            spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMedium,
+            ),
+        label = "deck_height_${deck.id}",
     )
 
     if (deck.isSelected) {
@@ -60,14 +61,14 @@ fun DeckSlot(
             deck = deck,
             height = height,
             onEdit = onEdit,
-            onDeckSelected = onDeckSelected
+            onDeckSelected = onDeckSelected,
         )
     } else {
         RegularDeckSlot(
             deck = deck,
             height = height,
             onEdit = onEdit,
-            onDeckSelected = onDeckSelected
+            onDeckSelected = onDeckSelected,
         )
     }
 }
@@ -85,32 +86,36 @@ private fun HeroDeckSlot(
     val shape = RoundedCornerShape(Corner.s)
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(height),
         onClick = onEdit,
         shape = shape,
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(brush),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(brush),
         ) {
             // Decorative circle
             Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .align(Alignment.TopEnd)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.1f))
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .align(Alignment.TopEnd)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.1f)),
             )
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(Spacing.l),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(Spacing.l),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
@@ -125,11 +130,12 @@ private fun HeroDeckSlot(
                     )
                     Checkbox(
                         checked = deck.isSelected,
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = Color.White.copy(alpha = 0.7f),
-                            uncheckedColor = Color.White.copy(alpha = 0.7f),
-                            checkmarkColor = Color.White,
-                        ),
+                        colors =
+                            CheckboxDefaults.colors(
+                                checkedColor = Color.White.copy(alpha = 0.7f),
+                                uncheckedColor = Color.White.copy(alpha = 0.7f),
+                                checkmarkColor = Color.White,
+                            ),
                         onCheckedChange = { onDeckSelected(deck.id) },
                     )
                 }
@@ -155,19 +161,21 @@ private fun RegularDeckSlot(
     val shape = RoundedCornerShape(Corner.s)
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height)
-            .border(width = 1.dp, color = borderColor, shape = shape),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(height)
+                .border(width = 1.dp, color = borderColor, shape = shape),
         onClick = onEdit,
         shape = shape,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(Spacing.l),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(Spacing.l),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(

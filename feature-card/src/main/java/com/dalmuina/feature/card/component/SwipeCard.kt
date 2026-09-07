@@ -25,72 +25,62 @@ fun SwipeCard(
     onDragProgress: (Float) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-
     val scope = rememberCoroutineScope()
     val offsetX = remember { Animatable(0f) }
     val threshold = 300f
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .offset { IntOffset(offsetX.value.roundToInt(), 0) }
-            .graphicsLayer {
-                rotationZ = offsetX.value / 60
-            }
-            .pointerInput(Unit) {
-                detectDragGestures(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+                .graphicsLayer {
+                    rotationZ = offsetX.value / 60
+                }.pointerInput(Unit) {
+                    detectDragGestures(
+                        onDrag = { change, dragAmount ->
+                            change.consume()
 
-                    onDrag = { change, dragAmount ->
-                        change.consume()
-
-                        scope.launch {
-                            val newOffset = offsetX.value + dragAmount.x
-                            offsetX.snapTo(newOffset)
-                            onDragProgress(newOffset)
-                        }
-                    },
-
-                    onDragEnd = {
-
-                        scope.launch {
-
-                            if (offsetX.value > threshold) {
-
-                                offsetX.animateTo(
-                                    targetValue = 1000f,
-                                    animationSpec = tween(300)
-                                )
-
-                                onSwiped(SwipeDirection.RIGHT)
-
-                                offsetX.snapTo(0f)
-                                onDragProgress(0f)
-
-                            } else if (offsetX.value < -threshold) {
-
-                                offsetX.animateTo(
-                                    targetValue = -1000f,
-                                    animationSpec = tween(300)
-                                )
-
-                                onSwiped(SwipeDirection.LEFT)
-
-                                offsetX.snapTo(0f)
-                                onDragProgress(0f)
-
-                            } else {
-
-                                offsetX.animateTo(
-                                    targetValue = 0f,
-                                    animationSpec = spring()
-                                )
-
-                                onDragProgress(0f)
+                            scope.launch {
+                                val newOffset = offsetX.value + dragAmount.x
+                                offsetX.snapTo(newOffset)
+                                onDragProgress(newOffset)
                             }
-                        }
-                    }
-                )
-            }
+                        },
+                        onDragEnd = {
+                            scope.launch {
+                                if (offsetX.value > threshold) {
+                                    offsetX.animateTo(
+                                        targetValue = 1000f,
+                                        animationSpec = tween(300),
+                                    )
+
+                                    onSwiped(SwipeDirection.RIGHT)
+
+                                    offsetX.snapTo(0f)
+                                    onDragProgress(0f)
+                                } else if (offsetX.value < -threshold) {
+                                    offsetX.animateTo(
+                                        targetValue = -1000f,
+                                        animationSpec = tween(300),
+                                    )
+
+                                    onSwiped(SwipeDirection.LEFT)
+
+                                    offsetX.snapTo(0f)
+                                    onDragProgress(0f)
+                                } else {
+                                    offsetX.animateTo(
+                                        targetValue = 0f,
+                                        animationSpec = spring(),
+                                    )
+
+                                    onDragProgress(0f)
+                                }
+                            }
+                        },
+                    )
+                },
     ) {
         content()
     }

@@ -13,7 +13,8 @@ fun EmptyState(
     text: String,
 ) {
     Box(
-        modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
         Text(text)
     }

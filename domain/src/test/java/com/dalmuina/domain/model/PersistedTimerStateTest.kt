@@ -4,16 +4,16 @@ import io.kotest.matchers.shouldBe
 import org.junit.Test
 
 class PersistedTimerStateTest {
-
     @Test
     fun `when pausedAt while running then freezes remaining and elapsed`() {
         val now = 10_000L
-        val state = PersistedTimerState(
-            totalMillis = 5_000L,
-            endTimeMillis = now + 2_000L,
-            isRunning = true,
-            cardId = 1,
-        )
+        val state =
+            PersistedTimerState(
+                totalMillis = 5_000L,
+                endTimeMillis = now + 2_000L,
+                isRunning = true,
+                cardId = 1,
+            )
 
         val paused = state.pausedAt(now)
 
@@ -27,13 +27,14 @@ class PersistedTimerStateTest {
     @Test
     fun `when resumedAt while paused then recomputes endTimeMillis from elapsed`() {
         val now = 10_000L
-        val state = PersistedTimerState(
-            totalMillis = 5_000L,
-            elapsedMillis = 3_000L,
-            remainingMillis = 2_000L,
-            isRunning = false,
-            cardId = 2,
-        )
+        val state =
+            PersistedTimerState(
+                totalMillis = 5_000L,
+                elapsedMillis = 3_000L,
+                remainingMillis = 2_000L,
+                isRunning = false,
+                cardId = 2,
+            )
 
         val resumed = state.resumedAt(now)
 

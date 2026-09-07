@@ -18,17 +18,17 @@ import androidx.compose.ui.Modifier
 fun SwipeToDelete(
     id: Int,
     onDelete: (Int) -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) {
-                onDelete(id)
-            }
-            false
-        }
-    )
+    val dismissState =
+        rememberSwipeToDismissBoxState(
+            confirmValueChange = { value ->
+                if (value == SwipeToDismissBoxValue.StartToEnd) {
+                    onDelete(id)
+                }
+                false
+            },
+        )
 
     SwipeToDismissBox(
         state = dismissState,
@@ -36,11 +36,11 @@ fun SwipeToDelete(
         backgroundContent = {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.CenterStart
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Icon(Icons.Default.Delete, contentDescription = null)
             }
-        }
+        },
     ) {
         content()
     }

@@ -12,13 +12,13 @@ import androidx.room.PrimaryKey
             entity = CardEntity::class,
             parentColumns = ["id"],
             childColumns = ["cardId"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index("cardId"),
-        Index("dayStart")
-    ]
+        Index("dayStart"),
+    ],
 )
 data class CardHistoryEntity(
     @PrimaryKey(autoGenerate = true)
@@ -26,5 +26,5 @@ data class CardHistoryEntity(
     val cardId: Int,
     val spentMillis: Long,
     val completedAt: Long,
-    val dayStart: Long
+    val dayStart: Long,
 )

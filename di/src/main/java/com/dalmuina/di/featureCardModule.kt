@@ -7,8 +7,9 @@ import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val featureCardModule = module{
-    viewModelOf(::CardViewModel)
-    viewModelOf(::TimerViewModel)
-    workerOf(::ReminderWorker)
-}
+val featureCardModule =
+    module {
+        viewModelOf(::CardViewModel)
+        viewModelOf(::TimerViewModel)
+        workerOf(::ReminderWorker)
+    }

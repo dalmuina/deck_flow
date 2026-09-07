@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -32,8 +31,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.button.DFButton
 import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
-import com.dalmuina.core.design_system.component.input.DFTextFieldOutlined
 import com.dalmuina.core.design_system.component.input.DFInputTimer
+import com.dalmuina.core.design_system.component.input.DFTextFieldOutlined
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Corner
@@ -105,18 +104,19 @@ fun CardCreatorDialog(
     onDismiss: () -> Unit,
 ) {
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(Corner.m)
+            shape = RoundedCornerShape(Corner.m),
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 180.dp)
-                    .padding(Spacing.l),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 180.dp)
+                        .padding(Spacing.l),
+                contentAlignment = Alignment.Center,
             ) {
                 AnimatedContent(targetState = loading) { loading ->
                     if (loading) {
@@ -132,7 +132,7 @@ fun CardCreatorDialog(
                             onLessTime = onLessTime,
                             onSaved = onSaved,
                             onCancel = onDismiss,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }

@@ -21,7 +21,6 @@ class ReminderWorker(
     private val getSelectedDeck: GetSelectedDeckUseCase,
     private val getDeckById: GetDeckByIdUseCase,
 ) : CoroutineWorker(context, params) {
-
     companion object {
         const val NOTIFICATION_ID = 2001
         const val CHANNEL_ID = "reminder_channel"
@@ -36,21 +35,29 @@ class ReminderWorker(
         return Result.success()
     }
 
-    private fun showNotification(deckName: String, cardName: String) {
+    private fun showNotification(
+        deckName: String,
+        cardName: String,
+    ) {
         createNotificationChannel()
         val notification = buildNotification(deckName, cardName)
         applicationContext.getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
     }
 
-    private fun buildNotification(deckName: String, cardName: String): Notification {
-        val tapIntent = PendingIntent.getActivity(
-            applicationContext,
-            0,
-            applicationContext.packageManager.getLaunchIntentForPackage(applicationContext.packageName),
-            PendingIntent.FLAG_IMMUTABLE,
-        )
+    private fun buildNotification(
+        deckName: String,
+        cardName: String,
+    ): Notification {
+        val tapIntent =
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                applicationContext.packageManager.getLaunchIntentForPackage(applicationContext.packageName),
+                PendingIntent.FLAG_IMMUTABLE,
+            )
 
-        return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+        return NotificationCompat
+            .Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_timer_notification)
             .setContentTitle(applicationContext.getString(R.string.reminder_notification_title, deckName))
             .setContentText(applicationContext.getString(R.string.reminder_notification_text, cardName))
@@ -63,11 +70,12 @@ class ReminderWorker(
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                applicationContext.getString(R.string.reminder_notification_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
+            val channel =
+                NotificationChannel(
+                    CHANNEL_ID,
+                    applicationContext.getString(R.string.reminder_notification_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                )
             applicationContext.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
     }

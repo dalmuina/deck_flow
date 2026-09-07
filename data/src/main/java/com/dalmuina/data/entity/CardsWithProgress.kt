@@ -5,23 +5,20 @@ import androidx.room.Relation
 import com.dalmuina.domain.model.CardDomain
 
 data class CardWithProgress(
-
     @Embedded
     val card: CardEntity,
-
     @Relation(
         parentColumn = "id",
-        entityColumn = "cardId"
+        entityColumn = "cardId",
     )
-    val progress: CardProgressEntity?
+    val progress: CardProgressEntity?,
 )
 
-fun CardWithProgress.toDomain(): CardDomain {
-    return CardDomain(
+fun CardWithProgress.toDomain(): CardDomain =
+    CardDomain(
         id = card.id,
         name = card.name,
         durationMillis = card.duration,
         completedAt = progress?.completedAt,
         postponedAt = progress?.postponeAt,
     )
-}

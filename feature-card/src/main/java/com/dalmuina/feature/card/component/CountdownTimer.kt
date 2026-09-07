@@ -45,11 +45,12 @@ fun CountdownTimer(
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
 ) {
-    val displayMillis = when {
-        state.isOvertime -> state.elapsedMillis - state.totalMillis
-        state.isRunning || state.remainingMillis < state.totalMillis -> state.remainingMillis
-        else -> state.totalMillis
-    }
+    val displayMillis =
+        when {
+            state.isOvertime -> state.elapsedMillis - state.totalMillis
+            state.isRunning || state.remainingMillis < state.totalMillis -> state.remainingMillis
+            else -> state.totalMillis
+        }
 
     val isPlaying = state.isRunning
     val timerTextColor = if (onGradient) Color.White else MaterialTheme.colorScheme.onSurface
@@ -89,8 +90,11 @@ fun CountdownTimer(
                     icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                     contentDescription = "",
                 ) {
-                    if (isPlaying) onPlay(true)
-                    else onPlay(false)
+                    if (isPlaying) {
+                        onPlay(true)
+                    } else {
+                        onPlay(false)
+                    }
                 }
                 Spacer(modifier = Modifier.width(Spacing.l))
                 DFButtonIconSecondary(
@@ -115,15 +119,16 @@ private fun FrostedTimerButton(
     val interactionSource = remember { MutableInteractionSource() }
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .background(Color.White.copy(alpha = 0.22f))
-            .clickable(
-                interactionSource = interactionSource,
-                indication = ripple(color = Color.White.copy(alpha = 0.3f)),
-                onClick = onClick,
-            ),
+        modifier =
+            Modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.22f))
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = ripple(color = Color.White.copy(alpha = 0.3f)),
+                    onClick = onClick,
+                ),
     ) {
         Icon(
             imageVector = icon,
@@ -139,11 +144,12 @@ private fun FrostedTimerButton(
 fun CountdownTimerPreview() {
     DeckFlowTheme {
         CountdownTimer(
-            state = TimerState(
-                totalMillis = 15000L,
-                remainingMillis = 0L,
-                isRunning = false,
-            ),
+            state =
+                TimerState(
+                    totalMillis = 15000L,
+                    remainingMillis = 0L,
+                    isRunning = false,
+                ),
             onPlay = {},
             onReset = {},
         )

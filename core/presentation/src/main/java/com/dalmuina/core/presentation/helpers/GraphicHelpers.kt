@@ -3,12 +3,12 @@ package com.dalmuina.core.presentation.helpers
 import java.time.Instant
 import java.time.ZoneId
 
-fun formatDayLabel(dayStart: Long): String {
-    return Instant.ofEpochMilli(dayStart)
+fun formatDayLabel(dayStart: Long): String =
+    Instant
+        .ofEpochMilli(dayStart)
         .atZone(ZoneId.systemDefault())
         .dayOfMonth
         .toString()
-}
 
 fun Long.toHeatmapLevel(targetMillis: Long): Int {
     if (targetMillis <= 0L || this <= 0L) return 0

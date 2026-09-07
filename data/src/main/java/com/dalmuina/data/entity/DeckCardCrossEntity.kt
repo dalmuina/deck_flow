@@ -6,27 +6,26 @@ import androidx.room.Index
 
 @Entity(
     tableName = "deck_card_cross_ref",
-    primaryKeys = ["deckId","cardId"],
+    primaryKeys = ["deckId", "cardId"],
     indices = [
         Index("deckId"),
-        Index("cardId")
+        Index("cardId"),
     ],
     foreignKeys = [
         ForeignKey(
             entity = DeckEntity::class,
             parentColumns = ["id"],
             childColumns = ["deckId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = CardEntity::class,
             parentColumns = ["id"],
             childColumns = ["cardId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
-    ]
+    ],
 )
-
 data class DeckCardCrossEntity(
     val deckId: Int,
     val cardId: Int,

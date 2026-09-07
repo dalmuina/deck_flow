@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
 class DeckSelectorViewModel(
     getAllDecksUseCase: GetAllDecksUseCase,
     private val deleteDeckUseCase: DeleteDeckUseCase,
@@ -28,7 +29,6 @@ class DeckSelectorViewModel(
     private val setSelectedDeckUseCase: SetSelectedDeckUseCase,
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
-
     companion object {
         private const val STOP_SUBSCRIPTION = 5_000L
     }
@@ -46,21 +46,23 @@ class DeckSelectorViewModel(
                 is DFResult.Error -> {
                     DeckSelectorState(
                         loading = false,
-                        deckList = emptyList()
+                        deckList = emptyList(),
                     )
                 }
 
                 is DFResult.Success -> {
                     val decks = decksResult.data.map { it.toUi() }
 
-                    val selectedId = when (selectedIdResult) {
-                        is DFResult.Success -> selectedIdResult.data
-                        is DFResult.Error -> null
-                    }
+                    val selectedId =
+                        when (selectedIdResult) {
+                            is DFResult.Success -> selectedIdResult.data
+                            is DFResult.Error -> null
+                        }
 
-                    val validSelected = selectedId?.takeIf { id ->
-                        decks.any { it.id == id }
-                    }
+                    val validSelected =
+                        selectedId?.takeIf { id ->
+                            decks.any { it.id == id }
+                        }
 
                     val finalSelected =
                         validSelected ?: decks.firstOrNull()?.id?.also { id ->
@@ -68,7 +70,7 @@ class DeckSelectorViewModel(
                                 setSelectedDeckUseCase(id)
                                     .onFailure { error ->
                                         uiEventDispatcher.dispatch(
-                                            UiEvent.ShowSnackBar(error.toUiText())
+                                            UiEvent.ShowSnackBar(error.toUiText()),
                                         )
                                     }
                             }
@@ -76,22 +78,21 @@ class DeckSelectorViewModel(
 
                     DeckSelectorState(
                         loading = false,
-                        deckList = decks.map { deck ->
-                            deck.copy(isSelected = deck.id == finalSelected)
-                        },
-                        deckPendingDelete = pendingDelete
+                        deckList =
+                            decks.map { deck ->
+                                deck.copy(isSelected = deck.id == finalSelected)
+                            },
+                        deckPendingDelete = pendingDelete,
                     )
                 }
             }
-        }
-            .onStart {
-                emit(DeckSelectorState(loading = true))
-            }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
-                DeckSelectorState(loading = true)
-            )
+        }.onStart {
+            emit(DeckSelectorState(loading = true))
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(STOP_SUBSCRIPTION),
+            DeckSelectorState(loading = true),
+        )
 
     fun process(intent: DeckSelectorIntent) {
         when (intent) {
@@ -100,7 +101,7 @@ class DeckSelectorViewModel(
                     setSelectedDeckUseCase(intent.deckId)
                         .onFailure { error ->
                             uiEventDispatcher.dispatch(
-                                UiEvent.ShowSnackBar(error.toUiText())
+                                UiEvent.ShowSnackBar(error.toUiText()),
                             )
                         }
                 }
@@ -127,14 +128,13 @@ class DeckSelectorViewModel(
                         setSelectedDeckUseCase(it)
                             .onFailure { error ->
                                 uiEventDispatcher.dispatch(
-                                    UiEvent.ShowSnackBar(error.toUiText())
+                                    UiEvent.ShowSnackBar(error.toUiText()),
                                 )
                             }
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     uiEventDispatcher.dispatch(
-                        UiEvent.ShowSnackBar(error.toUiText())
+                        UiEvent.ShowSnackBar(error.toUiText()),
                     )
                 }
         }

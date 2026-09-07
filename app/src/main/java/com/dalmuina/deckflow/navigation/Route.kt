@@ -14,21 +14,24 @@ sealed interface Route : NavKey {
     data object DeckSelector : Route
 
     @Serializable
-    data class DeckCreator(val mode: DeckCreatorMode) : Route
+    data class DeckCreator(
+        val mode: DeckCreatorMode,
+    ) : Route
 
     @Serializable
-    data class CardCreator(val mode: CardCreatorMode) : Route
+    data class CardCreator(
+        val mode: CardCreatorMode,
+    ) : Route
 
     @Serializable
-    data object Stats: Route
+    data object Stats : Route
 }
 
-fun Route.title(): String {
-    return when (this) {
+fun Route.title(): String =
+    when (this) {
         Route.DeckSelector -> "Decks"
         Route.Card -> "Cards"
         is Route.DeckCreator -> "Create Deck"
         is Route.CardCreator -> "Create Card"
         Route.Stats -> "Stats"
     }
-}

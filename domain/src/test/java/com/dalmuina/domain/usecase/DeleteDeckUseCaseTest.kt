@@ -20,7 +20,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DeleteDeckUseCaseTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -28,153 +27,170 @@ class DeleteDeckUseCaseTest {
     private val selectedDeckRepository: SelectedDeckDataSource = mockk()
 
     @Test
-    fun `invoke should return error when getting decks fails`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = DeleteDeckUseCase(
-            repository = repository,
-            selectedDeckRepository = selectedDeckRepository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return error when getting decks fails`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                DeleteDeckUseCase(
+                    repository = repository,
+                    selectedDeckRepository = selectedDeckRepository,
+                    dispatcher = dispatcher,
+                )
 
-        val deckId = 2
-        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+            val deckId = 2
+            val expected = DFResult.Error(DataError.Local.ConstraintViolation)
 
-        every { repository.getAllDecksWithCards() } returns flowOf(expected)
+            every { repository.getAllDecksWithCards() } returns flowOf(expected)
 
-        val result = useCase(deckId)
+            val result = useCase(deckId)
 
-        result shouldBe expected
-        coVerify(exactly = 0) { repository.deleteDeck(any()) }
-    }
-
-    @Test
-    fun `invoke should return null when deleted deck is not selected`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = DeleteDeckUseCase(
-            repository = repository,
-            selectedDeckRepository = selectedDeckRepository,
-            dispatcher = dispatcher
-        )
-
-        val deckId = 2
-        val decks = listOf(
-            DeckDomainTestData.deck(id = 1),
-            DeckDomainTestData.deck(id = 2),
-            DeckDomainTestData.deck(id = 3)
-        )
-
-        every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(1))
-        coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
-
-        val result = useCase(deckId)
-
-        result shouldBe DFResult.Success(null)
-        coVerify(exactly = 1) { repository.deleteDeck(deckId) }
-    }
+            result shouldBe expected
+            coVerify(exactly = 0) { repository.deleteDeck(any()) }
+        }
 
     @Test
-    fun `invoke should return next deck when deleted selected deck has next`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = DeleteDeckUseCase(
-            repository = repository,
-            selectedDeckRepository = selectedDeckRepository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return null when deleted deck is not selected`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                DeleteDeckUseCase(
+                    repository = repository,
+                    selectedDeckRepository = selectedDeckRepository,
+                    dispatcher = dispatcher,
+                )
 
-        val deckId = 2
-        val decks = listOf(
-            DeckDomainTestData.deck(id = 1),
-            DeckDomainTestData.deck(id = 2),
-            DeckDomainTestData.deck(id = 3)
-        )
+            val deckId = 2
+            val decks =
+                listOf(
+                    DeckDomainTestData.deck(id = 1),
+                    DeckDomainTestData.deck(id = 2),
+                    DeckDomainTestData.deck(id = 3),
+                )
 
-        every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(2))
-        coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
+            every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
+            every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(1))
+            coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
-        val result = useCase(deckId)
+            val result = useCase(deckId)
 
-        result shouldBe DFResult.Success(3)
-        coVerify(exactly = 1) { repository.deleteDeck(deckId) }
-    }
-
-    @Test
-    fun `invoke should return previous deck when deleted selected deck has no next`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = DeleteDeckUseCase(
-            repository = repository,
-            selectedDeckRepository = selectedDeckRepository,
-            dispatcher = dispatcher
-        )
-
-        val deckId = 3
-        val decks = listOf(
-            DeckDomainTestData.deck(id = 1),
-            DeckDomainTestData.deck(id = 2),
-            DeckDomainTestData.deck(id = 3)
-        )
-
-        every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(3))
-        coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
-
-        val result = useCase(deckId)
-
-        result shouldBe DFResult.Success(2)
-        coVerify(exactly = 1) { repository.deleteDeck(deckId) }
-    }
+            result shouldBe DFResult.Success(null)
+            coVerify(exactly = 1) { repository.deleteDeck(deckId) }
+        }
 
     @Test
-    fun `invoke should return null when selected deleted deck is not found in list`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = DeleteDeckUseCase(
-            repository = repository,
-            selectedDeckRepository = selectedDeckRepository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return next deck when deleted selected deck has next`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                DeleteDeckUseCase(
+                    repository = repository,
+                    selectedDeckRepository = selectedDeckRepository,
+                    dispatcher = dispatcher,
+                )
 
-        val deckId = 99
-        val decks = listOf(
-            DeckDomainTestData.deck(id = 1),
-            DeckDomainTestData.deck(id = 2),
-            DeckDomainTestData.deck(id = 3)
-        )
+            val deckId = 2
+            val decks =
+                listOf(
+                    DeckDomainTestData.deck(id = 1),
+                    DeckDomainTestData.deck(id = 2),
+                    DeckDomainTestData.deck(id = 3),
+                )
 
-        every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(99))
-        coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
+            every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
+            every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(2))
+            coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
-        val result = useCase(deckId)
+            val result = useCase(deckId)
 
-        result shouldBe DFResult.Success(null)
-        coVerify(exactly = 1) { repository.deleteDeck(deckId) }
-    }
+            result shouldBe DFResult.Success(3)
+            coVerify(exactly = 1) { repository.deleteDeck(deckId) }
+        }
 
     @Test
-    fun `invoke should return error when delete deck fails`() = runTest {
-        val dispatcher = StandardTestDispatcher(testScheduler)
-        val useCase = DeleteDeckUseCase(
-            repository = repository,
-            selectedDeckRepository = selectedDeckRepository,
-            dispatcher = dispatcher
-        )
+    fun `invoke should return previous deck when deleted selected deck has no next`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                DeleteDeckUseCase(
+                    repository = repository,
+                    selectedDeckRepository = selectedDeckRepository,
+                    dispatcher = dispatcher,
+                )
 
-        val deckId = 2
-        val decks = listOf(
-            DeckDomainTestData.deck(id = 1),
-            DeckDomainTestData.deck(id = 2),
-            DeckDomainTestData.deck(id = 3)
-        )
-        val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+            val deckId = 3
+            val decks =
+                listOf(
+                    DeckDomainTestData.deck(id = 1),
+                    DeckDomainTestData.deck(id = 2),
+                    DeckDomainTestData.deck(id = 3),
+                )
 
-        every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
-        every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(2))
-        coEvery { repository.deleteDeck(deckId) } returns expected
+            every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
+            every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(3))
+            coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
 
-        val result = useCase(deckId)
+            val result = useCase(deckId)
 
-        result shouldBe expected
-        coVerify(exactly = 1) { repository.deleteDeck(deckId) }
-    }
+            result shouldBe DFResult.Success(2)
+            coVerify(exactly = 1) { repository.deleteDeck(deckId) }
+        }
+
+    @Test
+    fun `invoke should return null when selected deleted deck is not found in list`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                DeleteDeckUseCase(
+                    repository = repository,
+                    selectedDeckRepository = selectedDeckRepository,
+                    dispatcher = dispatcher,
+                )
+
+            val deckId = 99
+            val decks =
+                listOf(
+                    DeckDomainTestData.deck(id = 1),
+                    DeckDomainTestData.deck(id = 2),
+                    DeckDomainTestData.deck(id = 3),
+                )
+
+            every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
+            every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(99))
+            coEvery { repository.deleteDeck(deckId) } returns DFResult.Success(Unit)
+
+            val result = useCase(deckId)
+
+            result shouldBe DFResult.Success(null)
+            coVerify(exactly = 1) { repository.deleteDeck(deckId) }
+        }
+
+    @Test
+    fun `invoke should return error when delete deck fails`() =
+        runTest {
+            val dispatcher = StandardTestDispatcher(testScheduler)
+            val useCase =
+                DeleteDeckUseCase(
+                    repository = repository,
+                    selectedDeckRepository = selectedDeckRepository,
+                    dispatcher = dispatcher,
+                )
+
+            val deckId = 2
+            val decks =
+                listOf(
+                    DeckDomainTestData.deck(id = 1),
+                    DeckDomainTestData.deck(id = 2),
+                    DeckDomainTestData.deck(id = 3),
+                )
+            val expected = DFResult.Error(DataError.Local.ConstraintViolation)
+
+            every { repository.getAllDecksWithCards() } returns flowOf(DFResult.Success(decks))
+            every { selectedDeckRepository.selectedDeckId } returns flowOf(DFResult.Success(2))
+            coEvery { repository.deleteDeck(deckId) } returns expected
+
+            val result = useCase(deckId)
+
+            result shouldBe expected
+            coVerify(exactly = 1) { repository.deleteDeck(deckId) }
+        }
 }

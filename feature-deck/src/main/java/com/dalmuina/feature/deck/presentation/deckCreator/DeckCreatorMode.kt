@@ -12,5 +12,7 @@ sealed interface DeckCreatorMode {
     }
 
     @Serializable
-    data class Edit(override val deckId: Int) : DeckCreatorMode
+    data class Edit(
+        override val deckId: Int,
+    ) : DeckCreatorMode
 }

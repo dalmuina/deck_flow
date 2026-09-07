@@ -6,10 +6,9 @@ import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-
 class UpdateDeckNameUseCase(
     private val repository: DeckLocalDataSource,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
 ) {
     suspend operator fun invoke(
         deckId: Int,

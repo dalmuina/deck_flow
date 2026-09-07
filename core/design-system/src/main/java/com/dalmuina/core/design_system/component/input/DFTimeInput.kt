@@ -3,7 +3,6 @@ package com.dalmuina.core.design_system.component.input
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -62,44 +61,47 @@ fun DFInputTimer(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Spacing.xxs)
+        verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
     ) {
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = Spacing.s)
-                .semantics(mergeDescendants = true) {
-                    stateDescription = "${value.inWholeMinutes} minutes"
-                },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = Spacing.s)
+                    .semantics(mergeDescendants = true) {
+                        stateDescription = "${value.inWholeMinutes} minutes"
+                    },
             value = text,
             onValueChange = { raw ->
                 val filtered = raw.filter(Char::isDigit)
                 text = filtered
                 onValueChanged(filtered)
             },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
+                ),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
             label = { Text(stringResource(R.string.minutes_time_label)) },
             trailingIcon = {
                 Column(
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     IconButton(
                         modifier = Modifier.size(32.dp),
                         onClick = onMoreTime,
-                        ) {
+                    ) {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
                             imageVector = Icons.Default.ArrowDropUp,
-                            contentDescription = "More time"
+                            contentDescription = "More time",
                         )
                     }
                     IconButton(
@@ -110,18 +112,18 @@ fun DFInputTimer(
                         Icon(
                             modifier = Modifier.size(IconSize.m),
                             imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = "Less time"
+                            contentDescription = "Less time",
                         )
                     }
                 }
-            }
+            },
         )
 
         Text(
             text = value.toTimerText(),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
         )
     }
 }

@@ -2,7 +2,9 @@ package com.dalmuina.deckflow.navigation
 
 import androidx.navigation3.runtime.NavKey
 
-class Navigator(val state: NavigationState) {
+class Navigator(
+    val state: NavigationState,
+) {
     fun navigate(route: NavKey) {
         if (route in state.backStacks.keys) {
             state.topLevelRoute = route
@@ -12,8 +14,9 @@ class Navigator(val state: NavigationState) {
     }
 
     fun goBack() {
-        val currentStack = state.backStacks[state.topLevelRoute]
-            ?: error("Back stack for ${state.topLevelRoute} doesn't exist")
+        val currentStack =
+            state.backStacks[state.topLevelRoute]
+                ?: error("Back stack for ${state.topLevelRoute} doesn't exist")
 
         val currentRoute = currentStack.last()
 
@@ -22,6 +25,5 @@ class Navigator(val state: NavigationState) {
         } else {
             currentStack.removeLastOrNull()
         }
-
     }
 }

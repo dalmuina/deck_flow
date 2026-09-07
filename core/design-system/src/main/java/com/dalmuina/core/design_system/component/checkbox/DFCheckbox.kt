@@ -17,21 +17,22 @@ fun DFCheckBox(
     Checkbox(
         modifier = modifier,
         checked = checked,
-        colors = CheckboxDefaults.colors(
-            checkedColor = MaterialTheme.colorScheme.onSecondary,
-            uncheckedColor = MaterialTheme.colorScheme.outline,
-            checkmarkColor = MaterialTheme.colorScheme.secondary,
-            disabledCheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-            disabledUncheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-            disabledIndeterminateColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
-        ),
-        onCheckedChange = { onSelected() }
+        colors =
+            CheckboxDefaults.colors(
+                checkedColor = MaterialTheme.colorScheme.onSecondary,
+                uncheckedColor = MaterialTheme.colorScheme.outline,
+                checkmarkColor = MaterialTheme.colorScheme.secondary,
+                disabledCheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
+                disabledUncheckedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
+                disabledIndeterminateColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.38f),
+            ),
+        onCheckedChange = { onSelected() },
     )
 }
 
 @DFPreview
 @Composable
-fun DFCheckboxSelectedPreview(){
+fun DFCheckboxSelectedPreview() {
     DeckFlowTheme {
         DFCheckBox(
             checked = true,
@@ -39,10 +40,9 @@ fun DFCheckboxSelectedPreview(){
     }
 }
 
-
 @DFPreview
 @Composable
-fun DFCheckboxUnselectedPreview(){
+fun DFCheckboxUnselectedPreview() {
     DeckFlowTheme {
         DFCheckBox(
             checked = false,

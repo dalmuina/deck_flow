@@ -1,6 +1,8 @@
 package com.dalmuina.feature.deck.presentation.deckCreator
 
 import app.cash.turbine.test
+import com.dalmuina.core.presentation.events.UiEventDispatcher
+import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.core.test.helpers.awaitLoaded
 import com.dalmuina.core.test.helpers.failure
@@ -11,10 +13,8 @@ import com.dalmuina.domain.usecase.CreateDeckUseCase
 import com.dalmuina.domain.usecase.DeleteCardUseCase
 import com.dalmuina.domain.usecase.GetAllCardsUseCase
 import com.dalmuina.domain.usecase.GetDeckByIdUseCase
-import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
-import com.dalmuina.core.presentation.events.UiEventDispatcher
-import com.dalmuina.core.test.data.CardDomainTestData
 import com.dalmuina.domain.usecase.SetDeckCardsUseCase
+import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -33,7 +33,6 @@ import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
 
 class DeckCreatorViewModelRobot {
-
     val getAllCardsUseCase = mockk<GetAllCardsUseCase>(relaxed = true)
     val createDeckUseCase = mockk<CreateDeckUseCase>(relaxed = true)
     val updateDeckNameUseCase = mockk<UpdateDeckNameUseCase>(relaxed = true)
@@ -57,7 +56,6 @@ class DeckCreatorViewModelRobot {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DeckCreatorViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -70,202 +68,210 @@ class DeckCreatorViewModelTest {
     }
 
     @Test
-    fun `when cards loaded then emits cards in uiState`() = runTest {
+    fun `when cards loaded then emits cards in uiState`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1, 2, 3)
 
-        val cards = CardDomainTestData.cards(1, 2, 3)
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(cards),
+                )
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(cards)
-        )
+            viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel = robot.build(DeckCreatorMode.Create)
+            viewModel.uiState.test {
+                val state = awaitLoaded()
 
-        viewModel.uiState.test {
+                state.loading shouldBe false
+                state.deckCard.size shouldBe 3
 
-            val state = awaitLoaded()
-
-            state.loading shouldBe false
-            state.deckCard.size shouldBe 3
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when first card selected in create mode then createDeckUseCase called`() = runTest {
+    fun `when first card selected in create mode then createDeckUseCase called`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1, 2)
 
-        val cards = CardDomainTestData.cards(1, 2)
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(cards),
+                )
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(cards)
-        )
+            coEvery {
+                robot.createDeckUseCase(any(), any())
+            } returns DFResult.Success(42)
 
-        coEvery {
-            robot.createDeckUseCase(any(), any())
-        } returns DFResult.Success(42)
+            viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel = robot.build(DeckCreatorMode.Create)
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
 
-        viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            advanceUntilIdle()
 
-        advanceUntilIdle()
-
-        coVerify {
-            robot.createDeckUseCase(any(), listOf(1))
+            coVerify {
+                robot.createDeckUseCase(any(), listOf(1))
+            }
         }
-    }
 
     @Test
-    fun `when second card selected in create mode then setDeckCardsUseCase called with resolved deck id`() = runTest {
+    fun `when second card selected in create mode then setDeckCardsUseCase called with resolved deck id`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1, 2)
 
-        val cards = CardDomainTestData.cards(1, 2)
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(cards),
+                )
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(cards)
-        )
+            coEvery {
+                robot.createDeckUseCase(any(), any())
+            } returns DFResult.Success(42)
 
-        coEvery {
-            robot.createDeckUseCase(any(), any())
-        } returns DFResult.Success(42)
+            viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel = robot.build(DeckCreatorMode.Create)
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            advanceUntilIdle()
 
-        viewModel.process(DeckCreatorIntent.SelectedCard(1))
-        advanceUntilIdle()
+            viewModel.process(DeckCreatorIntent.SelectedCard(2))
+            advanceUntilIdle()
 
-        viewModel.process(DeckCreatorIntent.SelectedCard(2))
-        advanceUntilIdle()
-
-        coVerify(exactly = 1) {
-            robot.createDeckUseCase(any(), any())
+            coVerify(exactly = 1) {
+                robot.createDeckUseCase(any(), any())
+            }
+            coVerify {
+                robot.setDeckCardsUseCase(42, listOf(1, 2))
+            }
         }
-        coVerify {
-            robot.setDeckCardsUseCase(42, listOf(1, 2))
-        }
-    }
 
     @Test
-    fun `when name changes in create mode before any card added then updateDeckNameUseCase not called`() = runTest {
+    fun `when name changes in create mode before any card added then updateDeckNameUseCase not called`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(emptyList()),
+                )
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(emptyList())
-        )
+            viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel = robot.build(DeckCreatorMode.Create)
+            viewModel.process(DeckCreatorIntent.NameChanged("New name"))
 
-        viewModel.process(DeckCreatorIntent.NameChanged("New name"))
+            advanceTimeBy(1000.milliseconds)
+            advanceUntilIdle()
 
-        advanceTimeBy(1000.milliseconds)
-        advanceUntilIdle()
-
-        coVerify(exactly = 0) {
-            robot.updateDeckNameUseCase(any(), any())
+            coVerify(exactly = 0) {
+                robot.updateDeckNameUseCase(any(), any())
+            }
         }
-    }
 
     @Test
-    fun `when name changes in edit mode then updateDeckNameUseCase called`() = runTest {
+    fun `when name changes in edit mode then updateDeckNameUseCase called`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(emptyList()),
+                )
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(emptyList())
-        )
+            viewModel = robot.build(DeckCreatorMode.Edit(5))
 
-        viewModel = robot.build(DeckCreatorMode.Edit(5))
+            viewModel.process(DeckCreatorIntent.NameChanged("New name"))
 
-        viewModel.process(DeckCreatorIntent.NameChanged("New name"))
+            advanceTimeBy(1000.milliseconds)
+            advanceUntilIdle()
 
-        advanceTimeBy(1000.milliseconds)
-        advanceUntilIdle()
-
-        coVerify {
-            robot.updateDeckNameUseCase(5, "New name")
+            coVerify {
+                robot.updateDeckNameUseCase(5, "New name")
+            }
         }
-    }
 
     @Test
-    fun `when selecting card in edit mode then addCardToDeckUseCase called`() = runTest {
+    fun `when selecting card in edit mode then addCardToDeckUseCase called`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1)
 
-        val cards = CardDomainTestData.cards(1)
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(cards),
+                )
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(cards)
-        )
+            viewModel = robot.build(DeckCreatorMode.Edit(10))
 
-        viewModel = robot.build(DeckCreatorMode.Edit(10))
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
 
-        viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            advanceUntilIdle()
 
-        advanceUntilIdle()
-
-        coVerify {
-            robot.setDeckCardsUseCase(10,listOf(1))
+            coVerify {
+                robot.setDeckCardsUseCase(10, listOf(1))
+            }
         }
-    }
 
     @Test
-fun `when reorder then selected cards order is updated`() = runTest {
-        val cards = CardDomainTestData.cards(1, 2, 3)
-        every { robot.getAllCardsUseCase() } returns flowOf(success(cards))
-        coEvery { robot.createDeckUseCase(any(), any()) } returns DFResult.Success(1)
+    fun `when reorder then selected cards order is updated`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1, 2, 3)
+            every { robot.getAllCardsUseCase() } returns flowOf(success(cards))
+            coEvery { robot.createDeckUseCase(any(), any()) } returns DFResult.Success(1)
 
-        viewModel = robot.build(DeckCreatorMode.Create)
+            viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel.process(DeckCreatorIntent.SelectedCard(1))
-        viewModel.process(DeckCreatorIntent.SelectedCard(2))
-        viewModel.process(DeckCreatorIntent.SelectedCard(3))
-        viewModel.process(DeckCreatorIntent.Reorder(from = 0, to = 2))
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            viewModel.process(DeckCreatorIntent.SelectedCard(2))
+            viewModel.process(DeckCreatorIntent.SelectedCard(3))
+            viewModel.process(DeckCreatorIntent.Reorder(from = 0, to = 2))
 
-        viewModel.uiState.test {
-            val state = awaitLoaded()
-            val selected = state.deckCard.filter { it.isSelected }
-            selected[0].id shouldBe 2
-            selected[1].id shouldBe 3
-            selected[2].id shouldBe 1
-            cancelAndIgnoreRemainingEvents()
+            viewModel.uiState.test {
+                val state = awaitLoaded()
+                val selected = state.deckCard.filter { it.isSelected }
+                selected[0].id shouldBe 2
+                selected[1].id shouldBe 3
+                selected[2].id shouldBe 1
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when reorder in edit mode then setDeckCardsUseCase called with new order`() = runTest {
-        val cards = CardDomainTestData.cards(1, 2, 3)
-        every { robot.getAllCardsUseCase() } returns flowOf(success(cards))
+    fun `when reorder in edit mode then setDeckCardsUseCase called with new order`() =
+        runTest {
+            val cards = CardDomainTestData.cards(1, 2, 3)
+            every { robot.getAllCardsUseCase() } returns flowOf(success(cards))
 
-        viewModel = robot.build(DeckCreatorMode.Edit(10))
+            viewModel = robot.build(DeckCreatorMode.Edit(10))
 
-        viewModel.process(DeckCreatorIntent.SelectedCard(1))
-        viewModel.process(DeckCreatorIntent.SelectedCard(2))
-        viewModel.process(DeckCreatorIntent.SelectedCard(3))
-        viewModel.process(DeckCreatorIntent.Reorder(from = 0, to = 2))
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            viewModel.process(DeckCreatorIntent.SelectedCard(2))
+            viewModel.process(DeckCreatorIntent.SelectedCard(3))
+            viewModel.process(DeckCreatorIntent.Reorder(from = 0, to = 2))
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        coVerify {
-            robot.setDeckCardsUseCase(10, listOf(2, 3, 1))
+            coVerify {
+                robot.setDeckCardsUseCase(10, listOf(2, 3, 1))
+            }
         }
-    }
 
     @Test
-    fun `when delete card fails then dispatch snackbar`() = runTest {
+    fun `when delete card fails then dispatch snackbar`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns
+                flowOf(
+                    success(CardDomainTestData.cards(1)),
+                )
+            coEvery { robot.deleteCardUseCase(1) } returns failure(ErrorTestData.unknown)
 
-        every { robot.getAllCardsUseCase() } returns flowOf(
-            success(CardDomainTestData.cards(1))
-        )
-        coEvery { robot.deleteCardUseCase(1) } returns failure(ErrorTestData.unknown)
+            viewModel = robot.build(DeckCreatorMode.Create)
 
-        viewModel = robot.build(DeckCreatorMode.Create)
+            val job = launch { viewModel.uiState.collect() }
+            advanceUntilIdle()
 
-        val job = launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
+            viewModel.process(DeckCreatorIntent.RequestDeleteCard(1))
+            viewModel.process(DeckCreatorIntent.ConfirmDeleteCard)
 
-        viewModel.process(DeckCreatorIntent.RequestDeleteCard(1))
-        viewModel.process(DeckCreatorIntent.ConfirmDeleteCard)
+            advanceUntilIdle()
 
-        advanceUntilIdle()
+            job.cancel()
 
-        job.cancel()
-
-        coVerify {
-            robot.uiEventDispatcher.dispatch(any())
+            coVerify {
+                robot.uiEventDispatcher.dispatch(any())
+            }
         }
-    }
 }

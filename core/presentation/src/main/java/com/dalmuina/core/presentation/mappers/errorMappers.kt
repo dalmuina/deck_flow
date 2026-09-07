@@ -1,12 +1,10 @@
 package com.dalmuina.core.presentation.mappers
 
-
 import com.dalmuina.core.presentation.R
 import com.dalmuina.domain.model.DataError
 
-
-fun DataError.toUiText(): Int {
-    return when (this) {
+fun DataError.toUiText(): Int =
+    when (this) {
         DataError.Local.ConstraintViolation -> R.string.error_constraint
         DataError.Local.DiskFull -> R.string.error_disk_full
         DataError.Local.NotFound -> R.string.error_not_found
@@ -29,4 +27,3 @@ fun DataError.toUiText(): Int {
         DataError.Network.Serialization -> R.string.error_serialization
         else -> R.string.error_unknown
     }
-}

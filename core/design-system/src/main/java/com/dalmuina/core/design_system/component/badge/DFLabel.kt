@@ -26,22 +26,23 @@ fun DFLabel(
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(
-                horizontal = Spacing.s,
-                vertical = Spacing.xs
-            ),
+            modifier =
+                Modifier.padding(
+                    horizontal = Spacing.s,
+                    vertical = Spacing.xs,
+                ),
             color = MaterialTheme.colorScheme.onPrimaryContainer,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
         )
     }
 }
 
 @DFPreview
 @Composable
-fun DFLabelPreview(){
+fun DFLabelPreview() {
     DeckFlowTheme {
         DFLabel(
-            text = "Crear Deck"
+            text = "Crear Deck",
         )
     }
 }

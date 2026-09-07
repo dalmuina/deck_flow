@@ -1,17 +1,17 @@
 package com.dalmuina.data.datasource
 
 import com.dalmuina.core.data.helpers.CrashlyticsLogger
+import com.dalmuina.core.data.helpers.safeDbCall
 import com.dalmuina.core.data.helpers.startOfDayMillis
 import com.dalmuina.data.dao.DFCardDao
 import com.dalmuina.data.entity.CardHistoryEntity
 import com.dalmuina.data.entity.CardProgressEntity
 import com.dalmuina.data.entity.toDomain
 import com.dalmuina.data.entity.toEntity
-import com.dalmuina.core.data.helpers.safeDbCall
 import com.dalmuina.domain.CardLocalDataSource
 import com.dalmuina.domain.model.CardDomain
-import com.dalmuina.domain.model.DailyStatsDomain
 import com.dalmuina.domain.model.DFResult
+import com.dalmuina.domain.model.DailyStatsDomain
 import com.dalmuina.domain.model.DataError
 import com.dalmuina.domain.model.EmptyResult
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,6 @@ class RoomCardDatasource(
     private val dao: DFCardDao,
     private val logger: CrashlyticsLogger,
 ) : CardLocalDataSource {
-
     override suspend fun saveCard(card: CardDomain): DFResult<Int, DataError> =
         safeDbCall(logger) {
             dao.insert(card.toEntity()).toInt()
@@ -37,7 +36,7 @@ class RoomCardDatasource(
 
     override suspend fun completeCard(
         cardId: Int,
-        spentMillis: Long
+        spentMillis: Long,
     ): DFResult<Int, DataError> {
         val now = System.currentTimeMillis()
         return safeDbCall(logger) {
@@ -49,7 +48,7 @@ class RoomCardDatasource(
                     spentMillis = spentMillis,
                     completedAt = now,
                     dayStart = now.startOfDayMillis(),
-                )
+                ),
             )
             cardId
         }
@@ -65,12 +64,12 @@ class RoomCardDatasource(
     }
 
     override fun getAllCards(): Flow<DFResult<List<CardDomain>, DataError>> =
-        dao.getAllCards()
+        dao
+            .getAllCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<CardDomain>, DataError>
-            }
-            .catch { e ->
+                    as DFResult<List<CardDomain>, DataError>
+            }.catch { e ->
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
@@ -88,16 +87,15 @@ class RoomCardDatasource(
     override fun getDailyStatsForCard(
         cardId: Int,
         fromDay: Long,
-        toDay: Long
+        toDay: Long,
     ): Flow<DFResult<List<DailyStatsDomain>, DataError>> =
-        dao.getDailyStatsForCard(cardId, fromDay, toDay)
+        dao
+            .getDailyStatsForCard(cardId, fromDay, toDay)
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<DailyStatsDomain>, DataError>
-            }
-            .catch { e ->
+                    as DFResult<List<DailyStatsDomain>, DataError>
+            }.catch { e ->
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
 }
-

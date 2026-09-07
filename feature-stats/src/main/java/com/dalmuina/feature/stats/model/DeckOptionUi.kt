@@ -7,8 +7,8 @@ import com.dalmuina.domain.model.DeckDomain
 @Immutable
 data class DeckOptionUi(
     override val id: Int,
-    override val name: String
-): DFSelectableOption
+    override val name: String,
+) : DFSelectableOption
 
 fun DeckDomain.toUi(): DeckOptionUi =
     DeckOptionUi(

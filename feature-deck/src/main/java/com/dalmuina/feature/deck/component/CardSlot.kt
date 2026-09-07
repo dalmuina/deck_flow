@@ -49,17 +49,19 @@ fun CardSlot(
     if (card.isSelected) {
         val brush = Brush.linearGradient(listOf(primary, secondary))
         Card(
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier =
+                modifier
+                    .fillMaxWidth(),
             onClick = { onEditCard(card.id) },
             shape = shape,
             colors = CardDefaults.cardColors(containerColor = Color.Transparent),
             elevation = CardDefaults.cardElevation(defaultElevation = Elevation.m),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(brush),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(brush),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
@@ -69,9 +71,10 @@ fun CardSlot(
                     tint = Color.White.copy(alpha = 0.7f),
                 )
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(Spacing.l),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(Spacing.l),
                 ) {
                     Text(
                         text = "${card.order ?: ""} ${card.name}",
@@ -93,9 +96,10 @@ fun CardSlot(
         }
     } else {
         Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .border(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant, shape = shape),
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outlineVariant, shape = shape),
             onClick = { onEditCard(card.id) },
             shape = shape,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -106,9 +110,10 @@ fun CardSlot(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(Spacing.l),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(Spacing.l),
                 ) {
                     Text(
                         text = "${card.order ?: ""} ${card.name}",

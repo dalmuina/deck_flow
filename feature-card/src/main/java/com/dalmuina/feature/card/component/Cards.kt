@@ -62,9 +62,10 @@ fun CardWithTimer(
 ) {
     CardContainer(modifier = modifier, brush = brush, containerColor = containerColor) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(Spacing.l),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(Spacing.l),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -97,13 +98,17 @@ fun CardContainer(
 ) {
     val shape = RoundedCornerShape(Corner.s)
     Box(
-        modifier = modifier
-            .shadow(elevation = Elevation.m, shape = shape)
-            .clip(shape)
-            .then(
-                if (brush != null) Modifier.background(brush)
-                else Modifier.background(containerColor)
-            ),
+        modifier =
+            modifier
+                .shadow(elevation = Elevation.m, shape = shape)
+                .clip(shape)
+                .then(
+                    if (brush != null) {
+                        Modifier.background(brush)
+                    } else {
+                        Modifier.background(containerColor)
+                    },
+                ),
         content = content,
     )
 }
@@ -136,13 +141,14 @@ fun CardContent(
 fun CardWithoutTimerPreview() {
     DeckFlowTheme {
         CardWithoutTimer(
-            card = CardUi(
-                id = 0,
-                name = "Read",
-                duration = Duration.ZERO,
-                isCompleted = false,
-                isPostponed = false,
-            ),
+            card =
+                CardUi(
+                    id = 0,
+                    name = "Read",
+                    duration = Duration.ZERO,
+                    isCompleted = false,
+                    isPostponed = false,
+                ),
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         )
     }
@@ -155,20 +161,22 @@ fun CardWithTimerGradientPreview() {
         val primary = MaterialTheme.colorScheme.primary
         val secondary = MaterialTheme.colorScheme.secondary
         CardWithTimer(
-            card = CardUi(
-                id = 0,
-                name = "Read",
-                duration = Duration.ZERO,
-                isCompleted = false,
-                isPostponed = false,
-            ),
+            card =
+                CardUi(
+                    id = 0,
+                    name = "Read",
+                    duration = Duration.ZERO,
+                    isCompleted = false,
+                    isPostponed = false,
+                ),
             brush = Brush.verticalGradient(listOf(primary, secondary)),
             streakDays = 7,
-            timerState = TimerState(
-                totalMillis = 45 * 60 * 1000L,
-                remainingMillis = 45 * 60 * 1000L,
-                isRunning = false,
-            ),
+            timerState =
+                TimerState(
+                    totalMillis = 45 * 60 * 1000L,
+                    remainingMillis = 45 * 60 * 1000L,
+                    isRunning = false,
+                ),
             onPlay = {},
             onReset = {},
         )

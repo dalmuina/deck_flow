@@ -14,12 +14,10 @@ import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Stroke
 
 @Composable
-fun DFLoadingCircular(
-    modifier: Modifier = Modifier,
-) {
+fun DFLoadingCircular(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator()
     }
@@ -28,19 +26,19 @@ fun DFLoadingCircular(
 @Composable
 fun DFButtonLoading() {
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(18.dp),
             strokeWidth = Stroke.m,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.onPrimary,
         )
     }
 }
 
 @DFPreview
 @Composable
-fun DFButtonLoadingPreview(){
+fun DFButtonLoadingPreview() {
     DeckFlowTheme {
         DFButtonLoading()
     }

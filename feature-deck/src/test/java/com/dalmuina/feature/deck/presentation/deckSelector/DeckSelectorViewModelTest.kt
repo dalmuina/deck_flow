@@ -1,13 +1,13 @@
 package com.dalmuina.feature.deck.presentation.deckSelector
 
 import app.cash.turbine.test
+import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.core.test.data.DeckDomainTestData
+import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.core.test.helpers.awaitLoaded
 import com.dalmuina.core.test.helpers.failure
 import com.dalmuina.core.test.helpers.success
 import com.dalmuina.core.test.rules.MainDispatcherRule
-import com.dalmuina.core.presentation.events.UiEventDispatcher
-import com.dalmuina.core.test.data.ErrorTestData
 import com.dalmuina.domain.model.DFResult
 import com.dalmuina.domain.usecase.DeleteDeckUseCase
 import com.dalmuina.domain.usecase.GetAllDecksUseCase
@@ -29,26 +29,24 @@ import org.junit.Rule
 import org.junit.Test
 
 class DeckSelectorViewModelRobot {
-
     val getAllDecksUseCase = mockk<GetAllDecksUseCase>(relaxed = true)
     val deleteDeckUseCase = mockk<DeleteDeckUseCase>(relaxed = true)
     val getSelectedDeckUseCase = mockk<GetSelectedDeckUseCase>(relaxed = true)
     val setSelectedDeckUseCase = mockk<SetSelectedDeckUseCase>(relaxed = true)
     val uiEventDispatcher = mockk<UiEventDispatcher>(relaxed = true)
 
-    fun build() = DeckSelectorViewModel(
-        getAllDecksUseCase,
-        deleteDeckUseCase,
-        getSelectedDeckUseCase,
-        setSelectedDeckUseCase,
-        uiEventDispatcher
-    )
-
+    fun build() =
+        DeckSelectorViewModel(
+            getAllDecksUseCase,
+            deleteDeckUseCase,
+            getSelectedDeckUseCase,
+            setSelectedDeckUseCase,
+            uiEventDispatcher,
+        )
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DeckSelectorViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -61,118 +59,119 @@ class DeckSelectorViewModelTest {
     }
 
     @Test
-    fun `when decks loaded then emits decks with selected`() = runTest {
+    fun `when decks loaded then emits decks with selected`() =
+        runTest {
+            val decks = DeckDomainTestData.decks(1, 2, 3)
 
-        val decks = DeckDomainTestData.decks(1,2,3)
+            every { robot.getAllDecksUseCase() } returns
+                flowOf(
+                    success(decks),
+                )
 
-        every { robot.getAllDecksUseCase() } returns flowOf(
-            success(decks)
-        )
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(2))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(2))
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                val state = awaitLoaded()
 
-        viewModel.uiState.test {
+                state.loading shouldBe false
+                state.deckList.size shouldBe 3
+                state.deckList.first { it.id == 2 }.isSelected shouldBe true
 
-            val state = awaitLoaded()
-
-            state.loading shouldBe false
-            state.deckList.size shouldBe 3
-            state.deckList.first { it.id == 2 }.isSelected shouldBe true
-
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `when SelectDeck intent then calls setSelectedDeckUseCase`() = runTest {
-        viewModel = robot.build()
-        viewModel.process(DeckSelectorIntent.SelectDeck(2))
+    fun `when SelectDeck intent then calls setSelectedDeckUseCase`() =
+        runTest {
+            viewModel = robot.build()
+            viewModel.process(DeckSelectorIntent.SelectDeck(2))
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        coVerify(exactly = 1) {
-            robot.setSelectedDeckUseCase(2)
+            coVerify(exactly = 1) {
+                robot.setSelectedDeckUseCase(2)
+            }
         }
-    }
 
     @Test
-    fun `when deleting selected deck selects next deck`() = runTest {
+    fun `when deleting selected deck selects next deck`() =
+        runTest {
+            val decks = DeckDomainTestData.decks(1, 2, 3)
 
-        val decks = DeckDomainTestData.decks(1,2,3)
+            every { robot.getAllDecksUseCase() } returns
+                flowOf(
+                    success(decks),
+                )
 
-        every { robot.getAllDecksUseCase() } returns flowOf(
-            success(decks)
-        )
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(2))
 
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(2))
+            coEvery { robot.deleteDeckUseCase(2) } returns DFResult.Success(3)
 
-        coEvery { robot.deleteDeckUseCase(2) } returns DFResult.Success(3)
+            viewModel = robot.build()
 
-        viewModel = robot.build()
+            viewModel.uiState.test {
+                awaitLoaded()
 
-        viewModel.uiState.test {
+                viewModel.process(DeckSelectorIntent.RequestDeleteDeck(2))
+                viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck)
 
-            awaitLoaded()
+                advanceUntilIdle()
 
-            viewModel.process(DeckSelectorIntent.RequestDeleteDeck(2))
+                coVerify { robot.deleteDeckUseCase(2) }
+                coVerify { robot.setSelectedDeckUseCase(3) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `when delete fails then dispatch snackbar`() =
+        runTest {
+            val decks = DeckDomainTestData.decks(1)
+
+            every { robot.getAllDecksUseCase() } returns flowOf(success(decks))
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
+            coEvery { robot.deleteDeckUseCase(1) } returns failure(ErrorTestData.unknown)
+
+            viewModel = robot.build()
+
+            val job = launch { viewModel.uiState.collect() }
+            advanceUntilIdle()
+
+            viewModel.process(DeckSelectorIntent.RequestDeleteDeck(1))
             viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck)
 
             advanceUntilIdle()
 
-            coVerify { robot.deleteDeckUseCase(2) }
-            coVerify { robot.setSelectedDeckUseCase(3) }
+            job.cancel()
 
-            cancelAndIgnoreRemainingEvents()
+            coVerify {
+                robot.uiEventDispatcher.dispatch(any())
+            }
         }
-    }
 
     @Test
-    fun `when delete fails then dispatch snackbar`() = runTest {
+    fun `when no selected deck then first deck becomes selected`() =
+        runTest {
+            val decks = DeckDomainTestData.decks(1, 2, 3)
 
-        val decks = DeckDomainTestData.decks(1)
+            every { robot.getAllDecksUseCase() } returns
+                flowOf(
+                    success(decks),
+                )
 
-        every { robot.getAllDecksUseCase() } returns flowOf(success(decks))
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(1))
-        coEvery { robot.deleteDeckUseCase(1) } returns failure(ErrorTestData.unknown)
+            every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
 
-        viewModel = robot.build()
+            viewModel = robot.build()
+            viewModel.uiState.test {
+                val state = awaitLoaded()
 
-        val job = launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
+                state.deckList.first { it.id == 1 }.isSelected shouldBe true
 
-        viewModel.process(DeckSelectorIntent.RequestDeleteDeck(1))
-        viewModel.process(DeckSelectorIntent.ConfirmDeleteDeck)
-
-        advanceUntilIdle()
-
-        job.cancel()
-
-        coVerify {
-            robot.uiEventDispatcher.dispatch(any())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
-
-    @Test
-    fun `when no selected deck then first deck becomes selected`() = runTest {
-
-        val decks = DeckDomainTestData.decks(1,2,3)
-
-        every { robot.getAllDecksUseCase() } returns flowOf(
-            success(decks)
-        )
-
-        every { robot.getSelectedDeckUseCase() } returns flowOf(DFResult.Success(null))
-
-        viewModel = robot.build()
-        viewModel.uiState.test {
-
-            val state = awaitLoaded()
-
-            state.deckList.first { it.id == 1 }.isSelected shouldBe true
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
 }

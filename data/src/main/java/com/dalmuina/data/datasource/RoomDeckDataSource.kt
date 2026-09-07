@@ -21,50 +21,47 @@ class RoomDeckDataSource(
     private val dao: DFDeckDao,
     private val logger: CrashlyticsLogger,
 ) : DeckLocalDataSource {
-
     override suspend fun createDeck(
         name: String,
-        cardIds: List<Int>
+        cardIds: List<Int>,
     ): DFResult<Int, DataError> =
         safeDbCall(logger) {
             dao.insertDeckWithCards(
                 deck = DeckEntity(name = name),
-                cardIds = cardIds
+                cardIds = cardIds,
             )
         }
 
     override suspend fun updateDeckName(
         deckId: Int,
-        name: String
+        name: String,
     ): EmptyResult<DataError> =
         safeDbCall(logger) {
             dao.updateDeckName(deckId, name)
         }.asEmptyResult()
 
     override fun getAllDecksWithCards(): Flow<DFResult<List<DeckDomain>, DataError>> =
-        dao.getAllDecksWithCards()
+        dao
+            .getAllDecksWithCards()
             .map { entities ->
                 DFResult.Success(entities.map { it.toDomain() })
-                        as DFResult<List<DeckDomain>, DataError>
-            }
-            .catch { e ->
+                    as DFResult<List<DeckDomain>, DataError>
+            }.catch { e ->
                 if (e is CancellationException) throw e
                 emit(DFResult.Error(DataError.Local.Unknown(e)))
             }
 
-    override fun getDeckWithCardsById(
-        deckId: Int
-    ): Flow<DFResult<DeckDomain, DataError>> =
+    override fun getDeckWithCardsById(deckId: Int): Flow<DFResult<DeckDomain, DataError>> =
         combine(
             dao.getDeckById(deckId),
-            dao.getCardsForDeck(deckId)
+            dao.getCardsForDeck(deckId),
         ) { deck, cards ->
             DFResult.Success(
                 DeckDomain(
                     id = deck.id,
                     name = deck.name,
-                    cards = cards.map { it.toDomain() }
-                )
+                    cards = cards.map { it.toDomain() },
+                ),
             ) as DFResult<DeckDomain, DataError>
         }.catch { e ->
             if (e is CancellationException) throw e
@@ -78,7 +75,7 @@ class RoomDeckDataSource(
 
     override suspend fun setDeckCards(
         deckId: Int,
-        orderedIds: List<Int>
+        orderedIds: List<Int>,
     ): EmptyResult<DataError> =
         safeDbCall(logger) {
             dao.replaceDeckCards(deckId, orderedIds)

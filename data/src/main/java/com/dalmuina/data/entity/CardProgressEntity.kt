@@ -11,9 +11,9 @@ import androidx.room.PrimaryKey
             entity = CardEntity::class,
             parentColumns = ["id"],
             childColumns = ["cardId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class CardProgressEntity(
     @PrimaryKey
