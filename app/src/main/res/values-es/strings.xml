@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">DeckFlow</string>
     <string name="home_page">Rutina</string>
     <string name="config_page">Mazos</string>
 
