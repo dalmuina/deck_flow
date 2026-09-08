@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_deck_created">Ningún mazo seleccionado</string>
+    <string name="no_pending_tasks">"Todas las tarjetas completadas 🎉"</string>
+    <string name="button_start">Iniciar</string>
+    <string name="button_stop">Detener</string>
+    <string name="completed_level">Completada ✓</string>
+    <string name="postponed_level">← Pospuesta</string>
+    <string name="timer_notification_title">En curso: %1$s</string>
+    <string name="timer_notification_text">Tiempo restante: %1$s</string>
+    <string name="timer_notification_channel_name">Temporizador</string>
+    <string name="timer_action_play">Reanudar</string>
+    <string name="timer_action_pause">Pausar</string>
+    <string name="timer_action_complete">Completar</string>
+    <string name="completion_dialog_title">¿Cuánto has empleado?</string>
+    <string name="ok_button">Aceptar</string>
+    <string name="cancel_button">Cancelar</string>
+    <string name="streak_days">%1$d días seguidos</string>
+    <string name="streak_none">Sin racha</string>
+    <string name="reminder_notification_title">Tarea pendiente en %1$s</string>
+    <string name="reminder_notification_text">%1$s te está esperando</string>
+    <string name="reminder_notification_channel_name">Recordatorios</string>
+</resources>
