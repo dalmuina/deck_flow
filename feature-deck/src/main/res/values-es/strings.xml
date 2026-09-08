@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_deck_created">No hay ningún mazo creado</string>
+    <string name="deck_input_name_label">Nombre del mazo</string>
+    <string name="energy_deck">Mazo de energía %1$s</string>
+    <string name="cards_count">%1$d tarjetas</string>
+    <string name="energy_low">Baja</string>
+    <string name="energy_medium">Media</string>
+    <string name="energy_high">Alta</string>
+    <string name="create_card">Crear tarjeta</string>
+    <string name="update_deck">Actualizar mazo</string>
+    <string name="label_card">Actividad</string>
+    <string name="no_card_created">No hay ninguna tarjeta creada</string>
+    <string name="default_deck_default">Nuevo mazo</string>
+    <string name="ok_button">Aceptar</string>
+    <string name="cancel_button">Cancelar</string>
+
+    <string name="delete_card_dialog_title">Eliminar tarjeta</string>
+    <string name="delete_deck_dialog_title">Eliminar mazo</string>
+    <string name="delete_dialog_message">¿Seguro que quieres eliminar %1$s?</string>
+</resources>

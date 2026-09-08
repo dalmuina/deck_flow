@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_page">Rutina</string>
+    <string name="config_page">Mazos</string>
+
+    <string name="create_deck_action">Crear mazo</string>
+    <string name="create_card_action">Crear tarjeta</string>
+    <string name="select_deck_action">Seleccionar mazo</string>
+</resources>
