@@ -71,6 +71,7 @@ fun CardCreatorDialogNavRoute(
     CardCreatorDialog(
         loading = state.loading,
         processing = state.processing,
+        isEdit = mode is CardCreatorMode.Edit,
         activity = state.name,
         duration = state.duration,
         onNameChanged = { value -> viewModel.process(CardCreatorIntent.NameChanged(value)) },
@@ -94,6 +95,7 @@ fun CardCreatorDialogNavRoute(
 fun CardCreatorDialog(
     loading: Boolean,
     processing: Boolean,
+    isEdit: Boolean,
     activity: String,
     duration: Duration,
     onNameChanged: (String) -> Unit,
@@ -124,6 +126,7 @@ fun CardCreatorDialog(
                     } else {
                         CardCreatorContent(
                             processing = processing,
+                            isEdit = isEdit,
                             activity = activity,
                             duration = duration,
                             onNameChanged = onNameChanged,
@@ -153,6 +156,7 @@ fun CardCreatorContent(
     onSaved: () -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
+    isEdit: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
@@ -162,7 +166,7 @@ fun CardCreatorContent(
         verticalArrangement = Arrangement.spacedBy(Spacing.l),
     ) {
         Text(
-            text = stringResource(R.string.create_card),
+            text = stringResource(if (isEdit) R.string.update_card else R.string.create_card),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),

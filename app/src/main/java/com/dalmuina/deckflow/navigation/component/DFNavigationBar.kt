@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import com.dalmuina.core.design_system.preview.DFPreview
@@ -46,18 +47,19 @@ fun DFNavigationBar(
         ) {
             TOP_LEVEL_DESTINATIONS.forEach { (topLevelDestination, data) ->
                 val isSelected = selectedKey == topLevelDestination
+                val label = stringResource(data.nameRes)
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = { onSelectedKey(topLevelDestination) },
                     icon = {
                         Icon(
                             imageVector = data.icon,
-                            contentDescription = data.name,
+                            contentDescription = label,
                         )
                     },
                     label = {
                         Text(
-                            text = data.name,
+                            text = label,
                             style = MaterialTheme.typography.labelSmall,
                         )
                     },
