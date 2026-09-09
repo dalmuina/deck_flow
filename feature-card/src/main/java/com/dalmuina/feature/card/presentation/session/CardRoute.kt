@@ -8,11 +8,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +31,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -233,6 +237,11 @@ fun CardScreen(
         val swipeProgress = (abs(dragOffsetX) / 300f).coerceIn(0f, 1f)
         val signedProgress = (dragOffsetX / 300f).coerceIn(-1f, 1f)
 
+        val resolveTopCard: (SwipeDirection) -> Unit = { direction ->
+            dragOffsetX = 0f
+            onSwiped(direction)
+        }
+
         cards.reversed().forEachIndexed { index, card ->
 
             val depth = cards.size - index - 1
@@ -276,10 +285,7 @@ fun CardScreen(
                                 .weight(1f)
                                 .offset { IntOffset(x = 0, y = offset.roundToPx()) }
                                 .scale(scale),
-                        onSwiped = { direction ->
-                            dragOffsetX = 0f
-                            onSwiped(direction)
-                        },
+                        onSwiped = resolveTopCard,
                         onDragProgress = { dragOffsetX = it },
                     ) {
                         SwipeCardContent(
@@ -289,6 +295,7 @@ fun CardScreen(
                             timerState = timerState,
                             onPlay = onPlay,
                             onReset = onReset,
+                            onHintClick = resolveTopCard,
                         )
                     }
                 } else {
@@ -313,6 +320,7 @@ fun SwipeCardContent(
     timerState: TimerState,
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
+    onHintClick: (SwipeDirection) -> Unit,
 ) {
     val leftAlphaAnimated = (-signedProgress).coerceIn(0f, 1f)
     val rightAlphaAnimated = (signedProgress).coerceIn(0f, 1f)
@@ -353,13 +361,19 @@ fun SwipeCardContent(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            SwipeDirectionHint(modifier = Modifier.padding(all = Spacing.l))
+            SwipeDirectionHint(
+                onHintClick = onHintClick,
+                modifier = Modifier.padding(all = Spacing.l),
+            )
         }
     }
 }
 
 @Composable
-private fun SwipeDirectionHint(modifier: Modifier = Modifier) {
+private fun SwipeDirectionHint(
+    onHintClick: (SwipeDirection) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -369,11 +383,13 @@ private fun SwipeDirectionHint(modifier: Modifier = Modifier) {
             icons = listOf(Icons.AutoMirrored.Filled.ArrowBack, Icons.Default.Schedule),
             tint = PostponeContainer,
             contentDescription = stringResource(R.string.postponed_level),
+            onClick = { onHintClick(SwipeDirection.LEFT) },
         )
         SwipeDirectionBadge(
             icons = listOf(Icons.Default.Check, Icons.AutoMirrored.Filled.ArrowForward),
             tint = SuccessContainer,
             contentDescription = stringResource(R.string.completed_level),
+            onClick = { onHintClick(SwipeDirection.RIGHT) },
         )
     }
 }
@@ -383,13 +399,21 @@ private fun SwipeDirectionBadge(
     icons: List<ImageVector>,
     tint: Color,
     contentDescription: String,
+    onClick: () -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
             Modifier
                 .clip(RoundedCornerShape(Corner.m))
                 .background(SecondaryContainerDark)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = ripple(color = tint.copy(alpha = 0.24f)),
+                    onClickLabel = contentDescription,
+                    onClick = onClick,
+                ).defaultMinSize(minHeight = Dimen.s)
                 .padding(horizontal = Spacing.m, vertical = Spacing.s),
     ) {
         icons.forEachIndexed { index, icon ->
