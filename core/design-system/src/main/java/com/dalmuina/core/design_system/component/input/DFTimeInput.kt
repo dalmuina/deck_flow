@@ -88,6 +88,7 @@ fun DFInputTimer(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done,
                 ),
+            singleLine = true,
             label = { Text(stringResource(R.string.minutes_time_label)) },
             trailingIcon = {
                 Column(
