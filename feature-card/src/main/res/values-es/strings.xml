@@ -6,6 +6,7 @@
     <string name="button_stop">Detener</string>
     <string name="completed_level">Completada ✓</string>
     <string name="postponed_level">← Pospuesta</string>
+    <string name="card_activity_label">Actividad</string>
     <string name="timer_notification_title">En curso: %1$s</string>
     <string name="timer_notification_text">Tiempo restante: %1$s</string>
     <string name="timer_notification_channel_name">Temporizador</string>

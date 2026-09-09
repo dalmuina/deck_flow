@@ -34,3 +34,5 @@ DerivedData/
 # Mobiai files
 .mobiai/
 
+/play-store-listing/
+/app/release/app-release.aab
