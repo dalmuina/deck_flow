@@ -12,7 +12,7 @@ All project-specific wrappers and reusable components are prefixed with the proj
 
 | Project | Initials | Result | Error | Component | Preview |
 |---|---|---|---|---|---|
-| Deck Flow | DF | `DFResult` | `DFError` | `DFOutlinedButton` | `DFPreview` |
+| DeckFlow | DF | `DFResult` | `DFError` | `DFOutlinedButton` | `DFPreview` |
 | BitPanda | BP | `BPResult` | `BPError` | `BPOutlinedButton` | `BPPreview` |
 
 Determine the project's initials at the start of a project and apply them consistently across the entire codebase.
