@@ -99,9 +99,10 @@ fun NavigationRoute(
     Scaffold(
         modifier = modifier,
         topBar = {
+            val currentRoute = navigationState.currentRoute
             DFTopBar(
-                title = navigationState.currentRoute?.title() ?: "",
-                showBack = navigationState.currentRoute !in TOP_LEVEL_DESTINATIONS,
+                title = if (currentRoute != null) stringResource(currentRoute.titleRes()) else "",
+                showBack = currentRoute !in TOP_LEVEL_DESTINATIONS,
                 onBack = navigator::goBack,
             )
         },

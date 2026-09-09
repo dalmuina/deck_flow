@@ -8,6 +8,7 @@
     <string name="energy_medium">Media</string>
     <string name="energy_high">Alta</string>
     <string name="create_card">Crear tarjeta</string>
+    <string name="update_card">Actualizar tarjeta</string>
     <string name="update_deck">Actualizar mazo</string>
     <string name="label_card">Actividad</string>
     <string name="no_card_created">No hay ninguna tarjeta creada</string>
