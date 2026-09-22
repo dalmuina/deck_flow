@@ -29,7 +29,8 @@ fun DFTextFieldOutlined(
     name: String,
     onNameChanged: (String) -> Unit,
     focusRequester: FocusRequester? = null,
-    label: @Composable () -> Unit,
+    label: (@Composable () -> Unit)? = null,
+    placeholder: (@Composable () -> Unit)? = null,
 ) {
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
@@ -79,6 +80,7 @@ fun DFTextFieldOutlined(
                 capitalization = KeyboardCapitalization.Sentences,
             ),
         label = label,
+        placeholder = placeholder,
     )
 }
 

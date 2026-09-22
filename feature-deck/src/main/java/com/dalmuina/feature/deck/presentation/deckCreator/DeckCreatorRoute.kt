@@ -103,7 +103,7 @@ fun DeckCreatorScreen(
         ) {
             DFTextFieldOutlined(
                 name = name,
-                label = { Text(text = stringResource(R.string.deck_input_name_label)) },
+                placeholder = { Text(text = stringResource(R.string.deck_input_name_hint)) },
                 onNameChanged = onNameChanged,
             )
             Spacer(modifier = Modifier.height(Spacing.l))

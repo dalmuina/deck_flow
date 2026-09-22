@@ -175,7 +175,7 @@ fun CardCreatorContent(
             name = activity,
             onNameChanged = onNameChanged,
             focusRequester = focusRequester,
-            label = { Text(text = stringResource(R.string.label_card)) },
+            placeholder = { Text(text = stringResource(R.string.card_input_name_hint)) },
         )
         DFInputTimer(
             value = duration,
