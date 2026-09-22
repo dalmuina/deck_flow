@@ -43,14 +43,14 @@ class DeckCreatorViewModel(
     private val uiEventDispatcher: UiEventDispatcher,
 ) : ViewModel() {
     companion object {
-        private const val DEFAULT_DECK_NAME = "Deck name"
+        private const val FALLBACK_DECK_NAME = "Deck name"
         private const val STOP_SUBSCRIPTION = 5_000L
         private const val DELAY_PROCESS_INPUT = 1_000L
     }
 
     private val selectedCards =
         MutableStateFlow<List<SelectedCard>>(emptyList())
-    private val deckName = MutableStateFlow(DEFAULT_DECK_NAME)
+    private val deckName = MutableStateFlow("")
     private val cardPendingDelete = MutableStateFlow<CardUi?>(null)
     private val resolvedDeckId = MutableStateFlow(mode.deckId)
 
@@ -170,7 +170,7 @@ class DeckCreatorViewModel(
         viewModelScope.launch {
             val deckId = resolvedDeckId.value
             if (deckId == null) {
-                createDeckUseCase(deckName.value, cardIds)
+                createDeckUseCase(deckName.value.ifBlank { FALLBACK_DECK_NAME }, cardIds)
                     .onSuccess { newDeckId -> resolvedDeckId.value = newDeckId }
                     .onFailure { error ->
                         uiEventDispatcher.dispatch(
