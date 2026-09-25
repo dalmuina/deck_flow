@@ -1,0 +1,22 @@
+<resources>
+    <string name="no_deck_created">No Deck Created</string>
+    <string name="deck_input_name_hint">Morning routine</string>
+    <string name="energy_deck">%1$s Energy Deck</string>
+    <string name="cards_count">%1$d cards</string>
+    <string name="energy_low">Low</string>
+    <string name="energy_medium">Medium</string>
+    <string name="energy_high">High</string>
+    <string name="create_card">Create Card</string>
+    <string name="update_card">Update Card</string>
+    <string name="update_deck">Update Deck</string>
+    <string name="card_input_name_hint">Reading</string>
+    <string name="no_card_created">No Card Created</string>
+    <string name="default_deck_default">New Deck</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancel</string>
+
+    <string name="delete_card_dialog_title">Delete Card</string>
+    <string name="delete_deck_dialog_title">Delete Deck</string>
+    <string name="delete_dialog_message">Are you sure you want to delete %1$s?</string>
+
+</resources>

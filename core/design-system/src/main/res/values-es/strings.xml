@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_saving_card">Error al guardar la tarjeta</string>
+    <string name="error_constraint">Ya existe una tarjeta con este nombre</string>
+    <string name="error_unknown">Error inesperado</string>
+    <string name="minutes_time_label">"Tiempo en minutos"</string>
+    <string name="cancel_button">Cancelar</string>
+    <string name="delete_button">Eliminar</string>
+</resources>

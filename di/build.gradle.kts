@@ -1,0 +1,40 @@
+import com.android.build.api.dsl.LibraryExtension
+
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ktlint)
+}
+
+extensions.configure<LibraryExtension> {
+    namespace = "com.dalmuina.di"
+    compileSdk {
+        version = release(37)
+    }
+
+    defaultConfig {
+        minSdk = 26
+    }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":core"))
+    implementation(project(":core:presentation"))
+    implementation(project(":core:data"))
+    implementation(project(":feature-deck"))
+    implementation(project(":feature-card"))
+    implementation(project(":feature-stats"))
+
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
+    implementation(libs.datastore.preferences)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.room.ktx)
+}

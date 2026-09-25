@@ -7,6 +7,14 @@ build/
 local.properties
 *.iml
 
+# Release signing
+keystore.properties
+*.jks
+*.keystore
+
+# Claude
+.claude/settings.local.json
+
 # IntelliJ / AS
 .idea/
 *.ipr
@@ -23,3 +31,8 @@ out/
 */Pods/
 DerivedData/
 
+# Mobiai files
+.mobiai/
+
+/play-store-listing/
+/app/release/app-release.aab
