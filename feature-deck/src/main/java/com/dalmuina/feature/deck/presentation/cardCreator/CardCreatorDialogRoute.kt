@@ -31,7 +31,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.button.DFButton
 import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
-import com.dalmuina.core.design_system.component.input.DFInputTimer
 import com.dalmuina.core.design_system.component.input.DFTextFieldOutlined
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
@@ -40,9 +39,6 @@ import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.feature.deck.R
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun CardCreatorDialogNavRoute(
@@ -73,11 +69,9 @@ fun CardCreatorDialogNavRoute(
         processing = state.processing,
         isEdit = mode is CardCreatorMode.Edit,
         activity = state.name,
-        duration = state.duration,
+        description = state.description,
         onNameChanged = { value -> viewModel.process(CardCreatorIntent.NameChanged(value)) },
-        onTimeChanged = { value -> viewModel.process(CardCreatorIntent.TimeChanged(value)) },
-        onMoreTime = { viewModel.process(CardCreatorIntent.MoreTime) },
-        onLessTime = { viewModel.process(CardCreatorIntent.LessTime) },
+        onDescriptionChanged = { value -> viewModel.process(CardCreatorIntent.DescriptionChanged(value)) },
         onSaved = {
             if (!closing) {
                 viewModel.process(CardCreatorIntent.SaveActivity)
@@ -97,11 +91,9 @@ fun CardCreatorDialog(
     processing: Boolean,
     isEdit: Boolean,
     activity: String,
-    duration: Duration,
+    description: String,
     onNameChanged: (String) -> Unit,
-    onTimeChanged: (String) -> Unit,
-    onMoreTime: () -> Unit,
-    onLessTime: () -> Unit,
+    onDescriptionChanged: (String) -> Unit,
     onSaved: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -128,11 +120,9 @@ fun CardCreatorDialog(
                             processing = processing,
                             isEdit = isEdit,
                             activity = activity,
-                            duration = duration,
+                            description = description,
                             onNameChanged = onNameChanged,
-                            onTimeChanged = onTimeChanged,
-                            onMoreTime = onMoreTime,
-                            onLessTime = onLessTime,
+                            onDescriptionChanged = onDescriptionChanged,
                             onSaved = onSaved,
                             onCancel = onDismiss,
                             modifier = Modifier.fillMaxWidth(),
@@ -148,11 +138,9 @@ fun CardCreatorDialog(
 fun CardCreatorContent(
     processing: Boolean,
     activity: String,
-    duration: Duration,
+    description: String,
     onNameChanged: (String) -> Unit,
-    onTimeChanged: (String) -> Unit,
-    onMoreTime: () -> Unit,
-    onLessTime: () -> Unit,
+    onDescriptionChanged: (String) -> Unit,
     onSaved: () -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
@@ -177,11 +165,10 @@ fun CardCreatorContent(
             focusRequester = focusRequester,
             placeholder = { Text(text = stringResource(R.string.card_input_name_hint)) },
         )
-        DFInputTimer(
-            value = duration,
-            onValueChanged = onTimeChanged,
-            onMoreTime = onMoreTime,
-            onLessTime = onLessTime,
+        DFTextFieldOutlined(
+            name = description,
+            onNameChanged = onDescriptionChanged,
+            placeholder = { Text(text = stringResource(R.string.card_input_description_hint)) },
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -195,7 +182,7 @@ fun CardCreatorContent(
             DFButton(
                 isLoading = processing,
                 text = { Text(text = stringResource(R.string.ok_button)) },
-                isEnable = activity.isNotEmpty() && duration.inWholeMinutes > 0,
+                isEnable = activity.isNotEmpty(),
                 onClick = onSaved,
             )
         }
@@ -204,16 +191,14 @@ fun CardCreatorContent(
 
 @DFPreview
 @Composable
-fun CardCreatorNoTimePreview() {
+fun CardCreatorWithDescriptionPreview() {
     DeckFlowTheme {
         CardCreatorContent(
             processing = false,
             activity = "Fitness",
-            duration = 3L.minutes,
+            description = "Morning routine",
             onNameChanged = {},
-            onTimeChanged = {},
-            onMoreTime = {},
-            onLessTime = {},
+            onDescriptionChanged = {},
             onCancel = {},
             onSaved = {},
         )
@@ -227,11 +212,9 @@ fun CardCreatorButtonEnabledPreview() {
         CardCreatorContent(
             processing = true,
             activity = "Fitness",
-            duration = 24.minutes,
+            description = "",
             onNameChanged = {},
-            onTimeChanged = {},
-            onMoreTime = {},
-            onLessTime = {},
+            onDescriptionChanged = {},
             onCancel = {},
             onSaved = {},
         )
@@ -245,11 +228,9 @@ fun CardCreatorNoTitlePreview() {
         CardCreatorContent(
             processing = false,
             activity = "",
-            duration = 10.hours,
+            description = "Some description",
             onNameChanged = {},
-            onTimeChanged = {},
-            onMoreTime = {},
-            onLessTime = {},
+            onDescriptionChanged = {},
             onCancel = {},
             onSaved = {},
         )

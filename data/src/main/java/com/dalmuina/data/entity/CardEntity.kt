@@ -10,6 +10,7 @@ data class CardEntity(
     val id: Int = 0,
     val name: String,
     val duration: Long,
+    val description: String? = null,
 )
 
 fun CardDomain.toEntity(): CardEntity =
@@ -17,6 +18,7 @@ fun CardDomain.toEntity(): CardEntity =
         id = id,
         name = name,
         duration = durationMillis,
+        description = description,
     )
 
 fun CardEntity.toDomain(): CardDomain =
@@ -24,4 +26,5 @@ fun CardEntity.toDomain(): CardDomain =
         id = id,
         name = name,
         durationMillis = duration,
+        description = description,
     )

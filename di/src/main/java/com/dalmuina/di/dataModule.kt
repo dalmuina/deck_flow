@@ -8,6 +8,7 @@ import androidx.room.Room
 import com.dalmuina.core.data.helpers.CrashlyticsLogger
 import com.dalmuina.core.data.helpers.FirebaseCrashlyticsLogger
 import com.dalmuina.data.database.AppDatabase
+import com.dalmuina.data.database.MIGRATION_1_2
 import com.dalmuina.data.datasource.DataStoreDeckDataSource
 import com.dalmuina.data.datasource.DataStoreTimerDataSource
 import com.dalmuina.data.datasource.RoomCardDatasource
@@ -29,7 +30,8 @@ val dataModule =
                     androidContext(),
                     AppDatabase::class.java,
                     "deckflow.db",
-                ).build()
+                ).addMigrations(MIGRATION_1_2)
+                .build()
         }
 
         single { get<AppDatabase>().cardDao() }

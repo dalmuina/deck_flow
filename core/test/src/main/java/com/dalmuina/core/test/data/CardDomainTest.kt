@@ -10,6 +10,7 @@ object CardDomainTestData {
         completedAt: Long? = null,
         postponedAt: Long? = null,
         order: Int? = null,
+        description: String? = null,
     ) = CardDomain(
         id = id,
         name = name,
@@ -17,6 +18,7 @@ object CardDomainTestData {
         completedAt = completedAt,
         postponedAt = postponedAt,
         order = order,
+        description = description,
     )
 
     fun cards(vararg ids: Int): List<CardDomain> = ids.map { card(id = it) }

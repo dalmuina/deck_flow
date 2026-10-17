@@ -1,5 +1,7 @@
 package com.dalmuina.domain.model
 
+const val FIXED_CARD_DURATION_MILLIS = 15 * 60 * 1000L
+
 data class CardDomain(
     val id: Int = 0,
     val name: String,
@@ -7,4 +9,5 @@ data class CardDomain(
     val completedAt: Long? = null,
     val postponedAt: Long? = null,
     val order: Int? = null,
+    val description: String? = null,
 )

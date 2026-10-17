@@ -7,7 +7,7 @@ Defines what DeckFlow is and how it behaves: purpose, screens, MVI contracts, do
 ## Purpose
 
 DeckFlow is an Android **spaced repetition study** app based on flashcards.
-The user creates card decks; each card has a name and a duration in seconds. During a study session, cards are presented one at a time with a countdown timer: swiping right marks the card as completed, swiping left postpones it. The stats screen shows a monthly heatmap with the activity history per card.
+The user creates card decks; each card has a name, a fixed 15-minute duration, and an optional description. During a study session, cards are presented one at a time with a countdown timer: swiping right marks the card as completed, swiping left postpones it. The stats screen shows a monthly heatmap with the activity history per card.
 
 ---
 
@@ -59,14 +59,14 @@ Form to create or edit a deck. The user enters the name and manages the associat
 
 ### Card creator / editor — `Route.CardCreator(mode)` → `CardCreatorDialogNavRoute`
 
-Modal dialog to create or edit an individual card. The user enters the name and duration (with `+`/`-` buttons or a text field). `CardCreatorMode` is `Create` or `Edit(cardId)`.
+Modal dialog to create or edit an individual card. The user enters the name and an optional description. `CardCreatorMode` is `Create` or `Edit(cardId)`.
 
 **MVI**
 
 | | Class |
 |---|---|
-| State | `CardCreatorState` — `name`, `duration: Duration`, `processing` |
-| Intent | `NameChanged`, `TimeChanged`, `MoreTime`, `LessTime`, `SaveActivity`, `Cancel` |
+| State | `CardCreatorState` — `name`, `description`, `processing` |
+| Intent | `NameChanged`, `DescriptionChanged`, `SaveActivity`, `Cancel` |
 | Event | `CloseScreen(cardId?)` |
 
 ---
@@ -88,7 +88,7 @@ Shows a **monthly heatmap** (GitHub contribution graph style) with the activity 
 
 ```kotlin
 data class CardDomain(val id: Int, val name: String, val durationMillis: Long,
-                      val completedAt: Long?, val postponedAt: Long?, val order: Int?)
+                      val completedAt: Long?, val postponedAt: Long?, val order: Int?, val description: String? = null)
 
 data class DeckDomain(val id: Int, val name: String, val cards: List<CardDomain>)
 

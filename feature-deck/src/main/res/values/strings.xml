@@ -10,6 +10,7 @@
     <string name="update_card">Update Card</string>
     <string name="update_deck">Update Deck</string>
     <string name="card_input_name_hint">Reading</string>
+    <string name="card_input_description_hint">Description (optional)</string>
     <string name="no_card_created">No Card Created</string>
     <string name="default_deck_default">New Deck</string>
     <string name="ok_button">OK</string>
