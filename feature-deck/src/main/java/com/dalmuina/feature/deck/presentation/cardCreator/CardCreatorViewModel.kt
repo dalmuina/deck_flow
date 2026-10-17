@@ -6,6 +6,7 @@ import com.dalmuina.core.presentation.events.UiEvent
 import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.core.presentation.mappers.toUiText
 import com.dalmuina.domain.model.CardDomain
+import com.dalmuina.domain.model.FIXED_CARD_DURATION_MILLIS
 import com.dalmuina.domain.model.onFailure
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
@@ -18,8 +19,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
 
 class CardCreatorViewModel(
     private val mode: CardCreatorMode,
@@ -48,15 +47,7 @@ class CardCreatorViewModel(
     fun process(intent: CardCreatorIntent) {
         when (intent) {
             is CardCreatorIntent.NameChanged -> changeName(intent.value)
-            is CardCreatorIntent.TimeChanged ->
-                changeMinutes(intent.value)
-
-            CardCreatorIntent.MoreTime ->
-                adjustMinutes { it + 1 }
-
-            CardCreatorIntent.LessTime ->
-                adjustMinutes { it - 1 }
-
+            is CardCreatorIntent.DescriptionChanged -> changeDescription(intent.value)
             is CardCreatorIntent.SaveActivity -> saveCard()
             CardCreatorIntent.Cancel -> cancel()
         }
@@ -75,7 +66,7 @@ class CardCreatorViewModel(
                         copy(
                             loading = false,
                             name = card.name,
-                            duration = card.durationMillis.milliseconds,
+                            description = card.description.orEmpty(),
                         )
                     }
                 }.onFailure { error ->
@@ -99,22 +90,11 @@ class CardCreatorViewModel(
         }
     }
 
-    private fun changeMinutes(raw: String) {
-        val filtered = raw.filter(Char::isDigit)
-        val minutes =
-            if (filtered.isBlank()) {
-                0L
-            } else {
-                filtered.toLongOrNull() ?: 0L
-            }
-        reduce { copy(duration = minutes.minutes) }
-    }
-
-    private fun adjustMinutes(transform: (Long) -> Long) {
+    private fun changeDescription(value: String) {
         reduce {
-            val currentMinutes = duration.inWholeMinutes
-            val newMinutes = transform(currentMinutes).coerceAtLeast(0)
-            copy(duration = newMinutes.minutes)
+            copy(
+                description = value,
+            )
         }
     }
 
@@ -147,7 +127,8 @@ class CardCreatorViewModel(
         return CardDomain(
             id = mode.cardId ?: 0,
             name = state.name,
-            durationMillis = state.duration.inWholeMilliseconds,
+            durationMillis = FIXED_CARD_DURATION_MILLIS,
+            description = state.description.ifBlank { null },
         )
     }
 

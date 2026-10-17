@@ -12,6 +12,7 @@ data class CardUi(
     val duration: Duration,
     val isCompleted: Boolean,
     val isPostponed: Boolean,
+    val description: String? = null,
 )
 
 fun CardDomain.toUi(): CardUi =
@@ -21,4 +22,5 @@ fun CardDomain.toUi(): CardUi =
         duration = durationMillis.milliseconds,
         isCompleted = completedAt != null,
         isPostponed = postponedAt != null,
+        description = description,
     )

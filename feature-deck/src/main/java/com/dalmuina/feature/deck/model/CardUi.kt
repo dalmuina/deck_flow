@@ -12,6 +12,7 @@ data class CardUi(
     val duration: Duration,
     val isSelected: Boolean,
     val order: Int? = null,
+    val description: String? = null,
 )
 
 fun CardDomain.toUi(): CardUi =
@@ -21,4 +22,5 @@ fun CardDomain.toUi(): CardUi =
         duration = durationMillis.milliseconds,
         isSelected = true,
         order = order,
+        description = description,
     )

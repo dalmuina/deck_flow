@@ -11,6 +11,7 @@
     <string name="update_card">Actualizar tarjeta</string>
     <string name="update_deck">Actualizar mazo</string>
     <string name="card_input_name_hint">Lectura</string>
+    <string name="card_input_description_hint">Descripción (opcional)</string>
     <string name="no_card_created">No hay ninguna tarjeta creada</string>
     <string name="default_deck_default">Nuevo mazo</string>
     <string name="ok_button">Aceptar</string>

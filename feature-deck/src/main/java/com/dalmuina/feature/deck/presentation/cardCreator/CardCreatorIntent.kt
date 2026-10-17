@@ -5,13 +5,9 @@ sealed interface CardCreatorIntent {
         val value: String,
     ) : CardCreatorIntent
 
-    data class TimeChanged(
+    data class DescriptionChanged(
         val value: String,
     ) : CardCreatorIntent
-
-    data object MoreTime : CardCreatorIntent
-
-    data object LessTime : CardCreatorIntent
 
     data object SaveActivity : CardCreatorIntent
 
