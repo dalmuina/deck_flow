@@ -25,4 +25,6 @@ sealed interface DeckCreatorIntent {
         val from: Int,
         val to: Int,
     ) : DeckCreatorIntent
+
+    data object SaveDeck : DeckCreatorIntent
 }

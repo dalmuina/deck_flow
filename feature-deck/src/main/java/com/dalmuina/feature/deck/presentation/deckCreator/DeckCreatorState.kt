@@ -9,4 +9,5 @@ data class DeckCreatorState(
     val name: String = "",
     val deckCard: List<CardUi> = emptyList(),
     val cardPendingDelete: CardUi? = null,
+    val canSave: Boolean = false,
 )

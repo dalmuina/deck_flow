@@ -1,6 +1,7 @@
 <resources>
     <string name="no_deck_created">No Deck Created</string>
     <string name="deck_input_name_hint">Morning routine</string>
+    <string name="save_deck">Save deck</string>
     <string name="energy_deck">%1$s Energy Deck</string>
     <string name="cards_count">%1$d cards</string>
     <string name="energy_low">Low</string>

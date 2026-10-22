@@ -17,9 +17,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dalmuina.core.design_system.component.button.DFButton
 import com.dalmuina.core.design_system.component.dialog.DFDialogConfirm
 import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.infoState.EmptyState
@@ -31,6 +36,7 @@ import com.dalmuina.feature.deck.R
 import com.dalmuina.feature.deck.component.CardSlot
 import com.dalmuina.feature.deck.component.SwipeToDelete
 import com.dalmuina.feature.deck.model.CardUi
+import kotlinx.coroutines.flow.collect
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sh.calvin.reorderable.ReorderableItem
@@ -46,13 +52,27 @@ fun DeckCreatorRoute(
     createdCardId: Int?,
     onCreatedCardConsumed: () -> Unit,
     onEditCard: (Int) -> Unit,
+    onDeckSaved: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    var closing by remember { mutableStateOf(false) }
 
     LaunchedEffect(createdCardId) {
         createdCardId?.let { cardId ->
             viewModel.process(DeckCreatorIntent.CardCreated(cardId))
             onCreatedCardConsumed()
+        }
+    }
+    LaunchedEffect(viewModel) {
+        viewModel.events.collect { event ->
+            when (event) {
+                DeckCreatorEvent.DeckSaved -> {
+                    if (!closing) {
+                        closing = true
+                        onDeckSaved()
+                    }
+                }
+            }
         }
     }
     AnimatedContent(targetState = state.loading) { loading ->
@@ -62,8 +82,11 @@ fun DeckCreatorRoute(
             DeckCreatorScreen(
                 items = state.deckCard,
                 name = state.name,
+                isCreateMode = mode is DeckCreatorMode.Create,
+                canSave = state.canSave,
                 onSelectedCard = { id -> viewModel.process(DeckCreatorIntent.SelectedCard(id)) },
                 onNameChanged = { value -> viewModel.process(DeckCreatorIntent.NameChanged(value)) },
+                onSaveDeck = { viewModel.process(DeckCreatorIntent.SaveDeck) },
                 onEditCard = onEditCard,
                 onDelete = { id -> viewModel.process(DeckCreatorIntent.RequestDeleteCard(id)) },
                 onReorder = { from, to -> viewModel.process(DeckCreatorIntent.Reorder(from, to)) },
@@ -85,8 +108,11 @@ fun DeckCreatorRoute(
 fun DeckCreatorScreen(
     items: List<CardUi>,
     name: String,
+    isCreateMode: Boolean,
+    canSave: Boolean,
     onSelectedCard: (Int) -> Unit,
     onNameChanged: (String) -> Unit,
+    onSaveDeck: () -> Unit,
     onEditCard: (Int) -> Unit,
     onDelete: (Int) -> Unit,
     onReorder: (from: Int, to: Int) -> Unit,
@@ -125,7 +151,7 @@ fun DeckCreatorScreen(
                     contentPadding =
                         PaddingValues(
                             top = Spacing.l,
-                            bottom = Spacing.xxl,
+                            bottom = Spacing.xxl + Spacing.xxl,
                         ),
                 ) {
                     items(
@@ -156,6 +182,17 @@ fun DeckCreatorScreen(
                 }
             }
         }
+        if (isCreateMode) {
+            DFButton(
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = Spacing.l, bottom = Spacing.xxl + Spacing.l),
+                text = { Text(text = stringResource(R.string.save_deck)) },
+                isEnable = canSave,
+                onClick = onSaveDeck,
+            )
+        }
     }
 }
 
@@ -180,8 +217,11 @@ fun DeckCreatorScreenPreview() {
                     ),
                 ),
             name = "name",
+            isCreateMode = true,
+            canSave = true,
             onSelectedCard = {},
             onNameChanged = {},
+            onSaveDeck = {},
             onEditCard = {},
             onDelete = {},
             onReorder = { _, _ -> },

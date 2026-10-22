@@ -17,9 +17,11 @@ import com.dalmuina.domain.usecase.UpdateDeckNameUseCase
 import com.dalmuina.feature.deck.model.CardUi
 import com.dalmuina.feature.deck.model.toUi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -53,6 +55,8 @@ class DeckCreatorViewModel(
     private val deckName = MutableStateFlow("")
     private val cardPendingDelete = MutableStateFlow<CardUi?>(null)
     private val resolvedDeckId = MutableStateFlow(mode.deckId)
+    private val _events = MutableSharedFlow<DeckCreatorEvent>()
+    val events = _events.asSharedFlow()
 
     init {
         mode.deckId?.let { deckId ->
@@ -115,6 +119,7 @@ class DeckCreatorViewModel(
                 deckCard = deckCards,
                 name = name,
                 cardPendingDelete = pendingDelete,
+                canSave = name.isNotBlank() && selected.isNotEmpty(),
             )
         }.onStart {
             emit(DeckCreatorState(loading = true))
@@ -163,6 +168,7 @@ class DeckCreatorViewModel(
             DeckCreatorIntent.DismissDeleteDialog -> cardPendingDelete.value = null
 
             is DeckCreatorIntent.Reorder -> reorder(intent.from, intent.to)
+            DeckCreatorIntent.SaveDeck -> saveDeck()
         }
     }
 
@@ -180,6 +186,19 @@ class DeckCreatorViewModel(
             } else {
                 setDeckCardsUseCase(deckId, cardIds)
             }
+        }
+    }
+
+    private fun saveDeck() {
+        val deckId = resolvedDeckId.value ?: return
+        viewModelScope.launch {
+            updateDeckNameUseCase(deckId, deckName.value)
+                .onSuccess { _events.emit(DeckCreatorEvent.DeckSaved) }
+                .onFailure { error ->
+                    uiEventDispatcher.dispatch(
+                        UiEvent.ShowSnackBar(error.toUiText()),
+                    )
+                }
         }
     }
 
