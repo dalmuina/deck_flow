@@ -9,6 +9,7 @@ data class CardInDeckEntity(
     val completedAt: Long?,
     val postponedAt: Long?,
     val order: Int,
+    val description: String? = null,
 )
 
 fun CardInDeckEntity.toDomain(): CardDomain =
@@ -19,4 +20,5 @@ fun CardInDeckEntity.toDomain(): CardDomain =
         completedAt = completedAt,
         postponedAt = postponedAt,
         order = order,
+        description = description,
     )

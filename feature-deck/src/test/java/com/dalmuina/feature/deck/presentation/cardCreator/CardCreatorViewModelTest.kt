@@ -9,6 +9,7 @@ import com.dalmuina.core.test.helpers.success
 import com.dalmuina.core.test.rules.MainDispatcherRule
 import com.dalmuina.domain.model.CardDomain
 import com.dalmuina.domain.model.FIXED_CARD_DURATION_MILLIS
+import com.dalmuina.domain.model.MAX_CARD_DESCRIPTION_LENGTH
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
 import com.dalmuina.domain.usecase.SaveCardUseCase
 import com.dalmuina.domain.usecase.UpdateCardUseCase
@@ -80,6 +81,22 @@ class CardCreatorViewModelTest {
                 val state = awaitItem()
 
                 state.description shouldBe "Test description"
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `when description exceeds max length then uiState is truncated`() =
+        runTest {
+            viewModel = robot.build(CardCreatorMode.Create)
+
+            viewModel.process(CardCreatorIntent.DescriptionChanged("a".repeat(MAX_CARD_DESCRIPTION_LENGTH + 50)))
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+
+                state.description.length shouldBe MAX_CARD_DESCRIPTION_LENGTH
 
                 cancelAndIgnoreRemainingEvents()
             }

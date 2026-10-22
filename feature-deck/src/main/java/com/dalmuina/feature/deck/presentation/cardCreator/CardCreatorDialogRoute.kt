@@ -36,6 +36,7 @@ import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
+import com.dalmuina.domain.model.MAX_CARD_DESCRIPTION_LENGTH
 import com.dalmuina.feature.deck.R
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -169,6 +170,8 @@ fun CardCreatorContent(
             name = description,
             onNameChanged = onDescriptionChanged,
             placeholder = { Text(text = stringResource(R.string.card_input_description_hint)) },
+            maxLength = MAX_CARD_DESCRIPTION_LENGTH,
+            maxLines = 4,
         )
         Row(
             modifier = Modifier.fillMaxWidth(),

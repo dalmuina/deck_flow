@@ -18,6 +18,7 @@
     <string name="cancel_button">Cancel</string>
     <string name="streak_days">%1$d days in a row</string>
     <string name="streak_none">No streak</string>
+    <string name="card_description_show">Show description</string>
     <string name="reminder_notification_title">Pending task in %1$s</string>
     <string name="reminder_notification_text">%1$s is waiting for you</string>
     <string name="reminder_notification_channel_name">Reminders</string>
