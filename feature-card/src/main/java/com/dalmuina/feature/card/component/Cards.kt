@@ -12,21 +12,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.dalmuina.core.design_system.preview.DFPreview
 import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Elevation
 import com.dalmuina.core.design_system.tokens.Spacing
+import com.dalmuina.feature.card.R
 import com.dalmuina.feature.card.model.CardUi
 import com.dalmuina.feature.card.presentation.timer.TimerState
 import kotlin.time.Duration
@@ -60,6 +70,7 @@ fun CardWithTimer(
     onPlay: (Boolean) -> Unit,
     onReset: () -> Unit,
 ) {
+    var showDescription by rememberSaveable { mutableStateOf(false) }
     CardContainer(modifier = modifier, brush = brush, containerColor = containerColor) {
         Column(
             modifier =
@@ -68,8 +79,28 @@ fun CardWithTimer(
                     .padding(Spacing.l),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            if (showDescription) {
+                CardDescriptionDialog(
+                    title = card.name,
+                    description = card.description.orEmpty(),
+                    onDismiss = { showDescription = false },
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 DFStreakBadge(streakDays = streakDays)
+                if (!card.description.isNullOrBlank()) {
+                    IconButton(onClick = { showDescription = true }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                            contentDescription = stringResource(R.string.card_description_show),
+                            tint = if (brush != null) Color.White else MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
             }
             Column(
                 modifier = Modifier.weight(1f),
@@ -168,6 +199,7 @@ fun CardWithTimerGradientPreview() {
                     duration = Duration.ZERO,
                     isCompleted = false,
                     isPostponed = false,
+                    description = "Read chapter 3 and take notes.",
                 ),
             brush = Brush.verticalGradient(listOf(primary, secondary)),
             streakDays = 7,

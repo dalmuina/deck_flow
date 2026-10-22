@@ -114,6 +114,7 @@ SELECT
     c.id,
     c.name,
     c.duration,
+    c.description,
     p.completedAt,
     p.postponeAt AS postponedAt,
     x.`order`

@@ -7,6 +7,7 @@ import com.dalmuina.core.presentation.events.UiEventDispatcher
 import com.dalmuina.core.presentation.mappers.toUiText
 import com.dalmuina.domain.model.CardDomain
 import com.dalmuina.domain.model.FIXED_CARD_DURATION_MILLIS
+import com.dalmuina.domain.model.MAX_CARD_DESCRIPTION_LENGTH
 import com.dalmuina.domain.model.onFailure
 import com.dalmuina.domain.model.onSuccess
 import com.dalmuina.domain.usecase.GetCardByIdUseCase
@@ -93,7 +94,7 @@ class CardCreatorViewModel(
     private fun changeDescription(value: String) {
         reduce {
             copy(
-                description = value,
+                description = value.take(MAX_CARD_DESCRIPTION_LENGTH),
             )
         }
     }
