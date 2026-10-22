@@ -274,4 +274,91 @@ class DeckCreatorViewModelTest {
                 robot.uiEventDispatcher.dispatch(any())
             }
         }
+
+    @Test
+    fun `when name and card are set then canSave is true`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns flowOf(success(CardDomainTestData.cards(1)))
+            coEvery { robot.createDeckUseCase(any(), any()) } returns DFResult.Success(42)
+
+            viewModel = robot.build(DeckCreatorMode.Create)
+
+            viewModel.process(DeckCreatorIntent.NameChanged("Morning routine"))
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            advanceUntilIdle()
+
+            viewModel.uiState.test {
+                val state = awaitLoaded()
+                state.canSave shouldBe true
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `when only name is set then canSave is false`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns flowOf(success(CardDomainTestData.cards(1)))
+
+            viewModel = robot.build(DeckCreatorMode.Create)
+
+            viewModel.process(DeckCreatorIntent.NameChanged("Morning routine"))
+            advanceUntilIdle()
+
+            viewModel.uiState.test {
+                val state = awaitLoaded()
+                state.canSave shouldBe false
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `when save deck then deck name is updated and DeckSaved emitted`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns flowOf(success(CardDomainTestData.cards(1)))
+            coEvery { robot.createDeckUseCase(any(), any()) } returns DFResult.Success(42)
+            coEvery { robot.updateDeckNameUseCase(any(), any()) } returns DFResult.Success(Unit)
+
+            viewModel = robot.build(DeckCreatorMode.Create)
+
+            viewModel.process(DeckCreatorIntent.NameChanged("Morning routine"))
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            advanceUntilIdle()
+
+            viewModel.events.test {
+                viewModel.process(DeckCreatorIntent.SaveDeck)
+
+                awaitItem() shouldBe DeckCreatorEvent.DeckSaved
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            coVerify {
+                robot.updateDeckNameUseCase(42, "Morning routine")
+            }
+        }
+
+    @Test
+    fun `when save deck fails then snackbar dispatched and DeckSaved not emitted`() =
+        runTest {
+            every { robot.getAllCardsUseCase() } returns flowOf(success(CardDomainTestData.cards(1)))
+            coEvery { robot.createDeckUseCase(any(), any()) } returns DFResult.Success(42)
+            coEvery { robot.updateDeckNameUseCase(any(), any()) } returns failure(ErrorTestData.unknown)
+
+            viewModel = robot.build(DeckCreatorMode.Create)
+
+            viewModel.process(DeckCreatorIntent.NameChanged("Morning routine"))
+            viewModel.process(DeckCreatorIntent.SelectedCard(1))
+            advanceUntilIdle()
+
+            viewModel.events.test {
+                viewModel.process(DeckCreatorIntent.SaveDeck)
+                advanceUntilIdle()
+
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            coVerify {
+                robot.uiEventDispatcher.dispatch(any())
+            }
+        }
 }

@@ -159,6 +159,7 @@ fun NavigationRoute(
                                     },
                                     onCreatedCardConsumed = { createdCardId = null },
                                     createdCardId = createdCardId,
+                                    onDeckSaved = navigator::goBack,
                                 )
                             }
                             entry<Route.CardCreator> { backStackEntry ->
