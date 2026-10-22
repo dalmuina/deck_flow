@@ -32,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLocale
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,12 +43,11 @@ import com.dalmuina.core.design_system.theme.DeckFlowTheme
 import com.dalmuina.core.design_system.tokens.Corner
 import com.dalmuina.core.design_system.tokens.Spacing
 import com.dalmuina.core.design_system.tokens.Stroke
+import com.dalmuina.feature.stats.R
 import com.dalmuina.feature.stats.model.MonthHeatmapDayUi
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
-
-private val DAY_LABELS = listOf("Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do")
 
 @Composable
 fun HeatmapCalendar(
@@ -127,7 +128,7 @@ private fun MonthNavigatorRow(
         IconButton(onClick = onPreviousMonth, enabled = hasPreviousData) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Mes anterior",
+                contentDescription = stringResource(R.string.stats_previous_month),
                 tint =
                     if (hasPreviousData) {
                         MaterialTheme.colorScheme.onSurface
@@ -146,7 +147,7 @@ private fun MonthNavigatorRow(
         IconButton(onClick = onNextMonth, enabled = hasNextMonth) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "Mes siguiente",
+                contentDescription = stringResource(R.string.stats_next_month),
                 tint =
                     if (hasNextMonth) {
                         MaterialTheme.colorScheme.onSurface
@@ -167,7 +168,7 @@ private fun WeekDayHeaderRow() {
                 .padding(bottom = Spacing.xs),
         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
-        DAY_LABELS.forEach { label ->
+        stringArrayResource(R.array.stats_day_labels).forEach { label ->
             Text(
                 text = label,
                 modifier = Modifier.weight(1f),
@@ -270,9 +271,13 @@ private fun BottomRow(selectedDay: MonthHeatmapDayUi?) {
             Text(
                 text =
                     if (selectedDay.totalSpentMillis > 0) {
-                        "Día ${selectedDay.dayOfMonth} · ${selectedDay.totalSpentMillis.toReadableTime()}"
+                        stringResource(
+                            R.string.stats_day_selected,
+                            selectedDay.dayOfMonth,
+                            selectedDay.totalSpentMillis.toReadableTime(),
+                        )
                     } else {
-                        "Día ${selectedDay.dayOfMonth} · Sin actividad"
+                        stringResource(R.string.stats_day_no_activity, selectedDay.dayOfMonth)
                     },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -296,7 +301,7 @@ private fun ColorLegend() {
         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Text(
-            text = "Mín",
+            text = stringResource(R.string.stats_legend_min),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -310,7 +315,7 @@ private fun ColorLegend() {
             )
         }
         Text(
-            text = "Máx",
+            text = stringResource(R.string.stats_legend_max),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -329,14 +334,15 @@ private fun Int.toHeatmapColor(
         else -> primary
     }
 
+@Composable
 private fun Long.toReadableTime(): String {
     val totalMinutes = this / 60_000L
     val hours = totalMinutes / 60
     val minutes = totalMinutes % 60
     return when {
-        hours > 0 && minutes > 0 -> "${hours}h ${minutes}min"
-        hours > 0 -> "${hours}h"
-        else -> "${minutes}min"
+        hours > 0 && minutes > 0 -> stringResource(R.string.stats_duration_hours_minutes, hours, minutes)
+        hours > 0 -> stringResource(R.string.stats_duration_hours, hours)
+        else -> stringResource(R.string.stats_duration_minutes, minutes)
     }
 }
 

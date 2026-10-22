@@ -348,14 +348,16 @@ fun SwipeCardContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 DFBadgeSwipe(
+                    modifier = Modifier.weight(1f),
                     text = stringResource(R.string.completed_level).uppercase(),
-                    strokeColor = SuccessContainer,
+                    containerColor = SuccessContainer,
                     rotation = -5f,
                     alpha = rightAlphaAnimated,
                 )
                 DFBadgeSwipe(
+                    modifier = Modifier.weight(1f),
                     text = stringResource(R.string.postponed_level).uppercase(),
-                    strokeColor = PostponeContainer,
+                    containerColor = PostponeContainer,
                     rotation = 5f,
                     alpha = leftAlphaAnimated,
                 )
