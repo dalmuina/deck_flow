@@ -154,7 +154,7 @@ fun CardContent(
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "ACTIVIDAD",
+            text = stringResource(R.string.card_activity_label).uppercase(),
             style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.5.sp),
             color = labelColor,
         )
