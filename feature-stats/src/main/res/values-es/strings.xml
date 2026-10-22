@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="stats_day_labels">
+        <item>Lu</item>
+        <item>Ma</item>
+        <item>Mi</item>
+        <item>Ju</item>
+        <item>Vi</item>
+        <item>Sa</item>
+        <item>Do</item>
+    </string-array>
+    <string name="stats_activity_label">Actividad</string>
+    <string name="stats_previous_month">Mes anterior</string>
+    <string name="stats_next_month">Mes siguiente</string>
+    <string name="stats_day_selected">Día %1$d · %2$s</string>
+    <string name="stats_day_no_activity">Día %1$d · Sin actividad</string>
+    <string name="stats_legend_min">Mín</string>
+    <string name="stats_legend_max">Máx</string>
+    <string name="stats_duration_hours_minutes">%1$dh %2$dmin</string>
+    <string name="stats_duration_hours">%1$dh</string>
+    <string name="stats_duration_minutes">%1$dmin</string>
+</resources>

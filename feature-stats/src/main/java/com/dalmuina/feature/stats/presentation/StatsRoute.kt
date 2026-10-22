@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dalmuina.core.design_system.component.infoState.DFLoadingCircular
 import com.dalmuina.core.design_system.component.select.DFDropdownSelector
 import com.dalmuina.core.design_system.tokens.Spacing
+import com.dalmuina.feature.stats.R
 import com.dalmuina.feature.stats.component.HeatmapCalendar
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,7 +53,7 @@ fun StatsScreen(
                 .padding(Spacing.l),
     ) {
         DFDropdownSelector(
-            label = "Actividad",
+            label = stringResource(R.string.stats_activity_label),
             options = state.activityOptions,
             selectedId = state.selectedCardId,
             onSelected = onActivitySelected,
