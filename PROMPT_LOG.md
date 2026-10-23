@@ -73,3 +73,5 @@ PROMPT_LOG.md rows for that task via the "Linked task" column.
 | 2026-10-23 | Orchestrator → Orchestrator (self, verification) | `./gradlew assembleDebug` → BUILD SUCCESSFUL, `:app:processDebugResources` re-ran | App rename | Build verified in-session before commit |
 | 2026-10-23 | Human → Orchestrator | "commit this and push" | App rename | Commit and push to 1.0.0/new-name after build verified |
 | 2026-10-23 | Human → Orchestrator | Approved font plan, then said the font files were created | Outfit font | Orchestrator edited Type.kt, built, then committed |
+| 2026-10-23 | Human → Orchestrator | Asked to check new logo and create the icon set | Launcher icon | Checked PNG (transparent, content inside canvas), generated icon set, built |
+| 2026-10-23 | Human → Orchestrator | "commit and push" | Launcher icon and Outfit font | Committed in two commits and pushed to 1.0.0/new-logo-design |
