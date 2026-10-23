@@ -72,3 +72,4 @@ PROMPT_LOG.md rows for that task via the "Linked task" column.
 | 2026-10-23 | Human → Orchestrator | Asked to rename the public app name to "Just 15 minutes" (packages untouched) | App rename | Edited `app_name` in values/ and values-es/ strings |
 | 2026-10-23 | Orchestrator → Orchestrator (self, verification) | `./gradlew assembleDebug` → BUILD SUCCESSFUL, `:app:processDebugResources` re-ran | App rename | Build verified in-session before commit |
 | 2026-10-23 | Human → Orchestrator | "commit this and push" | App rename | Commit and push to 1.0.0/new-name after build verified |
+| 2026-10-23 | Human → Orchestrator | Approved font plan, then said the font files were created | Outfit font | Orchestrator edited Type.kt, built, then committed |
